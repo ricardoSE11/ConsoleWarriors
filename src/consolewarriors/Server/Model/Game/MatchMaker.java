@@ -5,6 +5,7 @@
  */
 package consolewarriors.Server.Model.Game;
 
+import consolewarriors.Common.ClientMessage;
 import consolewarriors.Common.Message;
 import consolewarriors.Common.PlayerRanking;
 import consolewarriors.Common.PlayerStats;
@@ -96,10 +97,15 @@ public class MatchMaker {
         return newMatch;
     }
     
-    
-    
-    public void handlePlayerMessage(Message message){
-        
+    public Match getPlayerMatch(int playerID){
+        Match playerMatch = null;
+        for (Match currentMatch : matches){
+            if (currentMatch.getPlayerOne().getPlayerID() == playerID || currentMatch.getPlayerTwo().getPlayerID() == playerID){
+                playerMatch = currentMatch;
+            }
+        }
+        return playerMatch;
     }
+    
     
 }

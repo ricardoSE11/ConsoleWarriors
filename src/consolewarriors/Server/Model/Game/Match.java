@@ -16,6 +16,7 @@ public class Match {
     
     private Player playerOne;
     private Player playerTwo;
+    
     private IMatchLogger matchLogger;
     private IScoreRecorder scoreRecorder;
     
@@ -100,16 +101,7 @@ public class Match {
     public void nextTurn(){
         
     }
-    
-    public void managePlayerMessage(Message message){
-        ClientMessage clientMessage = (ClientMessage)message;
-        int playerID = clientMessage.getClientID();
-        
-        
-        String[] commandInfo = clientMessage.getEvent().split("-");
-        
-    }
-    
+  
     public Player getPlayerByID(int playerID){
         if (playerOne.getPlayerID() == playerID){
             return playerOne;
@@ -118,6 +110,12 @@ public class Match {
         return playerTwo;
     }
 
+    public void handlePlayerMessage(Message message){
+        ClientMessage clientMessage = (ClientMessage) message;
+        int playerID = clientMessage.getClientID();
 
+        String[] commandInfo = clientMessage.getEvent().split("-");
+
+    }
     
 }

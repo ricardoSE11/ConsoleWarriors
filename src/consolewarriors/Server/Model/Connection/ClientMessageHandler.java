@@ -10,6 +10,7 @@ import consolewarriors.Server.Model.Game.Player;
 import consolewarriors.Common.Message;
 import Characters.Character;
 import consolewarriors.Common.ClientMessage;
+import consolewarriors.Server.Model.Game.Match;
 import consolewarriors.Server.View.ServerMainWindow;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class ClientMessageHandler implements IClientMessageHandler{
         if (event.equals("READY")){
             int clientID = ((ClientMessage)message).getClientID();
             System.out.println("Player with ID:" + clientID + " is ready for a match");
-            ServerThread clientThread = server.getClients().get(clientID); // "Local/Ours"
+            ServerThread clientThread = server.getClients().get(clientID); 
             
             HashMap<String, Character> clientCharacters = (HashMap<String, Character>) message.getObjectOfInterest();
             Player readyPlayer = new Player(clientThread, clientCharacters);
@@ -46,9 +47,9 @@ public class ClientMessageHandler implements IClientMessageHandler{
         }
         else{
             MatchMaker matchMaker = server.getMatchMaker();
-            matchMaker.handlePlayerMessage(message);
-            
-            
+            ClientMessage clientMessage = (ClientMessage) message;
+            Match playerMatch = matchMaker.getPlayerMatch(clientMessage.getClientID());
+            playerMatch.handlePlayerMessage(message);
         }
     }
     
