@@ -29,7 +29,7 @@ public class GameWindowController implements IObserver{
     
     // Model
     private PlayerClient player;
-    private ArrayList<Characters.Character> warriors;
+    private ArrayList<Character> warriors;
 
     public GameWindowController(GameWindow gameWindow, PlayerClient player) {
         this.gameWindow = gameWindow;
