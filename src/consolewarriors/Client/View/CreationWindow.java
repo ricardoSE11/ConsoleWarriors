@@ -5,26 +5,15 @@
  */
 package consolewarriors.Client.View;
 
-import Weapons.Weapon;
-import consolewarriors.Common.CharacterType;
-import consolewarriors.Common.Shared.Warrior;
-import consolewarriors.Common.Shared.WarriorWeapon;
 import java.awt.Image;
-import java.io.File;
-import java.util.ArrayList;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import Characters.Character;
-import consolewarriors.Client.Control.GameWindowController;
-import consolewarriors.Client.Model.PlayerClient;
 import java.awt.event.ActionListener;
 
 /**
@@ -77,10 +66,15 @@ public class CreationWindow extends javax.swing.JFrame {
     }
     
     public void addListeners(ActionListener load_image, ActionListener create_warrior,
-            ActionListener create_weapon){
+            ActionListener create_weapon, ActionListener ready, ActionListener clear_weapons,
+            ActionListener weapon_to_warrior){
         this.btnCreateWarrior.addActionListener(create_warrior);
         this.btnCreateWeapon.addActionListener(create_weapon);
         this.btnLoadImage.addActionListener(load_image);
+        this.btnReady.addActionListener(ready);
+        this.btnClearWeapons.addActionListener(clear_weapons);
+        this.btnAssignWeapon.addActionListener(weapon_to_warrior);
+        
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -165,11 +159,6 @@ public class CreationWindow extends javax.swing.JFrame {
         btnAssignWeapon.setText("Assign weapon");
 
         btnReady.setText("READY");
-        btnReady.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnReadyActionPerformed(evt);
-            }
-        });
 
         btnClearWeapons.setText("Clear table");
 
@@ -334,11 +323,6 @@ public class CreationWindow extends javax.swing.JFrame {
         tableModel.setRowCount(0);
     }
     
-    private void btnReadyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReadyActionPerformed
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_btnReadyActionPerformed
-
     /**
      * @param args the command line arguments
      */

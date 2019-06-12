@@ -5,6 +5,7 @@
  */
 package consolewarriors;
 
+import consolewarriors.Client.Control.CreationWindowController;
 import consolewarriors.Client.View.GameWindow;
 import consolewarriors.Server.Model.Connection.ClientMessageHandler;
 import consolewarriors.Server.Model.Connection.IClientMessageHandler;
@@ -25,9 +26,9 @@ public class ServerMain {
 //        IClientMessageHandler messageHandler = new ClientMessageHandler();
 //        Server server = new Server(1234, messageHandler);
 //        server.run();
-        
-        GameWindow gm = new GameWindow();
-        gm.setVisible(true);
+        CreationWindowController creation_window_controller = new CreationWindowController();
+        //GameWindow gm = new GameWindow();
+        //gm.setVisible(true);
         
     }
     

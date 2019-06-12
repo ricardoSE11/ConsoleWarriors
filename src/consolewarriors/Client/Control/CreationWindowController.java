@@ -13,6 +13,8 @@ import consolewarriors.Common.CharacterType;
 import consolewarriors.Common.Shared.Warrior;
 import consolewarriors.Common.Shared.WarriorWeapon;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
@@ -36,8 +38,11 @@ public class CreationWindowController {
     String lastImageUsedPath = "";
     
     public CreationWindowController(){
+        creation_window = new CreationWindow();
         createdWeapons = new ArrayList<>();
         createdWarriors = new ArrayList<>();
+        creation_window.setVisible(true);
+        setListeners();
     }
     
     public void addWeaponToWarrior(Characters.Character warrior, int warriorPosition, Weapon weapon){
@@ -80,13 +85,12 @@ public class CreationWindowController {
     }
     
     private void clearWeapons() {                                                
-        // TODO add your handling code here:
-        //creation_window
+        creation_window.clearWeapons();
         createdWeapons.clear();
                 
     }
     
-    private void btnLoadImageActionPerformed(java.awt.event.ActionEvent evt) {                                             
+    private void loadImage() {                                             
         // TODO add your handling code here:
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
@@ -126,6 +130,7 @@ public class CreationWindowController {
     }
     
     public void createWeapon(){
+        System.out.println("Hola");
         String weaponName = creation_window.getWeaponName();
         Weapon newWeapon = new WarriorWeapon(weaponName , "DUMMY_STRING"); // FIXME
         this.addWeapon(newWeapon);
@@ -152,6 +157,7 @@ public class CreationWindowController {
     
     public void playerIsReady(){
         String username = creation_window.getUsername();
+        //port should not be static, but is not too important right now
         PlayerClient player = new PlayerClient("localhost", 1234, username , createdWarriors);
         player.run();
         
@@ -161,5 +167,47 @@ public class CreationWindowController {
         GameWindowController gmc = new GameWindowController(gameWindow, player);
         
         this.creation_window.setVisible(false);
+    }
+    
+    public final void setListeners(){
+        creation_window.addListeners(
+            new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    loadImage();
+                }
+            },
+            new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    createWarrior();
+                }
+            },
+            new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    createWeapon();
+                }
+            },
+            new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    playerIsReady();
+                }
+            },
+            
+            new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    clearWeapons();
+                }
+            },
+            new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    assignWeapon();
+                }
+            }
+        );
     }
 }
