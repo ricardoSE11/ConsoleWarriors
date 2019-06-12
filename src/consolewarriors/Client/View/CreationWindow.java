@@ -25,6 +25,7 @@ import javax.swing.table.DefaultTableModel;
 import Characters.Character;
 import consolewarriors.Client.Control.GameWindowController;
 import consolewarriors.Client.Model.PlayerClient;
+import java.awt.event.ActionListener;
 
 /**
  *
@@ -32,19 +33,12 @@ import consolewarriors.Client.Model.PlayerClient;
  */
 public class CreationWindow extends javax.swing.JFrame {
     
-    private String username = "";
-    private ArrayList<Weapon> createdWeapons;
-    private ArrayList<Character> createdWarriors;
     
-    private String lastImageUsedPath = ""; // Space for improvement.
+    private String username = "";
     
     public CreationWindow() {
         initComponents();
         setUpGUI();
-        
-        createdWeapons = new ArrayList<>();
-        createdWarriors = new ArrayList<>();
-        
         displayRegistrationPane();
     }
     
@@ -68,49 +62,26 @@ public class CreationWindow extends javax.swing.JFrame {
         return resizedImage;
     }
     
-    public void addWeapon(Weapon weapon){
-        // Add the weapon to the arraylist of the created weapons
-        createdWeapons.add(weapon);
-        WarriorWeapon currentWeapon = (WarriorWeapon) weapon;
-        
+    public void addWeapon(Object[] weapon_data){
         DefaultTableModel tableModel = (DefaultTableModel) tblWeapons.getModel();
-        Object[] weaponData = new Object[11];
-        
-        weaponData[0] = currentWeapon.getName();
-        CharacterType[] types = CharacterType.values();
-        for (int i = 0; i < currentWeapon.getAttackValueMatrix().size(); i++) {
-            weaponData[i + 1] = currentWeapon.getAttackValueMatrix().get(types[i]);
-        }
-
-        tableModel.addRow(weaponData);
+        tableModel.addRow(weapon_data);
     }
     
-    public void addWarrior(Character warrior) {
-        // Add the warrior to the created warriors
-       createdWarriors.add(warrior);
-        
-        Warrior currentWarrior = (Warrior) warrior;
-
+    public void addWarrior(Object[] warrior_data) {
         DefaultTableModel tableModel = (DefaultTableModel) tblWarriors.getModel();
-        Object[] warriorData = new Object[7];
-        warriorData[0] = currentWarrior.getName();
-        warriorData[1] = currentWarrior.getType().stringRepresentationOfCharacterType();
-
-        tableModel.addRow(warriorData);
+        tableModel.addRow(warrior_data);
     }
     
-    public void addWeaponToWarrior(Character warrior, int warriorPosition, Weapon weapon){
-        Warrior currentWarrior = (Warrior)warrior;
-        WarriorWeapon currentWeapon = (WarriorWeapon)weapon;
-        currentWarrior.addWeapon(weapon);
-        
-        int weaponNumber = currentWarrior.getWeapons().size();
-        
-        tblWarriors.setValueAt(currentWeapon.getName(), warriorPosition, weaponNumber + 1);
-        
-        
+    public void addWeaponToWarrior(String weapon_name, int warrior_position, int weapon_number){       
+        tblWarriors.setValueAt(weapon_name, warrior_position, weapon_number);
     }
     
+    public void addListeners(ActionListener load_image, ActionListener create_warrior,
+            ActionListener create_weapon){
+        this.btnCreateWarrior.addActionListener(create_warrior);
+        this.btnCreateWeapon.addActionListener(create_weapon);
+        this.btnLoadImage.addActionListener(load_image);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -162,11 +133,6 @@ public class CreationWindow extends javax.swing.JFrame {
         jLabel2.setText("Warriors");
 
         btnCreateWeapon.setText("Create weapon");
-        btnCreateWeapon.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCreateWeaponActionPerformed(evt);
-            }
-        });
 
         txfWarriorName.setToolTipText("Warrior name\n");
 
@@ -187,11 +153,6 @@ public class CreationWindow extends javax.swing.JFrame {
         jLabel4.setText("Warrrior creation");
 
         btnLoadImage.setText("Select image");
-        btnLoadImage.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLoadImageActionPerformed(evt);
-            }
-        });
 
         cmbxWarriorType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Fire", "Air", "Water", "White magic", "Black magic", "Electricity", "Ice", "Acid", "Spirituality", "Iron", " " }));
 
@@ -200,18 +161,8 @@ public class CreationWindow extends javax.swing.JFrame {
         lblWarriorImage.setOpaque(true);
 
         btnCreateWarrior.setText("Create ");
-        btnCreateWarrior.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCreateWarriorActionPerformed(evt);
-            }
-        });
 
         btnAssignWeapon.setText("Assign weapon");
-        btnAssignWeapon.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAssignWeaponActionPerformed(evt);
-            }
-        });
 
         btnReady.setText("READY");
         btnReady.addActionListener(new java.awt.event.ActionListener() {
@@ -221,11 +172,6 @@ public class CreationWindow extends javax.swing.JFrame {
         });
 
         btnClearWeapons.setText("Clear table");
-        btnClearWeapons.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClearWeaponsActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -338,97 +284,59 @@ public class CreationWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnLoadImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadImageActionPerformed
-        // TODO add your handling code here:
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-        FileNameExtensionFilter extensionFilter = new FileNameExtensionFilter("*.Images", "jpg" , "gif" , "png");
-        fileChooser.addChoosableFileFilter(extensionFilter);
-        int result = fileChooser.showSaveDialog(null);
-        
-        if(result == JFileChooser.APPROVE_OPTION){
-            File selectedFile = fileChooser.getSelectedFile();
-            String filePath = selectedFile.getAbsolutePath();
-            
-            lastImageUsedPath = filePath;
-            
-            ImageIcon imageIcon = new ImageIcon(filePath);
-            Image image = imageIcon.getImage();
-            
-            ImageIcon resizedImage = resizeImage(image);
-            lblWarriorImage.setIcon(resizedImage);
-        }
-        
-        else if (result == JFileChooser.CANCEL_OPTION){
-            System.out.println("No file selected");
-        }
-    }//GEN-LAST:event_btnLoadImageActionPerformed
-
-    private void btnCreateWarriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateWarriorActionPerformed
-        // TODO add your handling code here:
-        String warriorName = txfWarriorName.getText();
-        CharacterType warriorType = CharacterType.getCharacterTypeValue(cmbxWarriorType.getSelectedItem().toString().toUpperCase());
-        
-        ImageIcon warriorIcon = (ImageIcon) lblWarriorImage.getIcon();
-        Image warriorImage = warriorIcon.getImage();
-        
-        Character newCharacter = new Warrior(warriorName, warriorType , lastImageUsedPath  , 100); //FIXME
-        ((Warrior)newCharacter).setCharacterImage(warriorImage);
-        addWarrior(newCharacter);
-        txfWarriorName.setText("");
-        
-    }//GEN-LAST:event_btnCreateWarriorActionPerformed
-
-    private void btnCreateWeaponActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateWeaponActionPerformed
-        // TODO add your handling code here:
-        String weaponName = txfWeaponName.getText();
-        System.out.println("Got: " + weaponName);
-        Weapon newWeapon = new WarriorWeapon(weaponName , "DUMMY_STRING"); // FIXME
-        this.addWeapon(newWeapon);
-        txfWeaponName.setText("");
-    }//GEN-LAST:event_btnCreateWeaponActionPerformed
-
-    private void btnAssignWeaponActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAssignWeaponActionPerformed
-        // TODO add your handling code here:
-        int weaponIndex = tblWeapons.getSelectedRow();
-        int warriorIndex = tblWarriors.getSelectedRow();
-        
-        if (warriorIndex == -1){
-            JOptionPane.showMessageDialog(null, "No warrior selected", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        else{
-            if (weaponIndex == -1){
-                JOptionPane.showMessageDialog(null, "Please select a weapon", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            else{
-                Weapon selectedWeapon = createdWeapons.get(weaponIndex);
-                Warrior selectedWarrior = (Warrior) createdWarriors.get(warriorIndex);
-                this.addWeaponToWarrior(selectedWarrior, warriorIndex, selectedWeapon);
-            }
-        }
-        
-    }//GEN-LAST:event_btnAssignWeaponActionPerformed
-
-    private void btnClearWeaponsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearWeaponsActionPerformed
-        // TODO add your handling code here:
+    public void setWarriorImage(Image image){
+        ImageIcon resizedImage = resizeImage(image);
+        this.lblWarriorImage.setIcon(resizedImage);
+    }
+    
+    public String getWarriorName(){
+        return txfWarriorName.getText();
+    }
+    
+    public String getWeaponName(){
+        return txfWeaponName.getText();
+    }
+    
+    public String getUsername(){
+        return this.username;
+    }
+    
+    public Object getCmbxWarriorTypeSelectedItem(){
+        return cmbxWarriorType.getSelectedItem();
+    }
+    
+    public ImageIcon getWarriorImageIcon(){
+        return (ImageIcon) lblWarriorImage.getIcon();
+    }
+    
+    public void setTxfWarriorName(String new_name){
+        txfWarriorName.setText(new_name);
+    }
+    
+    public void setTxfWeaponName(String new_name){
+        txfWarriorName.setText(new_name);
+    }
+    
+    public void notifyMessageError(String message){
+        JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    public int getWeaponIndex(){
+        return tblWeapons.getSelectedRow();
+    }
+    
+    public int getWarriorIndex(){
+        return tblWarriors.getSelectedRow();
+    }
+    
+    public void clearWeapons(){
         DefaultTableModel tableModel = (DefaultTableModel) tblWeapons.getModel();
         tableModel.setRowCount(0);
-        createdWeapons.clear();
-                
-    }//GEN-LAST:event_btnClearWeaponsActionPerformed
-
+    }
+    
     private void btnReadyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReadyActionPerformed
         // TODO add your handling code here:
-        PlayerClient player = new PlayerClient("localhost", 1234, username , createdWarriors);
-        player.run();
         
-        GameWindow gameWindow = new GameWindow();
-        gameWindow.setVisible(true);
-        
-        GameWindowController gmc = new GameWindowController(gameWindow, player);
-        
-        
-        this.setVisible(false);
     }//GEN-LAST:event_btnReadyActionPerformed
 
     /**
