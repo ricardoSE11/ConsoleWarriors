@@ -12,12 +12,8 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import Characters.Character;
-import consolewarriors.Client.Model.PlayerClient;
-import consolewarriors.Common.ClientMessage;
-import consolewarriors.Common.Command.CommandManager;
-import consolewarriors.Common.Command.ICommand;
-import consolewarriors.Common.Command.PlayerCommands.NotFoundCommand;
-import consolewarriors.Common.Message;
+import java.awt.event.KeyListener;
+import java.util.EventListener;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -28,44 +24,25 @@ import javax.swing.text.StyleContext;
  */
 public class GameWindow extends javax.swing.JFrame {
 
-    PlayerClient player;
-    ArrayList<Character> warriors;
-    
-    
     ArrayList<JLabel> warriorsImagesLabels;
     ArrayList<JLabel> warriorsNameLabels;
     ArrayList<JLabel> warriorsHealthLabels;
     
-//    public GameWindow(PlayerClient player) {
-//        this.player = player;
-//        this.warriors = player.getWarriors();
-//        this.warriorsImagesLabels = new ArrayList<>();
-//        warriorsNameLabels = new ArrayList<>();
-//        warriorsHealthLabels = new ArrayList<>();
-//                
-//        initComponents();
-//        setUpUiSettings();
-//        
-//        queueForMatch();
-//    }
-    
     public GameWindow() {
-        //this.player = player;
-        //this.warriors = player.getWarriors();
         this.warriorsImagesLabels = new ArrayList<>();
-        warriorsNameLabels = new ArrayList<>();
-        warriorsHealthLabels = new ArrayList<>();
+        this.warriorsNameLabels = new ArrayList<>();
+        this.warriorsHealthLabels = new ArrayList<>();
 
         initComponents();
-        //setUpUiSettings();
+        setUpUiSettings();
 
-        //queueForMatch();
+    }
+    
+    public void addEventListener(EventListener eventListener){
+        txaConsole.addKeyListener((KeyListener) eventListener);
     }
 
     public void setUpUiSettings(){
-        txaConsole.setBackground(Color.BLACK);
-        txaConsole.setForeground(Color.white);
-        
         warriorsImagesLabels.add(lblWarriorOne);
         warriorsImagesLabels.add(lblWarriorTwo);
         warriorsImagesLabels.add(lblWarriorThree);
@@ -80,9 +57,6 @@ public class GameWindow extends javax.swing.JFrame {
         warriorsHealthLabels.add(lblWarrior2HP);
         warriorsHealthLabels.add(lblWarrior3HP);
         warriorsHealthLabels.add(lblWarrior4HP);
-        
-        setUpWarriorsImages();
-        setUpWarriorsData();
     }
     
     public void setUpWarriorImage(Character warrior , int warriorIndex){
@@ -94,25 +68,48 @@ public class GameWindow extends javax.swing.JFrame {
         imageFrame.setIcon(imageIcon);
     }
     
-    public void setUpWarriorsImages(){
+    public void setUpWarriorsImages(ArrayList<Character> warriors){
         for (int i = 0 ; i < warriors.size() ; i++){
             Character currentWarrior = warriors.get(i);
             setUpWarriorImage(currentWarrior, i);
         }
     }
     
-    public void setUpWarriorsData(){
+    public void setUpWarriorsData(ArrayList<Character> warriors){
         for (int i = 0 ; i < warriors.size() ; i++){
             Warrior currentWarrior = (Warrior) warriors.get(i);
             warriorsNameLabels.get(i).setText(currentWarrior.getName());
             warriorsHealthLabels.get(i).setText("" + currentWarrior.getLife());
         }
     }
-   
-    public void queueForMatch(){
-        Message readyMessage = new ClientMessage("READY", player.getId(),"NO_OBJECT");
-        player.sendMessage(readyMessage);
+    
+    public void writeToConsole(String message, Color color) {
+        StyleContext styleContext = StyleContext.getDefaultStyleContext();
+        AttributeSet attributeSet = styleContext.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color);
+        attributeSet = styleContext.addAttribute(attributeSet, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+
+        int len = txaConsole.getDocument().getLength();
+        txaConsole.setCaretPosition(len);
+        txaConsole.setCharacterAttributes(attributeSet, false);
+        txaConsole.replaceSelection(message);
+
+        // Set the color back to white
+        attributeSet = styleContext.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.WHITE);
+        txaConsole.setCharacterAttributes(attributeSet, false);
     }
+
+    public String getTextLastLine(String text) {
+        String temp = text;
+        int lastEnterIndex = temp.lastIndexOf('\n', temp.length());
+        lastEnterIndex++;
+        temp = temp.substring(lastEnterIndex);
+        return temp;
+    }
+
+    public String getLastLine() {
+        return getTextLastLine(txaConsole.getText());
+    }
+
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -487,11 +484,6 @@ public class GameWindow extends javax.swing.JFrame {
 
         txaConsole.setBackground(new java.awt.Color(0, 0, 0));
         txaConsole.setForeground(new java.awt.Color(255, 255, 255));
-        txaConsole.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txaConsoleKeyPressed(evt);
-            }
-        });
         jScrollPane3.setViewportView(txaConsole);
 
         javax.swing.GroupLayout consolePanelLayout = new javax.swing.GroupLayout(consolePanel);
@@ -535,58 +527,7 @@ public class GameWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txaConsoleKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txaConsoleKeyPressed
-        // TODO add your handling code here:
-        if (evt.getKeyChar() == '\n'){
-            
-            String[] commandInfo = getLastLine().split("-");
-            if (commandInfo[0].toUpperCase().equals("CHAT")) {
-                int hyphenIndex = getLastLine().indexOf("-");
-                commandInfo[1] = getLastLine().substring(hyphenIndex + 1);
-            }
 
-            String commandName = commandInfo[0];
-            String commandArguments = commandInfo[1];
-            CommandManager commandManager = player.getCommandManager();
-            ICommand selectedCommand = commandManager.getCommand(commandName);
-            if (selectedCommand instanceof NotFoundCommand) {
-                writeToConsole("\n" + "Please choose a valid command", Color.yellow);
-            } 
-            else {
-                selectedCommand.execute(commandArguments);
-            }
-
-            System.out.println("Got a enter with command: " + commandInfo[0] + " and parameters: " + commandInfo[1]);
-        }
-    }//GEN-LAST:event_txaConsoleKeyPressed
-
-    public void writeToConsole(String message , Color color){
-        StyleContext styleContext = StyleContext.getDefaultStyleContext();
-        AttributeSet attributeSet = styleContext.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color);
-        attributeSet = styleContext.addAttribute(attributeSet, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
-        
-        int len = txaConsole.getDocument().getLength();
-        txaConsole.setCaretPosition(len);
-        txaConsole.setCharacterAttributes(attributeSet, false);
-        txaConsole.replaceSelection(message);
-        
-        // Set the color back to white
-        attributeSet = styleContext.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.WHITE);
-        txaConsole.setCharacterAttributes(attributeSet, false);
-    }
-    
-    public String getTextLastLine(String text){
-        String temp = text;
-        int lastEnterIndex = temp.lastIndexOf('\n' , temp.length());
-        lastEnterIndex++;
-        temp = temp.substring(lastEnterIndex);
-        return temp;
-    }
-    
-    public String getLastLine(){
-        return getTextLastLine(txaConsole.getText());
-    }
-    
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

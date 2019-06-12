@@ -8,25 +8,31 @@ package consolewarriors.Common.Shared;
 import java.util.HashMap;
 import Characters.Character;
 import Weapons.Weapon;
+import consolewarriors.Client.IObservable;
+import consolewarriors.Client.IObserver;
 import consolewarriors.Common.CharacterType;
 import java.awt.Image;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  *
  * @author rshum
  */
-public class Warrior extends Character implements Serializable{
+public class Warrior extends Character implements Serializable , IObservable{
     
     private CharacterType type;
     private HashMap<String,Weapon> weapons;
     private Image characterImage;
     
+    private ArrayList<IObserver> observers;
     
     public Warrior(String name, CharacterType type, String imagePath, int life) {
         super(name, imagePath, life);
         this.type = type;
         this.weapons = new HashMap<>();
+        
+        this.observers = new ArrayList<>();
     }
     
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
@@ -104,5 +110,22 @@ public class Warrior extends Character implements Serializable{
     @Override
     public String getInfo() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addObserver(IObserver observer) {
+        this.observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(IObserver observer) {
+        this.observers.remove(observer);
+    }
+
+    @Override
+    public void notify(Object object) {
+        for (IObserver observer : observers){
+            observer.update(object);
+        }
     }
 }

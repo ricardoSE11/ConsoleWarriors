@@ -16,12 +16,11 @@ import consolewarriors.Server.Model.Connection.ServerThread;
 public class Player {
     
     private ServerThread clientThread;
-    private HashMap<String, Character> characters;
 
-    public Player(ServerThread clientThread, HashMap<String, Character> characters) {
+    public Player(ServerThread clientThread) {
         this.clientThread = clientThread;
-        this.characters = characters;
     }
+    
     
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
     
@@ -37,14 +36,6 @@ public class Player {
     public void setClientThread(ServerThread clientThread) {
         this.clientThread = clientThread;
     }
-
-    public HashMap<String, Character> getCharacters() {
-        return characters;
-    }
-
-    public void setCharacters(HashMap<String, Character> characters) {
-        this.characters = characters;
-    }    
     
     // </editor-fold>
 

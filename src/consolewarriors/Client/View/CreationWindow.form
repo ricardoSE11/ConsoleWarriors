@@ -271,9 +271,6 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="txfWeaponName">
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txfWeaponNameActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnCreateWeapon">
           <Properties>

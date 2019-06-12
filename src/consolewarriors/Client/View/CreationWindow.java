@@ -23,6 +23,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import Characters.Character;
+import consolewarriors.Client.Control.GameWindowController;
 import consolewarriors.Client.Model.PlayerClient;
 
 /**
@@ -70,12 +71,11 @@ public class CreationWindow extends javax.swing.JFrame {
     public void addWeapon(Weapon weapon){
         // Add the weapon to the arraylist of the created weapons
         createdWeapons.add(weapon);
-        
         WarriorWeapon currentWeapon = (WarriorWeapon) weapon;
         
         DefaultTableModel tableModel = (DefaultTableModel) tblWeapons.getModel();
-
         Object[] weaponData = new Object[11];
+        
         weaponData[0] = currentWeapon.getName();
         CharacterType[] types = CharacterType.values();
         for (int i = 0; i < currentWeapon.getAttackValueMatrix().size(); i++) {
@@ -160,12 +160,6 @@ public class CreationWindow extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Segoe UI Semibold", 1, 18)); // NOI18N
         jLabel2.setText("Warriors");
-
-        txfWeaponName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txfWeaponNameActionPerformed(evt);
-            }
-        });
 
         btnCreateWeapon.setText("Create weapon");
         btnCreateWeapon.addActionListener(new java.awt.event.ActionListener() {
@@ -344,10 +338,6 @@ public class CreationWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txfWeaponNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfWeaponNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txfWeaponNameActionPerformed
-
     private void btnLoadImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadImageActionPerformed
         // TODO add your handling code here:
         JFileChooser fileChooser = new JFileChooser();
@@ -392,7 +382,8 @@ public class CreationWindow extends javax.swing.JFrame {
     private void btnCreateWeaponActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateWeaponActionPerformed
         // TODO add your handling code here:
         String weaponName = txfWeaponName.getText();
-        Weapon newWeapon = new WarriorWeapon(weaponName); // FIXME
+        System.out.println("Got: " + weaponName);
+        Weapon newWeapon = new WarriorWeapon(weaponName , "DUMMY_STRING"); // FIXME
         this.addWeapon(newWeapon);
         txfWeaponName.setText("");
     }//GEN-LAST:event_btnCreateWeaponActionPerformed
@@ -431,9 +422,11 @@ public class CreationWindow extends javax.swing.JFrame {
         PlayerClient player = new PlayerClient("localhost", 1234, username , createdWarriors);
         player.run();
         
+        GameWindow gameWindow = new GameWindow();
+        gameWindow.setVisible(true);
         
-        //GameWindow gameWindow = new GameWindow(player);
-        //gameWindow.setVisible(true);
+        GameWindowController gmc = new GameWindowController(gameWindow, player);
+        
         
         this.setVisible(false);
     }//GEN-LAST:event_btnReadyActionPerformed

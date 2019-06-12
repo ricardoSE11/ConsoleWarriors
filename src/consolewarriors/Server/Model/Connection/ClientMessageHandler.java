@@ -39,8 +39,7 @@ public class ClientMessageHandler implements IClientMessageHandler{
             System.out.println("Player with ID:" + clientID + " is ready for a match");
             ServerThread clientThread = server.getClients().get(clientID); 
             
-            HashMap<String, Character> clientCharacters = (HashMap<String, Character>) message.getObjectOfInterest();
-            Player readyPlayer = new Player(clientThread, clientCharacters);
+            Player readyPlayer = new Player(clientThread);
 
             MatchMaker matchMaker = server.getMatchMaker();
             matchMaker.addPlayerToQueue(readyPlayer);
@@ -48,6 +47,7 @@ public class ClientMessageHandler implements IClientMessageHandler{
         else{
             MatchMaker matchMaker = server.getMatchMaker();
             ClientMessage clientMessage = (ClientMessage) message;
+            
             Match playerMatch = matchMaker.getPlayerMatch(clientMessage.getClientID());
             playerMatch.handlePlayerMessage(message);
         }

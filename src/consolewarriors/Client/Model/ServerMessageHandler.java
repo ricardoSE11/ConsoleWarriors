@@ -11,8 +11,11 @@ import consolewarriors.Common.Message;
  *
  * @author rshum
  */
-public interface IServerMessageHandler {
-    
-    public void handleServerMessage(Message message , Client client);
+public class ServerMessageHandler implements IServerMessageHandler{
+
+    @Override
+    public void handleServerMessage(Message message, Client client) {
+        // Handle the server message according to the event
+    }
     
 }

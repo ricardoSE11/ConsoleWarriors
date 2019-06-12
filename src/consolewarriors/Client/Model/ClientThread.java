@@ -58,7 +58,7 @@ public class ClientThread extends Thread {
         while (connected) {
             try {
                 Message serverMessage = (Message) reader.readObject();
-                this.serverMessageHandler.handleServerMessage(serverMessage);
+                this.serverMessageHandler.handleServerMessage(serverMessage,client);
             } catch (IOException | ClassNotFoundException ex) {
                 Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
             }

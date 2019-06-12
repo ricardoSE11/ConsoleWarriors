@@ -18,12 +18,11 @@ import java.util.Random;
  */
 public class WarriorWeapon extends Weapon implements Serializable{
     
-    private String name;
     private HashMap<CharacterType,Integer> attackValueMatrix;
     private boolean wasUsed;
 
-    public WarriorWeapon(String name) {
-        this.name = name;
+    public WarriorWeapon(String name, String imagePath) {
+        super(name, imagePath);
         this.attackValueMatrix = new HashMap<>();
         this.wasUsed = false;
         setAttackMatrixValues();
@@ -31,8 +30,9 @@ public class WarriorWeapon extends Weapon implements Serializable{
     
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
 
+    @Override
     public String getName() {
-        return name;
+        return super.name;
     }
 
     public void setName(String name) {
@@ -54,6 +54,8 @@ public class WarriorWeapon extends Weapon implements Serializable{
     public void setWasUsed(boolean wasUsed) {
         this.wasUsed = wasUsed;
     }
+    
+    
     
     // </editor-fold>
     

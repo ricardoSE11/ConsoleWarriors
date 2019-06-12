@@ -3,16 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package consolewarriors.Client.Model;
-
-import consolewarriors.Common.Message;
+package consolewarriors.Common;
 
 /**
  *
  * @author rshum
  */
-public interface IServerMessageHandler {
+public class ServerMessage extends Message{
     
-    public void handleServerMessage(Message message , Client client);
+    public ServerMessage(String event, Object objectOfInterest) {
+        super(event, objectOfInterest);
+    }
+    
     
 }

@@ -9,6 +9,7 @@ import consolewarriors.Common.ClientMessage;
 import consolewarriors.Common.Message;
 import consolewarriors.Common.PlayerRanking;
 import consolewarriors.Common.PlayerStats;
+import consolewarriors.Common.ServerMessage;
 import java.util.ArrayList;
 
 /**
@@ -77,21 +78,34 @@ public class MatchMaker {
         else{
             queuedPlayers.add(player);
         }
-        
     }
     
     public Match createMatch(Player playerOne, Player playerTwo){
         System.out.println("Creating a new match for players: " + playerOne.getPlayerID() + " and " + playerTwo.getPlayerID());
         Match newMatch = null;
         
+        newMatch = new Match(playerOne, playerTwo);
+        
         PlayerStats playerOneStats = playerStatsHandler.getPlayerStats(playerOne.getPlayerID());
         PlayerStats playerTwoStats = playerStatsHandler.getPlayerStats(playerTwo.getPlayerID());
         
-        ArrayList<PlayerStats> playersStats = new ArrayList<>();
-        playersStats.add(playerOneStats);
-        playersStats.add(playerTwoStats);
+        ArrayList<PlayerStats> playerStatsForPlayerOne = new ArrayList<>();
+        playerStatsForPlayerOne.add(playerOneStats);
+        playerStatsForPlayerOne.add(playerTwoStats);
+        Message playerOneStatsData = new ServerMessage("PLAYER_STATS", playerStatsForPlayerOne);
+        playerOne.getClientThread().sendMessageToClient(playerOneStatsData);
         
-       //Message playerOneStatsData = new Message("PLAYER_STATS", command, queuedPlayers)
+        ArrayList<PlayerStats> playerStatsForPlayerTwo = new ArrayList<>();
+        playerStatsForPlayerTwo.add(playerTwoStats);
+        playerStatsForPlayerTwo.add(playerOneStats);
+        Message playerTwoStatsData = new ServerMessage("PLAYER_STATS", playerStatsForPlayerTwo);
+        playerTwo.getClientThread().sendMessageToClient(playerTwoStatsData);
+        
+        PlayerRanking playerRanking = null;
+        // Way in which we load the player rankings
+        Message playerRankingMessage = new ServerMessage("PLAYER_RANKING" , playerRanking);
+        playerOne.getClientThread().sendMessageToClient(playerRankingMessage);
+        playerTwo.getClientThread().sendMessageToClient(playerRankingMessage);
         
         
         return newMatch;
