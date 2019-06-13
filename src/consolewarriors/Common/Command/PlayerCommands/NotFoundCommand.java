@@ -29,15 +29,8 @@ public class NotFoundCommand implements ICommand {
     }
 
     @Override
-    public Object getLoggableInfo() {
-        System.out.println("Nothing to log because we did not execute");
-        return null;
-    }
-
-    @Override
-    public Object getScoreInfo() {
-        System.out.println("Nothing to record because we did not execute");
-        return null;
+    public void execute() {
+        System.out.println("Command not found");
     }
     
 }

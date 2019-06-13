@@ -55,6 +55,9 @@ public class WarriorWeapon extends Weapon implements Serializable{
         this.wasUsed = wasUsed;
     }
     
+    public int getDamageForType(CharacterType characterType){
+        return attackValueMatrix.get(characterType);
+    }
     
     
     // </editor-fold>

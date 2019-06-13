@@ -9,7 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import Characters.Character;
-import consolewarriors.Common.Command.CommandManager;
+import consolewarriors.Common.Command.PlayerCommandManager;
 
 /**
  *
@@ -21,13 +21,13 @@ public class PlayerClient extends Client {
     private String playerName;
     private ArrayList<Character> warriors;
     
-    private CommandManager commandManager;
+    private PlayerCommandManager commandManager;
     
     public PlayerClient(String hostname, int portNumber , String playerName , ArrayList<Character> playerWarriors ) {
         super(hostname, portNumber);
         this.playerName = playerName;
         this.warriors = playerWarriors;
-        this.commandManager = new CommandManager();
+        this.commandManager = new PlayerCommandManager();
     }
     
     
@@ -81,14 +81,23 @@ public class PlayerClient extends Client {
         this.warriors = warriors;
     }    
     
-    public CommandManager getCommandManager() {
+    public PlayerCommandManager getCommandManager() {
         return commandManager;
     }
 
-    public void setCommandManager(CommandManager commandManager) {
+    public void setCommandManager(PlayerCommandManager commandManager) {
         this.commandManager = commandManager;
     }
 
+    public Character getWarriorByName(String warriorName){
+        Character choosenCharacter = null;
+        for (Character character : warriors){
+            if (character.name.equals(warriorName)){
+                return choosenCharacter;
+            }
+        }
+        return choosenCharacter;
+    }
 
     
     // </editor-fold>

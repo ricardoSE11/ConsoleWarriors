@@ -5,6 +5,7 @@
  */
 package consolewarriors.Common.Command;
 
+import consolewarriors.Client.Model.PlayerClient;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,13 +14,22 @@ import java.util.logging.Logger;
  *
  * @author rshum
  */
-public class CommandManager {
+public class PlayerCommandManager implements ICommandManager{
 
+    public PlayerClient player; // ask if is the right way to go
     private HashMap<String, Class<? extends ICommand>> commands;
     
-    public CommandManager() {
+    public PlayerCommandManager() {
         commands = new HashMap<>();
                 
+    }
+
+    public PlayerClient getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(PlayerClient player) {
+        this.player = player;
     }
     
     public ICommand getCommand(String commandName){
@@ -28,7 +38,7 @@ public class CommandManager {
             try {
                 return commands.get(commandName).newInstance();
             } catch (InstantiationException | IllegalAccessException ex) {
-                Logger.getLogger(CommandManager.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(PlayerCommandManager.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return requestedCommand;
@@ -39,7 +49,5 @@ public class CommandManager {
     }
     
     public void setUpPlayerCommands(){}
-    
-    public void setUpServerCommands(){}
     
 }
