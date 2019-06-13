@@ -93,6 +93,14 @@ public class Warrior extends Character implements Serializable , IObservable{
         this.characterImage = characterImage;
     }
     
+    public Weapon getWeaponByName(String weaponName){
+        Weapon choosenWeapon = null;
+        if (weapons.containsKey(weaponName)){
+            choosenWeapon = weapons.get(weaponName);
+        }
+        return choosenWeapon;
+    }
+    
     // </editor-fold>
 
     // Right now, we cant have we same weapon more than one time.

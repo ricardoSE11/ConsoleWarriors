@@ -5,8 +5,10 @@
  */
 package consolewarriors.Server.Model.Game;
 
+import Weapons.Weapon;
 import consolewarriors.Common.ClientMessage;
 import consolewarriors.Common.Message;
+import consolewarriors.Common.ServerMessage;
 
 /**
  *
@@ -109,12 +111,61 @@ public class Match {
         
         return playerTwo;
     }
+    
+    public Player getEnemyOfPlayer(int playerID){
+        if (playerOne.getPlayerID() == playerID){
+            return playerTwo;
+        }
+        return playerOne;
+    }
 
     public void handlePlayerMessage(Message message){
         ClientMessage clientMessage = (ClientMessage) message;
         int playerID = clientMessage.getClientID();
 
         String[] commandInfo = clientMessage.getEvent().split("-");
+        String commandName = commandInfo[0];
+        
+        // Area for improvemente
+        switch(commandName){
+            case "ATTACK":{
+                // Receive the weapon
+                Weapon attackingWeapon = (Weapon) message.getObjectOfInterest();
+                
+                // Send the weapon to the enemy
+                Player enemy = getEnemyOfPlayer(playerID);
+                Message attackMessage = new ServerMessage("ATTACK", attackingWeapon);
+                enemy.getClientThread().sendMessageToClient(attackMessage);
+            }
+            break;
+            
+            
+            case "ATTACK_RESPONSE":{
+                Player enemy = getEnemyOfPlayer(playerID);
+                Integer damageDealt = (Integer) message.getObjectOfInterest();
+                Message attackResponse = new ServerMessage("ATTACK_RESPONSE", damageDealt);
+                enemy.getClientThread().sendMessageToClient(attackResponse);
+            }
+            break;
+            
+            case "SURRENDER": {
+            }
+            break;
+            
+            case "CHAT": {
+            }
+            break;
+            
+            case "TIE": {
+            }
+            break;
+            
+            case "RELOAD": {
+            }
+            break;
+            
+            
+        }
         
         
     }

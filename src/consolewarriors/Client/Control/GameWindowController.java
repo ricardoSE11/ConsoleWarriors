@@ -15,6 +15,9 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.EventListener;
 import Characters.Character;
+import consolewarriors.Common.Command.ICommand;
+import consolewarriors.Common.Command.ICommandManager;
+import consolewarriors.Common.Command.PlayerCommands.NotFoundCommand;
 import consolewarriors.Common.Shared.Warrior;
 
 
@@ -68,24 +71,24 @@ public class GameWindowController implements IObserver{
                 
                 gameWindow.writeToConsole("\n" + "Command result", Color.yellow);
 
-//                String[] commandInfo = gameWindow.getLastLine().split("-");
-//                if (commandInfo[0].toUpperCase().equals("CHAT")) {
-//                    int hyphenIndex = gameWindow.getLastLine().indexOf("-");
-//                    commandInfo[1] = gameWindow.getLastLine().substring(hyphenIndex + 1);
-//                }
-//
-//                String commandName = commandInfo[0];
-//                String commandArguments = commandInfo[1];
-//                CommandManager commandManager = player.getCommandManager();
-//                ICommand selectedCommand = commandManager.getCommand(commandName);
-//
-//                if (selectedCommand instanceof NotFoundCommand) {
-//                    gameWindow.writeToConsole("\n" + "Please choose a valid command", Color.yellow);
-//                } else {
-//                    selectedCommand.execute(commandArguments);
-//                }
+                String[] commandInfo = gameWindow.getLastLine().split("-");
+                if (commandInfo[0].toUpperCase().equals("CHAT")) {
+                    int hyphenIndex = gameWindow.getLastLine().indexOf("-");
+                    commandInfo[1] = gameWindow.getLastLine().substring(hyphenIndex + 1);
+                }
 
-                //System.out.println("Got a enter with command: " + commandInfo[0] + " and parameters: " + commandInfo[1]);
+                String commandName = commandInfo[0];
+                String commandArguments = commandInfo[1];
+                ICommandManager commandManager = player.getCommandManager();
+                ICommand selectedCommand = commandManager.getCommand(commandName);
+
+                if (selectedCommand instanceof NotFoundCommand) {
+                    gameWindow.writeToConsole("\n" + "Please choose a valid command", Color.yellow);
+                } else {
+                    selectedCommand.execute(commandArguments);
+                }
+
+                System.out.println("Got a enter with command: " + commandInfo[0] + " and parameters: " + commandInfo[1]);
             }
         }
 
