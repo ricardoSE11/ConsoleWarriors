@@ -276,9 +276,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Create weapon"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCreateWeaponActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="txfWarriorName">
           <Properties>
@@ -371,9 +368,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Select image"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLoadImageActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JComboBox" name="cmbxWarriorType">
           <Properties>
@@ -414,9 +408,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Create "/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCreateWarriorActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.Box$Filler" name="filler1">
           <Properties>
@@ -438,25 +429,16 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Assign weapon"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAssignWeaponActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnReady">
           <Properties>
             <Property name="text" type="java.lang.String" value="READY"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnReadyActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnClearWeapons">
           <Properties>
             <Property name="text" type="java.lang.String" value="Clear table"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnClearWeaponsActionPerformed"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>
