@@ -115,6 +115,32 @@ public class Match {
         int playerID = clientMessage.getClientID();
 
         String[] commandInfo = clientMessage.getEvent().split("-");
+        String commandName = commandInfo[0];
+        
+        // Area for improvemente
+        switch(commandName){
+            case "ATTACK":{
+            }
+            break;
+            
+            case "SURRENDER": {
+            }
+            break;
+            
+            case "CHAT": {
+            }
+            break;
+            
+            case "TIE": {
+            }
+            break;
+            
+            case "RELOAD": {
+            }
+            break;
+            
+            
+        }
         
         
     }
