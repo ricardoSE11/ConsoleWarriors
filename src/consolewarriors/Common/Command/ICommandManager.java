@@ -9,12 +9,10 @@ package consolewarriors.Common.Command;
  *
  * @author rshum
  */
-public interface ICommand {
+public interface ICommandManager {
     
-    public String getCommandName();
+    public ICommand getCommand(String commandName);
     
-    public void execute();
-    
-    public void execute(String arguments);
+    public void registerCommand(String commandName, Class<? extends ICommand> command);
     
 }
