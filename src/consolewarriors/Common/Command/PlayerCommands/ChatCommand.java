@@ -16,11 +16,15 @@ import consolewarriors.Common.Message;
  */
 public class ChatCommand implements ICommand {
 
-    private final String NAME = "CHAT";
+    public static final String NAME = "CHAT";
     private PlayerClient player;
 
     public ChatCommand(PlayerClient player) {
         this.player = player;
+    }
+
+    // Empty constructor necessary for the CommandManager
+    public ChatCommand() {
     }
 
     public PlayerClient getPlayer() {
@@ -44,6 +48,16 @@ public class ChatCommand implements ICommand {
     public void execute(String arguments) {
         Message chatMessage = new ClientMessage("CHAT", player.getId(), arguments);
         player.sendMessage(chatMessage);
+        
+        if (!player.getPlayerStatus().equals("WRONG_TURN")){
+            this.player.addChatMessage(arguments);
+        }
+        System.out.println("Not your turn bro");
+        
     }
     
+    @Override
+    public void setUpResource(Object object) {
+        this.player = (PlayerClient) object;
+    }
 }

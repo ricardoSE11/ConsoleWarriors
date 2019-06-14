@@ -17,4 +17,6 @@ public interface ICommand {
     
     public void execute(String arguments);
     
+    public void setUpResource(Object object);
+    
 }

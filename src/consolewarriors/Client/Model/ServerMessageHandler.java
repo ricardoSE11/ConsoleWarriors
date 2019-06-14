@@ -26,6 +26,12 @@ public class ServerMessageHandler implements IServerMessageHandler{
         String event = message.getEvent();
         
         switch(event){
+            case "WRONG_TURN":{
+                ((PlayerClient) client).changePlayerGamingStatus("WRONG_TURN");
+            }
+            break;
+            
+            // We are receiving an attack
             case "ATTACK":{
                 Weapon weapon = (Weapon) message.getObjectOfInterest();
                 ArrayList<Character> warriors = ((PlayerClient)client).getWarriors();
@@ -35,6 +41,14 @@ public class ServerMessageHandler implements IServerMessageHandler{
                 client.sendMessage(attackResponse);
             }
             break;
+            
+            // Receiving a message from the enemy
+            case "CHAT":{
+                 String messageText = (String) message.getObjectOfInterest();
+                 ((PlayerClient) client).addChatMessage("ENEMY-" + messageText);
+            }
+            
+            
             
             
         }

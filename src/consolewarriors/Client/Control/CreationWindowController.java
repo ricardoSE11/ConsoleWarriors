@@ -19,9 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -132,7 +130,6 @@ public class CreationWindowController {
     }
     
     public void createWeapon(){
-        System.out.println("Hola");
         String weaponName = creation_window.getWeaponName();
         Weapon newWeapon = new WarriorWeapon(weaponName , "DUMMY_STRING"); // FIXME
         this.addWeapon(newWeapon);
@@ -162,7 +159,7 @@ public class CreationWindowController {
         //PlayerClient player = new PlayerClient("localhost", 1234, username , createdWarriors);
 
         this.player.setWarriors(createdWarriors);
-        this.player.run();
+        //this.player.run();
         
         GameWindow gameWindow = new GameWindow();
         gameWindow.setVisible(true);

@@ -18,11 +18,15 @@ import consolewarriors.Common.Shared.Warrior;
  */
 public class AttackCommand implements ICommand {
     
-    private final String NAME = "ATTACK";
+    public static final String NAME = "ATTACK";
     private PlayerClient player; 
 
     public AttackCommand(PlayerClient player) {
         this.player = player;
+    }
+    
+    public AttackCommand(){
+        
     }
 
     public PlayerClient getPlayer() {
@@ -54,6 +58,11 @@ public class AttackCommand implements ICommand {
             player.sendMessage(attackMessage);
         }
         
+    }
+
+    @Override
+    public void setUpResource(Object object) {
+        this.player = (PlayerClient) object;
     }
     
 }
