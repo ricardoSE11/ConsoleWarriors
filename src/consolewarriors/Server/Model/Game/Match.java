@@ -128,6 +128,7 @@ public class Match {
         if (playerTwo.getPlayerID() == playerID){
             // Is not his turn
             if (turn % 2 != 0){
+                System.out.println(">>> Wrong turn");
                 Message notYourTurnMessage = new ServerMessage("WRONG_TURN", "Not your turn");
                 playerTwo.getClientThread().sendMessageToClient(notYourTurnMessage);
                 return;
@@ -137,6 +138,7 @@ public class Match {
         else{
             if (playerOne.getPlayerID() == playerID){
                 if (turn % 2 == 0){
+                    System.out.println(">>> Wrong turn p1");
                     Message notYourTurnMessage = new ServerMessage("WRONG_TURN", "Not your turn");
                     playerOne.getClientThread().sendMessageToClient(notYourTurnMessage);
                     return;
@@ -146,6 +148,8 @@ public class Match {
         
         String[] commandInfo = clientMessage.getEvent().split("-");
         String commandName = commandInfo[0];
+        
+        System.out.println(">>> But continue executing");
         
         // Area for improvemente
         switch(commandName){

@@ -57,8 +57,8 @@ public class GameWindowController implements IObserver{
         gameWindow.setUpWarriorsImages(warriors);
         
         this.player.run(); // Order here is important 
-        
-        if(this.player.getId() % 2 != 0){
+        gameWindow.setTitle(player.getPlayerName() + "'s session");
+       if(this.player.getId() % 2 != 0){
             gameWindow.setTurnLabelText("Your turn");
         }
         else{
@@ -159,7 +159,7 @@ public class GameWindowController implements IObserver{
             
             switch (status){
                 case "WRONG_TURN":{
-                    this.gameWindow.writeToConsole("\n" + "Error: Is not your turn", Color.RED);
+                    this.gameWindow.writeToConsole("\n" + "Error: Is not your turn" + "\n", Color.RED);
                 }
                 break;
                 

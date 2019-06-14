@@ -104,7 +104,7 @@ public class Server {
     }
 
     public int getIDForNewClient(){
-        return clients.size();
+        return clients.size() + 1;
     }
             
     public void loadPlayerRanking(){

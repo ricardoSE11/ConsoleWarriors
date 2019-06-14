@@ -9,6 +9,8 @@ import consolewarriors.Client.Model.PlayerClient;
 import consolewarriors.Common.ClientMessage;
 import consolewarriors.Common.Command.ICommand;
 import consolewarriors.Common.Message;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -49,10 +51,17 @@ public class ChatCommand implements ICommand {
         Message chatMessage = new ClientMessage("CHAT", player.getId(), arguments);
         player.sendMessage(chatMessage);
         
-        if (!player.getPlayerStatus().equals("WRONG_TURN")){
-            this.player.addChatMessage(arguments);
+        try {
+            Thread.sleep(175);
+            if (player.getPlayerStatus().equals("WRONG_TURN")) {
+                System.out.println("Not your turn bro");
+                player.changePlayerGamingStatus("PLAYING");
+            } else {
+                this.player.addChatMessage(arguments);
+            }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ChatCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("Not your turn bro");
         
     }
     
