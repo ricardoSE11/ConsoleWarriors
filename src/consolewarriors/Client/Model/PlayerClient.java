@@ -17,36 +17,42 @@ import consolewarriors.Common.Command.PlayerCommandManager;
  */
 public class PlayerClient extends Client {
     
-    private int playerID;
-    private String playerName;
     private ArrayList<Character> warriors;
     
     private PlayerCommandManager commandManager;
     
     public PlayerClient(String hostname, int portNumber , String playerName , ArrayList<Character> playerWarriors ) {
         super(hostname, portNumber);
-        this.playerName = playerName;
         this.warriors = playerWarriors;
         this.commandManager = new PlayerCommandManager();
     }
+
+    public PlayerClient(String hostname, int portNumber, String username, boolean newSession) {
+        super(hostname, portNumber, username, newSession);
+    }
+
+    public PlayerClient(String hostname, int portNumber, int id) {
+        super(hostname, portNumber, id);
+    }
+    
     
     
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
 
     public int getPlayerID() {
-        return playerID;
+        return super.id;
     }
 
     public void setPlayerID(int playerID) {
-        this.playerID = playerID;
+        super.id = playerID;
     }
 
     public String getPlayerName() {
-        return playerName;
+        return super.username;
     }
 
     public void setPlayerName(String playerName) {
-        this.playerName = playerName;
+        super.username = playerName;
     }
 
     public ObjectInputStream getReader() {

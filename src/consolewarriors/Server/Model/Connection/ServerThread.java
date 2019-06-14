@@ -6,6 +6,7 @@
 package consolewarriors.Server.Model.Connection;
 
 import consolewarriors.Common.Message;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +38,12 @@ public class ServerThread extends Thread  {
         this.socket = socket;
         this.id = clientID;
     }
+    
+    public ServerThread(Socket socket, Server server){
+        this.server = server;
+        this.socket = socket;
+    }
+    
 
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
     public Server getServer() {
@@ -111,10 +118,25 @@ public class ServerThread extends Thread  {
             InputStream inputStream = socket.getInputStream();
             this.reader = new ObjectInputStream(inputStream);
 
-            // --- We assign an ID to the client --- 
-            DataOutputStream idAssigner = new DataOutputStream(outputStream);
-            idAssigner.writeInt(id);
-
+            // --- We ask the client if its new to the server --- 
+            DataInputStream sessionVerifier = new DataInputStream(inputStream);
+            String session = sessionVerifier.readUTF();
+            
+            if (session.equals("NEW")){
+                int newClientID = server.getIDForNewClient();
+                server.addClient(newClientID, this);
+                
+                // --- We assign an ID to the client --- 
+                DataOutputStream idAssigner = new DataOutputStream(outputStream);
+                idAssigner.writeInt(newClientID);
+            }
+            else{
+                // --- Receive their ID otherwise --- 
+                DataInputStream idReceiver = new DataInputStream(inputStream);
+                int oldClientID = idReceiver.readInt();
+                System.out.println("Welcome client " + oldClientID);
+            }
+            
             while (connected) {
                 Message clientMessage = (Message) reader.readObject();
                 this.clientMessageHandler.handleClientMessage(clientMessage, server);

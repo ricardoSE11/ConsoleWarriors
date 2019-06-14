@@ -33,15 +33,17 @@ public class CreationWindowController {
     //My english is not good. :P
     private CreationWindow creation_window;
     
+    private PlayerClient player;
     private ArrayList<Weapon> createdWeapons;
     private ArrayList<Characters.Character> createdWarriors;
     String lastImageUsedPath = "";
     
-    public CreationWindowController(){
-        creation_window = new CreationWindow();
-        createdWeapons = new ArrayList<>();
-        createdWarriors = new ArrayList<>();
-        creation_window.setVisible(true);
+    public CreationWindowController(PlayerClient player){
+        this.player = player;
+        this.creation_window = new CreationWindow();
+        this.createdWeapons = new ArrayList<>();
+        this.createdWarriors = new ArrayList<>();
+        this.creation_window.setVisible(true);
         setListeners();
     }
     
@@ -156,10 +158,14 @@ public class CreationWindowController {
     }
     
     public void playerIsReady(){
-        String username = creation_window.getUsername();
         //port should not be static, but is not too important right now
-        PlayerClient player = new PlayerClient("localhost", 1234, username , createdWarriors);
-        player.run();
+        //PlayerClient player = new PlayerClient("localhost", 1234, username , createdWarriors);
+        
+        
+        String username = creation_window.getUsername();
+        this.player.setUsername(username);
+        this.player.setWarriors(createdWarriors);
+        this.player.run();
         
         GameWindow gameWindow = new GameWindow();
         gameWindow.setVisible(true);
