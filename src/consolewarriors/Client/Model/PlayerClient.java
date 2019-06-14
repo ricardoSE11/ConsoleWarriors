@@ -13,6 +13,7 @@ import consolewarriors.Client.IObservable;
 import consolewarriors.Client.IObserver;
 import consolewarriors.Common.Command.ICommandManager;
 import consolewarriors.Common.Command.PlayerCommandManager;
+import consolewarriors.Common.Shared.Warrior;
 
 /**
  *
@@ -26,6 +27,8 @@ public class PlayerClient extends Client implements IObservable {
     private ArrayList<IObserver> observers;
     private ArrayList<String> chatMessages;
     private String playerStatus = ""; // attribute for the SURRENDER , and TIE commands
+    
+    private int damageDealtOnAttack; // Consultar Dani.
     
     public PlayerClient(String hostname, int portNumber , String playerName , ArrayList<Character> playerWarriors ) {
         super(hostname, portNumber);
@@ -111,7 +114,9 @@ public class PlayerClient extends Client implements IObservable {
     public Character getWarriorByName(String warriorName){
         Character choosenCharacter = null;
         for (Character character : warriors){
-            if (character.name.equals(warriorName)){
+            String currentName = ((Warrior)character).getName();
+            if ( currentName.equals(warriorName) ){
+                choosenCharacter = character;
                 return choosenCharacter;
             }
         }
@@ -135,7 +140,16 @@ public class PlayerClient extends Client implements IObservable {
         this.playerStatus = status;
         notify("STATUS-" + status);
     }
-    
+
+    public int getDamageDealtOnAttack() {
+        return damageDealtOnAttack;
+    }
+
+    public void setDamageDealtOnAttack(int damageDealtOnAttack) {
+        this.damageDealtOnAttack = damageDealtOnAttack;
+        notify("DAMAGE_DEALT-" + this.damageDealtOnAttack);
+    }
+     
     // </editor-fold>
 
     @Override

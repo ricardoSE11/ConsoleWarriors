@@ -48,14 +48,27 @@ public class AttackCommand implements ICommand {
 
     @Override
     public void execute(String arguments) {
+        System.out.println("Attack command executing");
         String[] attackInfo = arguments.split("-");
         String warriorName = attackInfo[0];
         String weaponName = attackInfo[1];
+        
+        System.out.println("Warrior name: " + warriorName); 
+        System.out.println("Weapon name: " + weaponName);
+        
         Warrior choosenWarrior = (Warrior) player.getWarriorByName(warriorName);
         if (choosenWarrior != null){
             Weapon choosenWeapon = choosenWarrior.getWeaponByName(weaponName);
+            
+            if (choosenWeapon == null){
+                System.out.println("Null weapon .-. ");
+            }
+            
             Message attackMessage = new ClientMessage("ATTACK", player.getId(), choosenWeapon);
             player.sendMessage(attackMessage);
+        }
+        else{
+            System.out.println("Got a null warrior");
         }
         
     }

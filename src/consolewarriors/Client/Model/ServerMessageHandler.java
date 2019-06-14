@@ -33,12 +33,20 @@ public class ServerMessageHandler implements IServerMessageHandler{
             
             // We are receiving an attack
             case "ATTACK":{
+                System.out.println("Receiving attack");
                 Weapon weapon = (Weapon) message.getObjectOfInterest();
                 ArrayList<Character> warriors = ((PlayerClient)client).getWarriors();
                 
                 Integer totalDamageDealt = attackWarriors(warriors, weapon);
                 Message attackResponse = new ClientMessage("ATTACK_RESPONSE", client.getId(), totalDamageDealt);
                 client.sendMessage(attackResponse);
+            }
+            break;
+            
+            case "ATTACK_RESPONSE":{
+                System.out.println("Getting the damage dealt");
+                int damageDealt = (int) message.getObjectOfInterest();
+                ((PlayerClient) client).setDamageDealtOnAttack(damageDealt);
             }
             break;
             
@@ -60,7 +68,9 @@ public class ServerMessageHandler implements IServerMessageHandler{
         Warrior currentWarrior = (Warrior) warrior;
         CharacterType type = currentWarrior.getType();
         WarriorWeapon currentWeapon = (WarriorWeapon)weapon;
+        
         int damageToType = currentWeapon.getDamageForType(type);
+        currentWarrior.setDamageReceived(damageToType);
         currentWarrior.setLife(currentWarrior.getLife() - damageToType);
         
         return damageToType;

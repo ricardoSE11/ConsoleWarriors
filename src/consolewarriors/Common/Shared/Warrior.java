@@ -26,6 +26,8 @@ public class Warrior extends Character implements Serializable , IObservable{
     private Image characterImage;
     
     private ArrayList<IObserver> observers;
+    private int damageReceived;
+    
     
     public Warrior(String name, CharacterType type, String imagePath, int life) {
         super(name, imagePath, life);
@@ -34,6 +36,11 @@ public class Warrior extends Character implements Serializable , IObservable{
         
         this.observers = new ArrayList<>();
     }
+
+    public Warrior() {
+    }
+    
+    
     
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
 
@@ -100,6 +107,16 @@ public class Warrior extends Character implements Serializable , IObservable{
         }
         return choosenWeapon;
     }
+
+    public int getDamageReceived() {
+        return damageReceived;
+    }
+
+    public void setDamageReceived(int damageReceived) {
+        this.damageReceived = damageReceived;
+        notify(damageReceived);
+    }
+    
     
     // </editor-fold>
 

@@ -119,42 +119,50 @@ public class Match {
         return playerOne;
     }
 
+    public boolean isPlayersTurn(int playerID){
+        if (playerTwo.getPlayerID() == playerID) {
+            // Is not his turn
+            if (turn % 2 != 0) {
+                Message notYourTurnMessage = new ServerMessage("WRONG_TURN", "Not your turn");
+                playerTwo.getClientThread().sendMessageToClient(notYourTurnMessage);
+                return false;
+            }
+            return true;
+        } 
+        
+        else {
+            if (playerOne.getPlayerID() == playerID) {
+                // Not his turn
+                if (turn % 2 == 0) {
+                    Message notYourTurnMessage = new ServerMessage("WRONG_TURN", "Not your turn");
+                    playerOne.getClientThread().sendMessageToClient(notYourTurnMessage);
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+    
     public void handlePlayerMessage(Message message){
         ClientMessage clientMessage = (ClientMessage) message;
         int playerID = clientMessage.getClientID();
         
         System.out.println("Got a message from client: " + playerID);
 
-        if (playerTwo.getPlayerID() == playerID){
-            // Is not his turn
-            if (turn % 2 != 0){
-                System.out.println(">>> Wrong turn");
-                Message notYourTurnMessage = new ServerMessage("WRONG_TURN", "Not your turn");
-                playerTwo.getClientThread().sendMessageToClient(notYourTurnMessage);
-                return;
-            }
+        if(!isPlayersTurn(playerID)){
+            return; // Stops execution here.
         }
-        
-        else{
-            if (playerOne.getPlayerID() == playerID){
-                if (turn % 2 == 0){
-                    System.out.println(">>> Wrong turn p1");
-                    Message notYourTurnMessage = new ServerMessage("WRONG_TURN", "Not your turn");
-                    playerOne.getClientThread().sendMessageToClient(notYourTurnMessage);
-                    return;
-                }
-            }
-        }
+
         
         String[] commandInfo = clientMessage.getEvent().split("-");
         String commandName = commandInfo[0];
         
-        System.out.println(">>> But continue executing");
         
         // Area for improvemente
         switch(commandName){
             case "ATTACK":{
                 // Receive the weapon
+                System.out.println("Attacking");
                 Weapon attackingWeapon = (Weapon) message.getObjectOfInterest();
                 
                 // Send the weapon to the enemy
@@ -168,6 +176,7 @@ public class Match {
             
             
             case "ATTACK_RESPONSE":{
+                System.out.println("Getting attack response");
                 Integer damageDealt = (Integer) message.getObjectOfInterest();
                 Message attackResponse = new ServerMessage("ATTACK_RESPONSE", damageDealt);
                 Player enemy = getEnemyOfPlayer(playerID);
