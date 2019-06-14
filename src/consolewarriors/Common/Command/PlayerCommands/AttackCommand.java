@@ -61,7 +61,7 @@ public class AttackCommand implements ICommand {
             Weapon choosenWeapon = choosenWarrior.getWeaponByName(weaponName);
             
             if (choosenWeapon == null){
-                System.out.println("Null weapon .-. ");
+                System.out.println("Null weapon");
             }
             
             Message attackMessage = new ClientMessage("ATTACK", player.getId(), choosenWeapon);

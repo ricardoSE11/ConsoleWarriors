@@ -9,6 +9,7 @@ import consolewarriors.Client.Model.PlayerClient;
 import consolewarriors.Common.Command.PlayerCommands.AttackCommand;
 import consolewarriors.Common.Command.PlayerCommands.ChatCommand;
 import consolewarriors.Common.Command.PlayerCommands.NotFoundCommand;
+import consolewarriors.Common.Command.PlayerCommands.PassCommand;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,6 +59,7 @@ public class PlayerCommandManager implements ICommandManager{
         registerCommand(NotFoundCommand.NAME , NotFoundCommand.class);
         registerCommand(AttackCommand.NAME, AttackCommand.class);
         registerCommand(ChatCommand.NAME , ChatCommand.class);
+        registerCommand(PassCommand.NAME , PassCommand.class);
     }
     
 }
