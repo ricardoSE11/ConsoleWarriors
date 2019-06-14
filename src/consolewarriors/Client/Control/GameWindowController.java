@@ -40,7 +40,6 @@ public class GameWindowController implements IObserver{
     private ArrayList<Character> warriors;
 
     public GameWindowController(GameWindow gameWindow, PlayerClient player) {
-        
         this.gameWindow = gameWindow;
         
         IServerMessageHandler messageHandler = new ServerMessageHandler();
@@ -59,10 +58,10 @@ public class GameWindowController implements IObserver{
         this.player.run(); // Order here is important 
         gameWindow.setTitle(player.getPlayerName() + "'s session");
        if(this.player.getId() % 2 != 0){
-            gameWindow.setTurnLabelText("Your turn");
+            gameWindow.setTurnLabelText("You go first");
         }
         else{
-            gameWindow.setTurnLabelText("Enemy's turn");
+            gameWindow.setTurnLabelText("Enemy plays first");
         }
         
         queueForMatch();
@@ -104,36 +103,35 @@ public class GameWindowController implements IObserver{
         @Override
         public void keyPressed(KeyEvent ke) {
             if ((ke.getKeyChar() == '\n')) {
-
-                //gameWindow.writeToConsole("\n" + "Command result", Color.yellow);
-
-                String[] commandInfo = gameWindow.getLastLine().split("-");
-                
-                System.out.println("Wrote: " + gameWindow.getLastLine());
-                
-                if (commandInfo[0].toUpperCase().equals("CHAT")) {
-                    System.out.println("Got a enter with command: " + commandInfo[0] + " and parameters: " + commandInfo[1]);
+                try{
+                    String[] commandInfo = gameWindow.getLastLine().split("-");
                     int hyphenIndex = gameWindow.getLastLine().indexOf("-");
                     commandInfo[1] = gameWindow.getLastLine().substring(hyphenIndex + 1);
+                    
+//                    if (commandInfo[0].toUpperCase().equals("CHAT")) {
+//                        System.out.println("Got a enter with command: " + commandInfo[0] + " and parameters: " + commandInfo[1]);
+//                        int hyphenIndex = gameWindow.getLastLine().indexOf("-");
+//                        commandInfo[1] = gameWindow.getLastLine().substring(hyphenIndex + 1);
+//                    }
+
+                    String commandName = commandInfo[0].toUpperCase();
+                    String commandArguments = commandInfo[1];
+                    ICommandManager commandManager = player.getCommandManager();
+                    System.out.println("Command name:" + commandName);
+                    ICommand selectedCommand = commandManager.getCommand(commandName);
+
+                    if (selectedCommand instanceof NotFoundCommand) {
+                        gameWindow.writeToConsole("\n" + "Please choose a valid command", Color.yellow);
+                    } else if (selectedCommand == null) {
+                        System.out.println("Got a null command");
+                    } else {
+                        selectedCommand.execute(commandArguments);
+                    }
+                }
+                catch(Exception e){
+                    gameWindow.writeToConsole("\n" + "Error: Invalid input", Color.yellow);
                 }
 
-                String commandName = commandInfo[0].toUpperCase();
-                String commandArguments = commandInfo[1];
-                ICommandManager commandManager = player.getCommandManager();
-                System.out.println("Command name:" + commandName);
-                ICommand selectedCommand = commandManager.getCommand(commandName);
-
-                if (selectedCommand instanceof NotFoundCommand) {
-                    gameWindow.writeToConsole("\n" + "Please choose a valid command", Color.yellow);
-                } 
-                
-                else if (selectedCommand == null){
-                    System.out.println("Got a null command");
-                }
-                
-                else {
-                    selectedCommand.execute(commandArguments);
-                }
 
                 
             }
@@ -150,9 +148,14 @@ public class GameWindowController implements IObserver{
         if (object instanceof String){
             handleStringUpdates((String) object);
         }
+        
+        else if (object instanceof Integer){
+            
+        }
     }
     
     public void handleStringUpdates(String updateString){
+        //String prefix = updateString. //PENDING: Get prefix to implement switch
         if (updateString.startsWith("STATUS")) {
             int hyphenIndex = updateString.indexOf("-");
             String status = updateString.substring(hyphenIndex + 1);
@@ -165,6 +168,11 @@ public class GameWindowController implements IObserver{
                 
             }
         } 
+        
+        else if (updateString.startsWith("DAMAGE_DEALT")){
+            int hyphenIndex = updateString.indexOf("-");
+            gameWindow.setDamageDealtLabelText(updateString.substring(hyphenIndex + 1));
+        }
         
         else {
             if (updateString.startsWith("ENEMY")) {

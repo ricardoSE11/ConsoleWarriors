@@ -145,8 +145,8 @@ public class ServerThread extends Thread  {
         }
         
         catch (IOException | ClassNotFoundException ex) {
-            System.out.println("Something went wrong with client with ID:" + this.id);
-            //Logger.getLogger(ServerThread.class.getName()).log(Level.SEVERE, null, ex);
+            //System.out.println("Something went wrong with client with ID:" + this.id);
+            Logger.getLogger(ServerThread.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         

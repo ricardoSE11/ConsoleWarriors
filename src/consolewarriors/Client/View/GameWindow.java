@@ -114,6 +114,10 @@ public class GameWindow extends javax.swing.JFrame {
         lblPlayerTurn.setText(text);
     }
     
+    public void setDamageDealtLabelText(String text){
+        lblDamageDealt.setText(text);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -166,12 +170,12 @@ public class GameWindow extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         lblAttackedByBG = new javax.swing.JLabel();
         panelUsedToAttack = new javax.swing.JPanel();
+        lblDamageDealt = new javax.swing.JLabel();
         lblAttackedWithWarrior1 = new javax.swing.JLabel();
         lblAttackerWeapon = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         lblAttackerBG = new javax.swing.JLabel();
-        lblDamageDealt = new javax.swing.JLabel();
         consolePanel = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         txaConsole = new javax.swing.JTextPane();
@@ -404,6 +408,11 @@ public class GameWindow extends javax.swing.JFrame {
         panelUsedToAttack.setBackground(new java.awt.Color(102, 102, 102));
         panelUsedToAttack.setLayout(null);
 
+        lblDamageDealt.setForeground(new java.awt.Color(204, 0, 51));
+        lblDamageDealt.setText("DAMAGE");
+        panelUsedToAttack.add(lblDamageDealt);
+        lblDamageDealt.setBounds(30, 100, 90, 30);
+
         lblAttackedWithWarrior1.setForeground(new java.awt.Color(255, 255, 255));
         lblAttackedWithWarrior1.setText("Attacker [Type]");
         panelUsedToAttack.add(lblAttackedWithWarrior1);
@@ -425,11 +434,6 @@ public class GameWindow extends javax.swing.JFrame {
         jLabel10.setBounds(20, 20, 104, 16);
         panelUsedToAttack.add(lblAttackerBG);
         lblAttackerBG.setBounds(0, 0, 450, 220);
-
-        lblDamageDealt.setForeground(new java.awt.Color(204, 0, 51));
-        lblDamageDealt.setText("DAMAGE");
-        panelUsedToAttack.add(lblDamageDealt);
-        lblDamageDealt.setBounds(30, 100, 90, 30);
 
         javax.swing.GroupLayout statsPanelLayout = new javax.swing.GroupLayout(statsPanel);
         statsPanel.setLayout(statsPanelLayout);
