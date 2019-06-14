@@ -23,6 +23,7 @@ import consolewarriors.Common.Command.PlayerCommandManager;
 import consolewarriors.Common.Command.PlayerCommands.NotFoundCommand;
 import consolewarriors.Common.Shared.Warrior;
 import java.awt.event.KeyListener;
+import java.util.regex.PatternSyntaxException;
 import javax.swing.JOptionPane;
 
 
@@ -103,17 +104,15 @@ public class GameWindowController implements IObserver{
         @Override
         public void keyPressed(KeyEvent ke) {
             if ((ke.getKeyChar() == '\n')) {
+                // --- Commands with arguments ---
                 try{
                     String[] commandInfo = gameWindow.getLastLine().split("-");
+
+                    System.out.println("Parsing: " + gameWindow.getLastLine());
+                    
                     int hyphenIndex = gameWindow.getLastLine().indexOf("-");
                     commandInfo[1] = gameWindow.getLastLine().substring(hyphenIndex + 1);
                     
-//                    if (commandInfo[0].toUpperCase().equals("CHAT")) {
-//                        System.out.println("Got a enter with command: " + commandInfo[0] + " and parameters: " + commandInfo[1]);
-//                        int hyphenIndex = gameWindow.getLastLine().indexOf("-");
-//                        commandInfo[1] = gameWindow.getLastLine().substring(hyphenIndex + 1);
-//                    }
-
                     String commandName = commandInfo[0].toUpperCase();
                     String commandArguments = commandInfo[1];
                     ICommandManager commandManager = player.getCommandManager();
@@ -121,15 +120,30 @@ public class GameWindowController implements IObserver{
                     ICommand selectedCommand = commandManager.getCommand(commandName);
 
                     if (selectedCommand instanceof NotFoundCommand) {
-                        gameWindow.writeToConsole("\n" + "Please choose a valid command", Color.yellow);
+                        gameWindow.writeToConsole("\n" + "Please type a valid command", Color.yellow);
                     } else if (selectedCommand == null) {
                         System.out.println("Got a null command");
                     } else {
                         selectedCommand.execute(commandArguments);
                     }
                 }
+                
                 catch(Exception e){
-                    gameWindow.writeToConsole("\n" + "Error: Invalid input", Color.yellow);
+                    
+                    // --- Commands with no arguments ---
+                    String noParameterCommand = gameWindow.getLastLine().toUpperCase();
+                    ICommandManager commandManager = player.getCommandManager();
+                    System.out.println("Command name:" + noParameterCommand);
+                    ICommand selectedCommand = commandManager.getCommand(noParameterCommand);
+                    
+                    if (selectedCommand instanceof NotFoundCommand) {
+                        gameWindow.writeToConsole("\n" + "Please type a valid command", Color.yellow);
+                    } else if (selectedCommand == null) {
+                        System.out.println("Got a null command");
+                        gameWindow.writeToConsole("\n" + "Please type a valid command", Color.yellow);
+                    } else {
+                        selectedCommand.execute();
+                    }
                 }
 
 

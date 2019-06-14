@@ -185,11 +185,6 @@ public class Match {
             }
             break;
             
-            case "SURRENDER": {
-                
-            }
-            break;
-            
             case "CHAT": {
                 String messageText = (String) message.getObjectOfInterest();
                 Message chatMessage = new ServerMessage("CHAT", messageText);
@@ -198,6 +193,21 @@ public class Match {
                 
                 nextTurn();
                 
+            }
+            break;
+            
+            case "PASS":{
+                Message passMessage = new ServerMessage("PASS" , null);
+                Player enemy = getEnemyOfPlayer(playerID);
+                enemy.getClientThread().sendMessageToClient(passMessage);
+
+                nextTurn();
+                
+            }
+            break;
+            
+            case "SURRENDER": {
+
             }
             break;
             
