@@ -63,7 +63,7 @@ public class ClientThread extends Thread {
                 Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        //System.out.println("Client " + client.getUsername() + " disconnected from server");
+        System.out.println("Client " + client.getUsername() + " disconnected from server");
     }
 
 }

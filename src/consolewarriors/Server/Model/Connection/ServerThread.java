@@ -125,6 +125,7 @@ public class ServerThread extends Thread  {
             if (session.equals("NEW")){
                 int newClientID = server.getIDForNewClient();
                 server.addClient(newClientID, this);
+                this.id = newClientID;
                 
                 // --- We assign an ID to the client --- 
                 DataOutputStream idAssigner = new DataOutputStream(outputStream);
@@ -134,7 +135,7 @@ public class ServerThread extends Thread  {
                 // --- Receive their ID otherwise --- 
                 DataInputStream idReceiver = new DataInputStream(inputStream);
                 int oldClientID = idReceiver.readInt();
-                System.out.println("Welcome client " + oldClientID);
+                System.out.println("Welcome back client " + oldClientID);
             }
             
             while (connected) {

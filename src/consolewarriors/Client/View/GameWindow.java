@@ -110,6 +110,9 @@ public class GameWindow extends javax.swing.JFrame {
         return getTextLastLine(txaConsole.getText());
     }
 
+    public void setTurnLabelText(String text){
+        lblPlayerTurn.setText(text);
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -127,7 +130,7 @@ public class GameWindow extends javax.swing.JFrame {
         tblWeapons = new javax.swing.JTable();
         lblSelectedWarriorName = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        lblTurn = new javax.swing.JLabel();
+        lblPlayerTurn = new javax.swing.JLabel();
         panelWarriorOne = new javax.swing.JPanel();
         lblWarrior1HP = new javax.swing.JLabel();
         lblWarrior1Name = new javax.swing.JLabel();
@@ -199,8 +202,9 @@ public class GameWindow extends javax.swing.JFrame {
 
         jLabel4.setText("Selected warrior:");
 
-        lblTurn.setFont(new java.awt.Font("Segoe UI Light", 1, 18)); // NOI18N
-        lblTurn.setText("Turn");
+        lblPlayerTurn.setFont(new java.awt.Font("Segoe UI Light", 1, 18)); // NOI18N
+        lblPlayerTurn.setForeground(new java.awt.Color(255, 204, 51));
+        lblPlayerTurn.setText("Turn");
 
         panelWarriorOne.setBackground(new java.awt.Color(102, 102, 102));
         panelWarriorOne.setLayout(null);
@@ -286,7 +290,7 @@ public class GameWindow extends javax.swing.JFrame {
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblSelectedWarriorName, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(warriorsPanelLayout.createSequentialGroup()
                         .addGroup(warriorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
@@ -298,20 +302,17 @@ public class GameWindow extends javax.swing.JFrame {
                                 .addComponent(panelWarrior3, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(warriorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(warriorsPanelLayout.createSequentialGroup()
-                                .addGap(0, 31, Short.MAX_VALUE)
-                                .addComponent(lblTurn, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(warriorsPanelLayout.createSequentialGroup()
-                                .addComponent(panelWarrior4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))))))
+                            .addComponent(panelWarrior4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblPlayerTurn, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 23, Short.MAX_VALUE))))
         );
         warriorsPanelLayout.setVerticalGroup(
             warriorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(warriorsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(warriorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTurn)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(warriorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(lblPlayerTurn))
                 .addGap(21, 21, 21)
                 .addGroup(warriorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panelWarrior4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -551,8 +552,8 @@ public class GameWindow extends javax.swing.JFrame {
     private javax.swing.JLabel lblDamageToW2;
     private javax.swing.JLabel lblDamageToW3;
     private javax.swing.JLabel lblDamageToW4;
+    private javax.swing.JLabel lblPlayerTurn;
     private javax.swing.JLabel lblSelectedWarriorName;
-    private javax.swing.JLabel lblTurn;
     private javax.swing.JLabel lblWarrior1HP;
     private javax.swing.JLabel lblWarrior1Name;
     private javax.swing.JLabel lblWarrior2HP;

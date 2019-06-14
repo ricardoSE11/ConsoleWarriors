@@ -101,7 +101,7 @@ public class Match {
     }
     
     public void nextTurn(){
-        
+        this.turn++;
     }
   
     public Player getPlayerByID(int playerID){
@@ -122,7 +122,28 @@ public class Match {
     public void handlePlayerMessage(Message message){
         ClientMessage clientMessage = (ClientMessage) message;
         int playerID = clientMessage.getClientID();
+        
+        System.out.println("Got a message from client: " + playerID);
 
+        if (playerTwo.getPlayerID() == playerID){
+            // Is not his turn
+            if (turn % 2 != 0){
+                Message notYourTurnMessage = new ServerMessage("WRONG_TURN", "Not your turn");
+                playerTwo.getClientThread().sendMessageToClient(notYourTurnMessage);
+                return;
+            }
+        }
+        
+        else{
+            if (playerOne.getPlayerID() == playerID){
+                if (turn % 2 == 0){
+                    Message notYourTurnMessage = new ServerMessage("WRONG_TURN", "Not your turn");
+                    playerOne.getClientThread().sendMessageToClient(notYourTurnMessage);
+                    return;
+                }
+            }
+        }
+        
         String[] commandInfo = clientMessage.getEvent().split("-");
         String commandName = commandInfo[0];
         
@@ -133,30 +154,43 @@ public class Match {
                 Weapon attackingWeapon = (Weapon) message.getObjectOfInterest();
                 
                 // Send the weapon to the enemy
-                Player enemy = getEnemyOfPlayer(playerID);
                 Message attackMessage = new ServerMessage("ATTACK", attackingWeapon);
+                Player enemy = getEnemyOfPlayer(playerID);
                 enemy.getClientThread().sendMessageToClient(attackMessage);
+                
+                nextTurn();
             }
             break;
             
             
             case "ATTACK_RESPONSE":{
-                Player enemy = getEnemyOfPlayer(playerID);
                 Integer damageDealt = (Integer) message.getObjectOfInterest();
                 Message attackResponse = new ServerMessage("ATTACK_RESPONSE", damageDealt);
+                Player enemy = getEnemyOfPlayer(playerID);
                 enemy.getClientThread().sendMessageToClient(attackResponse);
+                
             }
             break;
             
             case "SURRENDER": {
+                
             }
             break;
             
             case "CHAT": {
+                String messageText = (String) message.getObjectOfInterest();
+                Message chatMessage = new ServerMessage("CHAT", messageText);
+                Player enemy = getEnemyOfPlayer(playerID);
+                enemy.getClientThread().sendMessageToClient(chatMessage);
+                
+                nextTurn();
+                
             }
             break;
             
             case "TIE": {
+                
+                nextTurn();
             }
             break;
             

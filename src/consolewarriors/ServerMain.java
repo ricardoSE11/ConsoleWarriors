@@ -5,9 +5,6 @@
  */
 package consolewarriors;
 
-import consolewarriors.Client.Control.CreationWindowController;
-import consolewarriors.Client.View.GameWindow;
-import consolewarriors.Client.View.RegistrationWindow;
 import consolewarriors.Server.Model.Connection.ClientMessageHandler;
 import consolewarriors.Server.Model.Connection.IClientMessageHandler;
 import consolewarriors.Server.Model.Connection.Server;
@@ -24,16 +21,9 @@ public class ServerMain {
      */
     public static void main(String[] args) {
         
-//        IClientMessageHandler messageHandler = new ClientMessageHandler();
-//        Server server = new Server(1234, messageHandler);
-//        server.run();
-
-        //CreationWindowController creation_window_controller = new CreationWindowController();
-        //GameWindow gm = new GameWindow();
-        //gm.setVisible(true);
-        
-        RegistrationWindow rg = new RegistrationWindow();
-        rg.setVisible(true);
+        IClientMessageHandler messageHandler = new ClientMessageHandler();
+        Server server = new Server(1234, messageHandler);
+        server.run();
         
     }
     

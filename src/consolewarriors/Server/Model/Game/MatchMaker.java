@@ -86,28 +86,32 @@ public class MatchMaker {
         
         newMatch = new Match(playerOne, playerTwo);
         
-        PlayerStats playerOneStats = playerStatsHandler.getPlayerStats(playerOne.getPlayerID());
-        PlayerStats playerTwoStats = playerStatsHandler.getPlayerStats(playerTwo.getPlayerID());
+        // <editor-fold defaultstate="collapsed" desc="Fix me">
         
-        ArrayList<PlayerStats> playerStatsForPlayerOne = new ArrayList<>();
-        playerStatsForPlayerOne.add(playerOneStats);
-        playerStatsForPlayerOne.add(playerTwoStats);
-        Message playerOneStatsData = new ServerMessage("PLAYER_STATS", playerStatsForPlayerOne);
-        playerOne.getClientThread().sendMessageToClient(playerOneStatsData);
+//        PlayerStats playerOneStats = playerStatsHandler.getPlayerStats(playerOne.getPlayerID());
+//        PlayerStats playerTwoStats = playerStatsHandler.getPlayerStats(playerTwo.getPlayerID());
+//        
+//        ArrayList<PlayerStats> playerStatsForPlayerOne = new ArrayList<>();
+//        playerStatsForPlayerOne.add(playerOneStats);
+//        playerStatsForPlayerOne.add(playerTwoStats);
+//        Message playerOneStatsData = new ServerMessage("PLAYER_STATS", playerStatsForPlayerOne);
+//        playerOne.getClientThread().sendMessageToClient(playerOneStatsData);
+//        
+//        ArrayList<PlayerStats> playerStatsForPlayerTwo = new ArrayList<>();
+//        playerStatsForPlayerTwo.add(playerTwoStats);
+//        playerStatsForPlayerTwo.add(playerOneStats);
+//        Message playerTwoStatsData = new ServerMessage("PLAYER_STATS", playerStatsForPlayerTwo);
+//        playerTwo.getClientThread().sendMessageToClient(playerTwoStatsData);
+//        
+//        PlayerRanking playerRanking = null;
+//        // Way in which we load the player rankings
+//        Message playerRankingMessage = new ServerMessage("PLAYER_RANKING" , playerRanking);
+//        playerOne.getClientThread().sendMessageToClient(playerRankingMessage);
+//        playerTwo.getClientThread().sendMessageToClient(playerRankingMessage);
         
-        ArrayList<PlayerStats> playerStatsForPlayerTwo = new ArrayList<>();
-        playerStatsForPlayerTwo.add(playerTwoStats);
-        playerStatsForPlayerTwo.add(playerOneStats);
-        Message playerTwoStatsData = new ServerMessage("PLAYER_STATS", playerStatsForPlayerTwo);
-        playerTwo.getClientThread().sendMessageToClient(playerTwoStatsData);
+	// </editor-fold>
         
-        PlayerRanking playerRanking = null;
-        // Way in which we load the player rankings
-        Message playerRankingMessage = new ServerMessage("PLAYER_RANKING" , playerRanking);
-        playerOne.getClientThread().sendMessageToClient(playerRankingMessage);
-        playerTwo.getClientThread().sendMessageToClient(playerRankingMessage);
-        
-        
+        this.matches.add(newMatch);
         return newMatch;
     }
     
@@ -115,6 +119,7 @@ public class MatchMaker {
         Match playerMatch = null;
         for (Match currentMatch : matches){
             if (currentMatch.getPlayerOne().getPlayerID() == playerID || currentMatch.getPlayerTwo().getPlayerID() == playerID){
+                System.out.println("FOUND THE MATCH");
                 playerMatch = currentMatch;
             }
         }

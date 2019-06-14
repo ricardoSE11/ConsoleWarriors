@@ -5,6 +5,7 @@
  */
 package consolewarriors.Common.Command.PlayerCommands;
 
+import consolewarriors.Client.Model.PlayerClient;
 import consolewarriors.Common.Command.ICommand;
 
 /**
@@ -13,14 +14,15 @@ import consolewarriors.Common.Command.ICommand;
  */
 public class NotFoundCommand implements ICommand {
 
-    private final String commandName = "NOT FOUND";
+    public static final String NAME = "NOT FOUND";
+    private PlayerClient player;
 
     public NotFoundCommand() {
     }
     
     @Override
     public String getCommandName() {
-        return commandName;
+        return NAME;
     }
 
     @Override
@@ -31,6 +33,12 @@ public class NotFoundCommand implements ICommand {
     @Override
     public void execute() {
         System.out.println("Command not found");
+    }
+    
+    @Override
+    public void setUpResource(Object object) {
+        // Not used.
+        //this.player = (PlayerClient) object;
     }
     
 }

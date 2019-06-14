@@ -143,16 +143,17 @@ public abstract class Client {
                 DataInputStream idReceiver = new DataInputStream(inputStream);
                 int assignedID = idReceiver.readInt();
                 this.id = assignedID;
+                
+                System.out.println("Received my ID: " + id);
             }
             else{
                 // --- Send the ID to the server for identification ---
                 DataOutputStream idSender = new DataOutputStream(outputStream);
                 idSender.writeInt(id);
+                
+                System.out.println("Confirming ID: " + id);
             }
 
-
-
-            System.out.println("Received my ID: " + id);
 
             ClientThread clientThread = new ClientThread(this, reader); // Thread to listen for server messages
             clientThread.setServerMessageHandler(serverMessageHandler);

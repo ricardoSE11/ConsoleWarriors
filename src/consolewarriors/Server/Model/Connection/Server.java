@@ -107,7 +107,6 @@ public class Server {
         return clients.size();
     }
             
-            
     public void loadPlayerRanking(){
         /*
          * Load player ranking from a file and load it into the PlayerRanking class
