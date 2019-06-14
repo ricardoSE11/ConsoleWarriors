@@ -22,18 +22,9 @@ import java.awt.event.ActionListener;
  */
 public class CreationWindow extends javax.swing.JFrame {
     
-    
-    private String username = "";
-    
     public CreationWindow() {
         initComponents();
         setUpGUI();
-        displayRegistrationPane();
-    }
-    
-    public void displayRegistrationPane(){
-        username = JOptionPane.showInputDialog(this, "Enter your username");
-        this.setTitle(username + "'s" + " session");
     }
 
     public void setUpGUI(){
@@ -284,10 +275,6 @@ public class CreationWindow extends javax.swing.JFrame {
     
     public String getWeaponName(){
         return txfWeaponName.getText();
-    }
-    
-    public String getUsername(){
-        return this.username;
     }
     
     public Object getCmbxWarriorTypeSelectedItem(){

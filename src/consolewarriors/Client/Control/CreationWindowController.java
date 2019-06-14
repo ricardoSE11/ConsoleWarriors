@@ -160,10 +160,7 @@ public class CreationWindowController {
     public void playerIsReady(){
         //port should not be static, but is not too important right now
         //PlayerClient player = new PlayerClient("localhost", 1234, username , createdWarriors);
-        
-        
-        String username = creation_window.getUsername();
-        this.player.setUsername(username);
+
         this.player.setWarriors(createdWarriors);
         this.player.run();
         
