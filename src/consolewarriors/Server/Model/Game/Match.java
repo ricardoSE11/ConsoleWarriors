@@ -148,15 +148,25 @@ public class Match {
         int playerID = clientMessage.getClientID();
         
         System.out.println("Got a message from client: " + playerID);
-
-        if(!isPlayersTurn(playerID)){
-            return; // Stops execution here.
-        }
-
         
         String[] commandInfo = clientMessage.getEvent().split("-");
         String commandName = commandInfo[0];
         
+        // CHAT is out because it does not depend on the turn
+        if (commandName.equals("CHAT")){
+            String messageText = (String) message.getObjectOfInterest();
+            Message chatMessage = new ServerMessage("CHAT", messageText);
+            Player enemy = getEnemyOfPlayer(playerID);
+            enemy.getClientThread().sendMessageToClient(chatMessage);
+        }
+        
+        else{
+            // Check for turn validation
+            if (!isPlayersTurn(playerID)) {
+                return; // Stops execution here.
+            }            
+        }
+
         
         // Area for improvemente
         switch(commandName){
@@ -185,35 +195,43 @@ public class Match {
             }
             break;
             
-            case "CHAT": {
-                String messageText = (String) message.getObjectOfInterest();
-                Message chatMessage = new ServerMessage("CHAT", messageText);
-                Player enemy = getEnemyOfPlayer(playerID);
-                enemy.getClientThread().sendMessageToClient(chatMessage);
-                
-                nextTurn();
-                
-            }
-            break;
-            
             case "PASS":{
                 Message passMessage = new ServerMessage("PASS" , null);
                 Player enemy = getEnemyOfPlayer(playerID);
                 enemy.getClientThread().sendMessageToClient(passMessage);
-
                 nextTurn();
-                
-            }
-            break;
-            
-            case "SURRENDER": {
-
             }
             break;
             
             case "TIE": {
-                
+                System.out.println("Player:" + playerID + " is proposing a tie") ;
+                Message tieMessage = new ServerMessage("TIE" , null);
+                Player enemy = getEnemyOfPlayer(playerID);
+                enemy.getClientThread().sendMessageToClient(tieMessage);
                 nextTurn();
+            }
+            break;
+            
+            case "TIE_ACCEPTED": {
+                Message tieAcceptedMessage = new ServerMessage("TIE_ACCEPTED", null);
+                Player enemy = getEnemyOfPlayer(playerID);
+                enemy.getClientThread().sendMessageToClient(tieAcceptedMessage);
+                nextTurn();
+            }
+            break;
+            
+            case "TIE_DENIED": {
+                // FIXME
+//                Message tieMessage = new ServerMessage("TIE", null);
+//                Player enemy = getEnemyOfPlayer(playerID);
+//                enemy.getClientThread().sendMessageToClient(tieMessage);
+//                nextTurn();
+            }
+            break;
+            
+            
+            case "SURRENDER": {
+
             }
             break;
             

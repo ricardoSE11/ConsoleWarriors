@@ -129,11 +129,10 @@ public class GameWindowController implements IObserver{
                 }
                 
                 catch(Exception e){
-                    
                     // --- Commands with no arguments ---
                     String noParameterCommand = gameWindow.getLastLine().toUpperCase();
                     ICommandManager commandManager = player.getCommandManager();
-                    System.out.println("Command name:" + noParameterCommand);
+                    System.out.println("Try the (possible)no-argument command:" + noParameterCommand);
                     ICommand selectedCommand = commandManager.getCommand(noParameterCommand);
                     
                     if (selectedCommand instanceof NotFoundCommand) {
@@ -168,19 +167,47 @@ public class GameWindowController implements IObserver{
         }
     }
     
+    public void handleStatusUpdates(String statusString){
+        if (statusString.startsWith("WRONG_TURN")) {
+            this.gameWindow.writeToConsole("\n" + "Error: Is not your turn" + "\n", Color.RED);
+        } 
+        
+        else if (statusString.startsWith("SELECTED_WARRIOR")) {
+            int hyphIndex = statusString.indexOf("-");
+            String warriorName = statusString.substring(hyphIndex + 1);
+            Warrior choosenWarrior = (Warrior) player.getWarriorByName(warriorName);
+            if (choosenWarrior != null) {
+                gameWindow.displayWarriorsWeapons(choosenWarrior);
+                gameWindow.setSelectedWarriorLabelText(warriorName);
+            } else {
+                System.out.println("Null warrior bruh, didnt find: " + warriorName);
+            }
+        }
+        
+        else if (statusString.equals("RESPONDING_TIE_REQUEST")){
+            System.out.println("WAT: " + statusString);
+            int tieRespone = 0;
+            //gameWindow.showTieProposalDialog();
+            if (tieRespone == JOptionPane.YES_OPTION){
+                Message acceptTieMessage = new ClientMessage("TIE_ACCEPTED", player.getPlayerID(), null);
+                player.sendMessage(acceptTieMessage);
+            }
+            else{
+                Message denyTieMessage = new ClientMessage("TIE_DENIED", player.getPlayerID(), null);
+                player.sendMessage(denyTieMessage);                
+            }
+        }
+        
+        else if (statusString.startsWith("GAME_TIED")){
+            gameWindow.showMessageDialog("Game was tied");
+        }
+    }
+    
     public void handleStringUpdates(String updateString){
-        //String prefix = updateString. //PENDING: Get prefix to implement switch
         if (updateString.startsWith("STATUS")) {
             int hyphenIndex = updateString.indexOf("-");
-            String status = updateString.substring(hyphenIndex + 1);
-            
-            switch (status){
-                case "WRONG_TURN":{
-                    this.gameWindow.writeToConsole("\n" + "Error: Is not your turn" + "\n", Color.RED);
-                }
-                break;
-                
-            }
+            String status = updateString.substring(hyphenIndex + 1);  
+            handleStatusUpdates(status);
         } 
         
         else if (updateString.startsWith("DAMAGE_DEALT")){
