@@ -596,6 +596,7 @@ public class GameWindow extends javax.swing.JFrame {
         consolePanel.setBackground(new java.awt.Color(102, 102, 102));
 
         txaConsole.setBackground(new java.awt.Color(0, 0, 0));
+        txaConsole.setFont(new java.awt.Font("Dialog", 0, 16)); // NOI18N
         txaConsole.setForeground(new java.awt.Color(255, 255, 255));
         jScrollPane3.setViewportView(txaConsole);
 

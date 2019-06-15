@@ -177,6 +177,27 @@ public class GameWindowController implements IObserver {
             this.gameWindow.writeToConsole("\n" + "Error: Is not your turn" + "\n", Color.RED);
         } 
         
+        else if (statusString.equals("NO_SUCH_WARRIOR")){
+            this.gameWindow.writeToConsole("\n" + "Error: Warrior does not exist" + "\n", Color.RED);
+        }
+        
+        else if (statusString.equals("NOT_SUCH_WEAPON")) {
+            this.gameWindow.writeToConsole("\n" + "Error: That weapon does not exist" + "\n", Color.RED);
+        }
+        
+        else if (statusString.equals("USED_WEAPON")) {
+            this.gameWindow.writeToConsole("\n" + "Error: Weapon was already used" + "\n", Color.RED);
+        }
+        
+        else if (statusString.equals("RELOADING")) {
+            this.gameWindow.writeToConsole("\n" + "Message: Reloaded weapons" + "\n", Color.CYAN);
+        }
+        
+        else if (statusString.equals("UNVALID_RELOAD")) {
+            this.gameWindow.writeToConsole("\n" + "Error: You still have usable weapons" + "\n", Color.RED);
+        }
+        
+        
         else if (statusString.startsWith("SELECTED_WARRIOR")) {
             int hyphIndex = statusString.indexOf("-");
             String warriorName = statusString.substring(hyphIndex + 1);
@@ -202,6 +223,10 @@ public class GameWindowController implements IObserver {
                 Message denyTieMessage = new ClientMessage("TIE_DENIED", player.getPlayerID(), null);
                 player.sendMessage(denyTieMessage);                
             }
+        }
+        
+        else if (statusString.equals("TIE_DENIED")){
+            this.gameWindow.writeToConsole("\n" + "Message: Enemy denied the tie proposal" + "\n", Color.CYAN);
         }
         
         else if (statusString.equals("GAME_TIED")){
@@ -256,9 +281,9 @@ public class GameWindowController implements IObserver {
         else {
             if (updateString.startsWith("ENEMY")) {
                 int hyphenIndex =  updateString.indexOf("-");
-                this.gameWindow.writeToConsole("\n" + "Chat[enemy]: " + updateString.substring(hyphenIndex + 1) + "\n", Color.GRAY);
+                this.gameWindow.writeToConsole("\n" + "Chat [enemy]: " + updateString.substring(hyphenIndex + 1) + "\n", Color.GRAY);
             } else {
-                this.gameWindow.writeToConsole("\n" + "Chat[you]: " + updateString, Color.GRAY);
+                this.gameWindow.writeToConsole("\n" + "Chat [you]: " + updateString, Color.GRAY);
             }
         }
         
