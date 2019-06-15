@@ -46,6 +46,9 @@ public class PlayerClient extends Client implements IObservable {
         this.playerStatus = "WAITING_FOR_MATCH";
         this.observers = new ArrayList<>();
         this.chatMessages = new ArrayList<>();
+        
+        IServerMessageHandler messageHandler = new ServerMessageHandler();
+        this.setServerMessageHandler(messageHandler);
     }
 
     public PlayerClient(String hostname, int portNumber, int id) {
@@ -53,6 +56,9 @@ public class PlayerClient extends Client implements IObservable {
         this.playerStatus = "WAITING_FOR_MATCH";
         this.observers = new ArrayList<>();
         this.chatMessages = new ArrayList<>();
+        
+        IServerMessageHandler messageHandler = new ServerMessageHandler();
+        this.setServerMessageHandler(messageHandler);
     }
     
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
