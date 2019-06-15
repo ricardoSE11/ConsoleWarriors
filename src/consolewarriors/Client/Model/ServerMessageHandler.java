@@ -52,10 +52,25 @@ public class ServerMessageHandler implements IServerMessageHandler{
             
             // Receiving a message from the enemy
             case "CHAT":{
-                 String messageText = (String) message.getObjectOfInterest();
-                 ((PlayerClient) client).addChatMessage("ENEMY-" + messageText);
+                System.out.println("Got your message and we are at:" + event);
+                String messageText = (String) message.getObjectOfInterest();
+                ((PlayerClient) client).addChatMessage("ENEMY-" + messageText);
             }
+            break;
             
+            // Enemy is proposing a tie
+            case "TIE":{
+                System.out.println("Enemy is proposing a tie");
+                ((PlayerClient) client).changePlayerGamingStatus("RESPONDING_TIE_REQUEST");
+            }
+            break;
+            
+            // Tie was accepted
+            case "TIE_ACCEPTED": {
+                System.out.println("I accepted the tie");
+                ((PlayerClient) client).changePlayerGamingStatus("GAME_TIED");
+            }
+            break;
             
             
             

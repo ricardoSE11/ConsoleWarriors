@@ -12,8 +12,13 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import Characters.Character;
+import Weapons.Weapon;
+import consolewarriors.Common.CharacterType;
+import consolewarriors.Common.Shared.WarriorWeapon;
 import java.awt.event.KeyListener;
 import java.util.EventListener;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -27,6 +32,8 @@ public class GameWindow extends javax.swing.JFrame {
     ArrayList<JLabel> warriorsImagesLabels;
     ArrayList<JLabel> warriorsNameLabels;
     ArrayList<JLabel> warriorsHealthLabels;
+    
+    private int tieResponse;
     
     public GameWindow() {
         this.warriorsImagesLabels = new ArrayList<>();
@@ -116,6 +123,54 @@ public class GameWindow extends javax.swing.JFrame {
     
     public void setDamageDealtLabelText(String text){
         lblDamageDealt.setText(text);
+    }
+    
+    public void setSelectedWarriorLabelText(String text){
+        lblSelectedWarriorName.setText(text);
+    }
+    
+    public void fromWeaponToTableModel(Weapon weapon) {
+        WarriorWeapon currentWeapon = (WarriorWeapon) weapon;
+
+        //DefaultTableModel tableModel = (DefaultTableModel) tblWeapons.getModel();
+        Object[] weaponData = new Object[11];
+
+        weaponData[0] = currentWeapon.getName();
+        CharacterType[] types = CharacterType.values();
+        for (int i = 0; i < currentWeapon.getAttackValueMatrix().size(); i++) {
+            weaponData[i + 1] = currentWeapon.getAttackValueMatrix().get(types[i]);
+        }
+
+        addWeaponModelToTable(weaponData);
+    }
+    
+    public void addWeaponModelToTable(Object[] weapon_data) {
+        DefaultTableModel tableModel = (DefaultTableModel) tblWeapons.getModel();
+        tableModel.addRow(weapon_data);
+    }
+    
+    public void displayWarriorsWeapons(Warrior warrior){
+        System.out.println("Gonna display warrior weapons");
+        for (Weapon weapon : warrior.getWeapons().values()){
+            fromWeaponToTableModel(weapon);
+        }
+    }
+    
+    public int showTieProposalDialog(){
+        int answer = JOptionPane.showConfirmDialog(null, "Enemy is proposing a Tie. Do you accept?");
+        tieResponse = answer;
+        if (tieResponse == JOptionPane.YES_OPTION){
+            System.out.println("I accept the tie");
+            return tieResponse;
+        }
+        else{
+            System.out.println("Nope, lets keep playing");
+            return tieResponse;
+        }
+    }
+    
+    public void showMessageDialog(String message){
+        JOptionPane.showMessageDialog(null, message);
     }
     
     /**
