@@ -27,6 +27,9 @@ public class WarriorWeapon extends Weapon implements Serializable{
         this.wasUsed = false;
         setAttackMatrixValues();
     }
+
+    public WarriorWeapon() {
+    }
     
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
 
@@ -47,7 +50,7 @@ public class WarriorWeapon extends Weapon implements Serializable{
         this.attackValueMatrix = attackValueMatrix;
     }
 
-    public boolean isWasUsed() {
+    public boolean wasUsed() {
         return wasUsed;
     }
 

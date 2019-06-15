@@ -19,9 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -33,15 +31,17 @@ public class CreationWindowController {
     //My english is not good. :P
     private CreationWindow creation_window;
     
+    private PlayerClient player;
     private ArrayList<Weapon> createdWeapons;
     private ArrayList<Characters.Character> createdWarriors;
     String lastImageUsedPath = "";
     
-    public CreationWindowController(){
-        creation_window = new CreationWindow();
-        createdWeapons = new ArrayList<>();
-        createdWarriors = new ArrayList<>();
-        creation_window.setVisible(true);
+    public CreationWindowController(PlayerClient player){
+        this.player = player;
+        this.creation_window = new CreationWindow();
+        this.createdWeapons = new ArrayList<>();
+        this.createdWarriors = new ArrayList<>();
+        this.creation_window.setVisible(true);
         setListeners();
     }
     
@@ -119,8 +119,7 @@ public class CreationWindowController {
         String warriorName = creation_window.getWarriorName();
         CharacterType warriorType = CharacterType.getCharacterTypeValue(creation_window.getCmbxWarriorTypeSelectedItem().toString().toUpperCase());
         
-        ImageIcon warriorIcon = creation_window.getWarriorImageIcon();
-        Image warriorImage = warriorIcon.getImage();
+        ImageIcon warriorImage = creation_window.getWarriorImageIcon();
         
         Characters.Character newCharacter = new Warrior(warriorName, warriorType , lastImageUsedPath  , 100); //FIXME
         ((Warrior)newCharacter).setCharacterImage(warriorImage);
@@ -130,7 +129,6 @@ public class CreationWindowController {
     }
     
     public void createWeapon(){
-        System.out.println("Hola");
         String weaponName = creation_window.getWeaponName();
         Weapon newWeapon = new WarriorWeapon(weaponName , "DUMMY_STRING"); // FIXME
         this.addWeapon(newWeapon);
@@ -156,10 +154,11 @@ public class CreationWindowController {
     }
     
     public void playerIsReady(){
-        String username = creation_window.getUsername();
         //port should not be static, but is not too important right now
-        PlayerClient player = new PlayerClient("localhost", 1234, username , createdWarriors);
-        player.run();
+        //PlayerClient player = new PlayerClient("localhost", 1234, username , createdWarriors);
+
+        this.player.setWarriors(createdWarriors);
+        //this.player.run();
         
         GameWindow gameWindow = new GameWindow();
         gameWindow.setVisible(true);

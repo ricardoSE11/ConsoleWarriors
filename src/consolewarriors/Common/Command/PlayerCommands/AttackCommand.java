@@ -7,10 +7,12 @@ package consolewarriors.Common.Command.PlayerCommands;
 
 import Weapons.Weapon;
 import consolewarriors.Client.Model.PlayerClient;
+import consolewarriors.Common.AttackGroup;
 import consolewarriors.Common.ClientMessage;
 import consolewarriors.Common.Command.ICommand;
 import consolewarriors.Common.Message;
 import consolewarriors.Common.Shared.Warrior;
+import consolewarriors.Common.Shared.WarriorWeapon;
 
 /**
  *
@@ -18,11 +20,15 @@ import consolewarriors.Common.Shared.Warrior;
  */
 public class AttackCommand implements ICommand {
     
-    private final String NAME = "ATTACK";
+    public static final String NAME = "ATTACK";
     private PlayerClient player; 
 
     public AttackCommand(PlayerClient player) {
         this.player = player;
+    }
+    
+    public AttackCommand(){
+        
     }
 
     public PlayerClient getPlayer() {
@@ -44,16 +50,46 @@ public class AttackCommand implements ICommand {
 
     @Override
     public void execute(String arguments) {
+        System.out.println("Attack command executing");
         String[] attackInfo = arguments.split("-");
         String warriorName = attackInfo[0];
         String weaponName = attackInfo[1];
+        
+        System.out.println("Warrior name: " + warriorName); 
+        System.out.println("Weapon name: " + weaponName);
+        
         Warrior choosenWarrior = (Warrior) player.getWarriorByName(warriorName);
         if (choosenWarrior != null){
             Weapon choosenWeapon = choosenWarrior.getWeaponByName(weaponName);
-            Message attackMessage = new ClientMessage("ATTACK", player.getId(), choosenWeapon);
-            player.sendMessage(attackMessage);
+            
+            if (choosenWeapon == null){
+                player.changePlayerGamingStatus("NOT_SUCH_WEAPON");
+                System.out.println("Null weapon");
+            }
+            
+            if (((WarriorWeapon)choosenWeapon).wasUsed()){
+                player.changePlayerGamingStatus("USED_WEAPON");
+                System.out.println("Weapon was already used");
+            }
+            else{
+                ((WarriorWeapon) choosenWeapon).setWasUsed(true);
+                AttackGroup attackParameters = new AttackGroup(choosenWarrior, choosenWeapon);
+                player.setAttackedWith(attackParameters);
+                Message attackMessage = new ClientMessage("ATTACK", player.getId(), attackParameters);
+                player.sendMessage(attackMessage);
+            }
+
+        }
+        else{
+            player.changePlayerGamingStatus("NO_SUCH_WARRIOR");
+            System.out.println("Got a null warrior");
         }
         
+    }
+
+    @Override
+    public void setUpResource(Object object) {
+        this.player = (PlayerClient) object;
     }
     
 }

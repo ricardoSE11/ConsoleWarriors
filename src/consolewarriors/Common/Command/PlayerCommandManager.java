@@ -6,6 +6,14 @@
 package consolewarriors.Common.Command;
 
 import consolewarriors.Client.Model.PlayerClient;
+import consolewarriors.Common.Command.PlayerCommands.AttackCommand;
+import consolewarriors.Common.Command.PlayerCommands.ChatCommand;
+import consolewarriors.Common.Command.PlayerCommands.NotFoundCommand;
+import consolewarriors.Common.Command.PlayerCommands.PassCommand;
+import consolewarriors.Common.Command.PlayerCommands.ProposeTieCommand;
+import consolewarriors.Common.Command.PlayerCommands.ReloadWeaponsCommand;
+import consolewarriors.Common.Command.PlayerCommands.SelectWarriorCommand;
+import consolewarriors.Common.Command.PlayerCommands.SurrenderCommand;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,12 +24,13 @@ import java.util.logging.Logger;
  */
 public class PlayerCommandManager implements ICommandManager{
 
+    
     public PlayerClient player; // ask if is the right way to go
     private HashMap<String, Class<? extends ICommand>> commands;
     
     public PlayerCommandManager() {
         commands = new HashMap<>();
-                
+        setUpPlayerCommands();
     }
 
     public PlayerClient getPlayer() {
@@ -36,7 +45,9 @@ public class PlayerCommandManager implements ICommandManager{
         ICommand requestedCommand = null;
         if (commands.containsKey(commandName)){
             try {
-                return commands.get(commandName).newInstance();
+                ICommand selectedCommand = commands.get(commandName).newInstance();
+                selectedCommand.setUpResource(player);
+                return selectedCommand;
             } catch (InstantiationException | IllegalAccessException ex) {
                 Logger.getLogger(PlayerCommandManager.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -48,6 +59,15 @@ public class PlayerCommandManager implements ICommandManager{
         commands.put(commandName, command);
     }
     
-    public void setUpPlayerCommands(){}
+    public void setUpPlayerCommands(){
+        registerCommand(NotFoundCommand.NAME , NotFoundCommand.class);
+        registerCommand(AttackCommand.NAME, AttackCommand.class);
+        registerCommand(ChatCommand.NAME , ChatCommand.class);
+        registerCommand(PassCommand.NAME , PassCommand.class);
+        registerCommand(SelectWarriorCommand.NAME, SelectWarriorCommand.class);
+        registerCommand(ProposeTieCommand.NAME, ProposeTieCommand.class);
+        registerCommand(SurrenderCommand.NAME , SurrenderCommand.class);
+        registerCommand(ReloadWeaponsCommand.NAME, ReloadWeaponsCommand.class);
+    }
     
 }

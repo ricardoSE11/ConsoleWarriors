@@ -80,24 +80,19 @@ public class Server {
 
     // </editor-fold>
     
-    public void run() {
-        
-        
+    public void run() {        
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
             System.out.println("Started server");
             while (listening) {
                 /* If we receive a connection request, and it is successful, we
                 *  create Thread and a Socket, and associated them with a user. 
                 *  So the server keep listening for more connection requests */
-                int clientID = clients.size();
+                
                 Socket clientSocket = serverSocket.accept();
-                ServerThread serverThread = new ServerThread(clientSocket, clientID, this);
+                ServerThread serverThread = new ServerThread(clientSocket, this);
                 serverThread.setClientMessageHandler(clientMessageHandler);
-                //serverThread.setNotificationHandler(notificationHandler);
-                clients.put(clientID, serverThread);
                 serverThread.start();
-                System.out.println("Got connection request number: " + clientID);
-                clientID++;
+                System.out.println("Got connection request number - Currently attending " + clients.size() + " clients");
             }
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
@@ -108,7 +103,10 @@ public class Server {
         this.clients.put(clientID, clientThread);
     }
 
-    
+    public int getIDForNewClient(){
+        return clients.size() + 1;
+    }
+            
     public void loadPlayerRanking(){
         /*
          * Load player ranking from a file and load it into the PlayerRanking class

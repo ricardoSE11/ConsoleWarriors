@@ -12,13 +12,14 @@ import consolewarriors.Common.Command.ICommand;
  *
  * @author rshum
  */
-public class NotFoundCommand implements ICommand {
+public class SelectWarriorCommand implements ICommand{
 
-    public static final String NAME = "NOT FOUND";
+    public static final String NAME = "SELECT";
     private PlayerClient player;
 
-    public NotFoundCommand() {
+    public SelectWarriorCommand() {
     }
+    
     
     @Override
     public String getCommandName() {
@@ -26,19 +27,20 @@ public class NotFoundCommand implements ICommand {
     }
 
     @Override
-    public void execute(String arguments) {
-        System.out.println("Command not found");
+    public void execute() {
+        
     }
 
     @Override
-    public void execute() {
-        System.out.println("Command not found");
+    public void execute(String arguments){
+        System.out.println("Executing SELECT command");
+        String warriorName = arguments;
+        this.player.changePlayerGamingStatus("SELECTED_WARRIOR-" + warriorName);
     }
-    
+
     @Override
     public void setUpResource(Object object) {
-        // Not used.
-        //this.player = (PlayerClient) object;
+        this.player = (PlayerClient) object;
     }
     
 }

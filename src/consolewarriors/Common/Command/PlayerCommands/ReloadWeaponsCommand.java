@@ -12,13 +12,10 @@ import consolewarriors.Common.Command.ICommand;
  *
  * @author rshum
  */
-public class NotFoundCommand implements ICommand {
+public class ReloadWeaponsCommand implements ICommand{
 
-    public static final String NAME = "NOT FOUND";
+    public static final String NAME = "RELOAD";
     private PlayerClient player;
-
-    public NotFoundCommand() {
-    }
     
     @Override
     public String getCommandName() {
@@ -26,19 +23,27 @@ public class NotFoundCommand implements ICommand {
     }
 
     @Override
-    public void execute(String arguments) {
-        System.out.println("Command not found");
+    public void execute() {
+        System.out.println("Executing the RELOAD command");
+        if (player.isOutOfWeapons()){
+            System.out.println("Reloading weapons");
+            player.changePlayerGamingStatus("RELOADING");
+            player.reloadWarriorWeapons();
+        }
+        else{
+            player.changePlayerGamingStatus("UNVALID_RELOAD");
+        }
+
     }
 
     @Override
-    public void execute() {
-        System.out.println("Command not found");
+    public void execute(String arguments) {
+        
     }
-    
+
     @Override
     public void setUpResource(Object object) {
-        // Not used.
-        //this.player = (PlayerClient) object;
+        this.player = (PlayerClient) object;
     }
     
 }

@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package consolewarriors.Client;
+package consolewarriors.Client.Control;
 
 /**
  *
  * @author rshum
  */
-public class ClientMain {
+public class RegistrationWindowController {
     
 }

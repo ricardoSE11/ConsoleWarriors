@@ -13,19 +13,26 @@ import consolewarriors.Common.Message;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.EventListener;
 import Characters.Character;
+import Weapons.Weapon;
+import consolewarriors.Client.Model.IServerMessageHandler;
+import consolewarriors.Client.Model.ServerMessageHandler;
+import consolewarriors.Common.AttackGroup;
 import consolewarriors.Common.Command.ICommand;
 import consolewarriors.Common.Command.ICommandManager;
+import consolewarriors.Common.Command.PlayerCommandManager;
 import consolewarriors.Common.Command.PlayerCommands.NotFoundCommand;
 import consolewarriors.Common.Shared.Warrior;
+import java.awt.event.KeyListener;
+import java.io.Serializable;
+import javax.swing.JOptionPane;
 
 
 /**
  *
  * @author rshum
  */
-public class GameWindowController implements IObserver{
+public class GameWindowController implements IObserver {
     
     // View
     private GameWindow gameWindow;
@@ -36,15 +43,43 @@ public class GameWindowController implements IObserver{
 
     public GameWindowController(GameWindow gameWindow, PlayerClient player) {
         this.gameWindow = gameWindow;
+        
+        IServerMessageHandler messageHandler = new ServerMessageHandler();
         this.player = player;
+        player.setServerMessageHandler(messageHandler);
+        ICommandManager commandManager = new PlayerCommandManager();
+        ((PlayerCommandManager)commandManager).setPlayer(player);
+        player.setCommandManager(commandManager);
+        
         this.warriors = player.getWarriors();
         
         gameWindow.addEventListener(new WindowListener());
         gameWindow.setUpWarriorsData(warriors);
         gameWindow.setUpWarriorsImages(warriors);
         
+        this.player.run(); // Order here is important 
+        gameWindow.setTitle(player.getPlayerName() + "'s session");
+       if(this.player.getId() % 2 != 0){
+            gameWindow.setTurnLabelText("You go first");
+        }
+        else{
+            gameWindow.setTurnLabelText("Enemy plays first");
+        }
+        
         queueForMatch();
-        subscribeToWarriors();
+        subscribeToObservableResources();
+        
+        if (player.getPlayerStatus().equals("WAITING_FOR_MATCH")){
+            JOptionPane.showMessageDialog(gameWindow, "Waiting for match");
+        }
+    }
+
+    public GameWindow getGameWindow() {
+        return gameWindow;
+    }
+
+    public void setGameWindow(GameWindow gameWindow) {
+        this.gameWindow = gameWindow;
     }
     
     public void queueForMatch() {
@@ -52,49 +87,207 @@ public class GameWindowController implements IObserver{
         player.sendMessage(readyMessage);
     }
 
-    public void subscribeToWarriors(){
+    public void subscribeToObservableResources(){
+        // Area for improvement
+        this.player.addObserver(this);
         for (Character character : warriors){
             Warrior currentWarrior = (Warrior) character;
             currentWarrior.addObserver(this);
         }
     }
-    
-    @Override
-    public void update(Object object) {
-        // Act according to the type of object we receive
-    }
 
-    class WindowListener implements EventListener {
-        
-        public void keyPresed(KeyEvent ke){
+    class WindowListener implements KeyListener {
+        @Override
+        public void keyPressed(KeyEvent ke) {
             if ((ke.getKeyChar() == '\n')) {
-                
-                gameWindow.writeToConsole("\n" + "Command result", Color.yellow);
-
-                String[] commandInfo = gameWindow.getLastLine().split("-");
-                if (commandInfo[0].toUpperCase().equals("CHAT")) {
+                // --- Commands with arguments ---
+                try{
+                    String[] commandInfo = gameWindow.getLastLine().split("-");
+                    
+                    if (commandInfo.length > 1){
+                        System.out.println("Command with arguments");
+                    }
+                    else{
+                        System.out.println("I guess I enter here and then throw the exception anyway(?)");
+                    }
+                    System.out.println("Parsing: " + gameWindow.getLastLine());
+                    
                     int hyphenIndex = gameWindow.getLastLine().indexOf("-");
                     commandInfo[1] = gameWindow.getLastLine().substring(hyphenIndex + 1);
+                    
+                    String commandName = commandInfo[0].toUpperCase();
+                    String commandArguments = commandInfo[1];
+                    ICommandManager commandManager = player.getCommandManager();
+                    System.out.println("Command name:" + commandName);
+                    ICommand selectedCommand = commandManager.getCommand(commandName);
+
+                    if (selectedCommand instanceof NotFoundCommand) {
+                        gameWindow.writeToConsole("\n" + "Please type a valid command", Color.yellow);
+                    } else if (selectedCommand == null) {
+                        System.out.println("Got a null command");
+                    } else {
+                        selectedCommand.execute(commandArguments);
+                    }
                 }
-
-                String commandName = commandInfo[0];
-                String commandArguments = commandInfo[1];
-                ICommandManager commandManager = player.getCommandManager();
-                ICommand selectedCommand = commandManager.getCommand(commandName);
-
-                if (selectedCommand instanceof NotFoundCommand) {
-                    gameWindow.writeToConsole("\n" + "Please choose a valid command", Color.yellow);
-                } else {
-                    selectedCommand.execute(commandArguments);
+                
+                catch(Exception e){
+                    
+                    //e.printStackTrace();
+                    
+                    // --- Commands with no arguments ---
+                    String noParameterCommand = gameWindow.getLastLine().toUpperCase();
+                    ICommandManager commandManager = player.getCommandManager();
+                    System.out.println("Try the (possible)no-argument command:" + noParameterCommand);
+                    ICommand selectedCommand = commandManager.getCommand(noParameterCommand);
+                    
+                    if (selectedCommand instanceof NotFoundCommand) {
+                        gameWindow.writeToConsole("\n" + "Please type a valid command", Color.yellow);
+                    } else if (selectedCommand == null) {
+                        System.out.println("Got a null command");
+                        gameWindow.writeToConsole("\n" + "Please type a valid command", Color.yellow);
+                    } else {
+                        selectedCommand.execute();
+                    }
                 }
-
-                System.out.println("Got a enter with command: " + commandInfo[0] + " and parameters: " + commandInfo[1]);
             }
         }
+        
+        @Override
+        public void keyTyped(KeyEvent ke) {}
+
+        @Override
+        public void keyReleased(KeyEvent ke) {}
 
     }
    
+    @Override
+    public void update(Object object) {
+        if (object instanceof String){
+            handleStringUpdates((String) object);
+        }
+        
+        else if (object instanceof Integer){
+            // Updating the warrios data
+            gameWindow.setUpWarriorsData(warriors);
+        }
+    }
     
+    public void handleStatusUpdates(String statusString){
+        if (statusString.equals("WRONG_TURN")) {
+            this.gameWindow.writeToConsole("\n" + "Error: Is not your turn" + "\n", Color.RED);
+        } 
+        
+        else if (statusString.equals("NO_SUCH_WARRIOR")){
+            this.gameWindow.writeToConsole("\n" + "Error: Warrior does not exist" + "\n", Color.RED);
+        }
+        
+        else if (statusString.equals("NOT_SUCH_WEAPON")) {
+            this.gameWindow.writeToConsole("\n" + "Error: That weapon does not exist" + "\n", Color.RED);
+        }
+        
+        else if (statusString.equals("USED_WEAPON")) {
+            this.gameWindow.writeToConsole("\n" + "Error: Weapon was already used" + "\n", Color.RED);
+        }
+        
+        else if (statusString.equals("RELOADING")) {
+            this.gameWindow.writeToConsole("\n" + "Message: Reloaded weapons" + "\n", Color.CYAN);
+        }
+        
+        else if (statusString.equals("UNVALID_RELOAD")) {
+            this.gameWindow.writeToConsole("\n" + "Error: You still have usable weapons" + "\n", Color.RED);
+        }
+        
+        
+        else if (statusString.startsWith("SELECTED_WARRIOR")) {
+            int hyphIndex = statusString.indexOf("-");
+            String warriorName = statusString.substring(hyphIndex + 1);
+            Warrior choosenWarrior = (Warrior) player.getWarriorByName(warriorName);
+            if (choosenWarrior != null) {
+                gameWindow.displayWarriorsWeapons(choosenWarrior);
+                gameWindow.setSelectedWarriorLabelText(warriorName);
+            } else {
+                System.out.println("Null warrior, didnt find: " + warriorName);
+            }
+        }
+        
+        else if (statusString.equals("RESPONDING_TIE_REQUEST")){
+            System.out.println("Responding tie request");
+            int tieAnswer = gameWindow.showTieProposalDialog();
+            if (tieAnswer == JOptionPane.YES_OPTION){
+                // Send a message to indicate the end of the game.
+                Message acceptTieMessage = new ClientMessage("TIE_ACCEPTED", player.getPlayerID(), null);
+                player.sendMessage(acceptTieMessage);
+                gameWindow.writeToConsole(" --- TIE: GAME ENDED --- ", Color.BLUE);
+            }
+            else{
+                Message denyTieMessage = new ClientMessage("TIE_DENIED", player.getPlayerID(), null);
+                player.sendMessage(denyTieMessage);                
+            }
+        }
+        
+        else if (statusString.equals("TIE_DENIED")){
+            this.gameWindow.writeToConsole("\n" + "Message: Enemy denied the tie proposal" + "\n", Color.CYAN);
+        }
+        
+        else if (statusString.equals("GAME_TIED")){
+            //gameWindow.showMessageDialog("Game was tied");
+            gameWindow.writeToConsole(" --- TIE: GAME ENDED --- ", Color.BLUE);
+            player.leaveMatch();
+            gameWindow.disableConsole();
+        }
+        
+        else if (statusString.equals("DEFEATED")){
+            gameWindow.writeToConsole("\n" + " --- DEFEATED: GAME ENDED --- ", Color.RED);
+            player.leaveMatch();
+            gameWindow.disableConsole();
+        }
+        
+        else if (statusString.equals("WINNER")){
+            gameWindow.writeToConsole(" --- VICTORY: GAME ENDED --- ", Color.GREEN);
+            player.leaveMatch();
+            gameWindow.disableConsole();
+        }
+        
+        
+    }
+    
+    public void handleStringUpdates(String updateString){
+        if (updateString.startsWith("STATUS")) {
+            int hyphenIndex = updateString.indexOf("-");
+            String status = updateString.substring(hyphenIndex + 1);  
+            handleStatusUpdates(status);
+        } 
+        
+        else if (updateString.equals("ATTACKED_ENEMY")){
+            AttackGroup attackParameters = player.getAttackedWith();
+            Warrior attackingWarrior = (Warrior) attackParameters.getWarrior();
+            Weapon attackingWeapon = (Weapon) attackParameters.getWeapon();
+            gameWindow.setAttackedWithInformation(attackingWarrior, attackingWeapon);
+            
+        }
+        
+        else if (updateString.equals("RECEIVED_ATTACK")) {
+            AttackGroup attackParameters = player.getAttackedBy();
+            Warrior attackingWarrior = (Warrior) attackParameters.getWarrior();
+            Weapon attackingWeapon = (Weapon) attackParameters.getWeapon();
+            gameWindow.setAttackedByInformation(attackingWarrior, attackingWeapon);
+        }
+        
+        else if (updateString.startsWith("DAMAGE_DEALT")){
+            int hyphenIndex = updateString.indexOf("-");
+            gameWindow.setDamageDealtLabelText(updateString.substring(hyphenIndex + 1));
+        }
+        
+        else {
+            if (updateString.startsWith("ENEMY")) {
+                int hyphenIndex =  updateString.indexOf("-");
+                this.gameWindow.writeToConsole("\n" + "Chat [enemy]: " + updateString.substring(hyphenIndex + 1) + "\n", Color.GRAY);
+            } else {
+                this.gameWindow.writeToConsole("\n" + "Chat [you]: " + updateString, Color.GRAY);
+            }
+        }
+        
+    }
     
     
 }

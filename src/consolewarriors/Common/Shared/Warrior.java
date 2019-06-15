@@ -14,6 +14,7 @@ import consolewarriors.Common.CharacterType;
 import java.awt.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -23,9 +24,12 @@ public class Warrior extends Character implements Serializable , IObservable{
     
     private CharacterType type;
     private HashMap<String,Weapon> weapons;
-    private Image characterImage;
+    //private Image characterImage; //Not serializable
+    private ImageIcon characterImage;
+            
+    private transient ArrayList<IObserver> observers; // TRANSIENT word SUPER IMPORTANT.
+    private int damageReceived;
     
-    private ArrayList<IObserver> observers;
     
     public Warrior(String name, CharacterType type, String imagePath, int life) {
         super(name, imagePath, life);
@@ -34,6 +38,11 @@ public class Warrior extends Character implements Serializable , IObservable{
         
         this.observers = new ArrayList<>();
     }
+
+    public Warrior() {
+    }
+    
+    
     
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
 
@@ -85,21 +94,32 @@ public class Warrior extends Character implements Serializable , IObservable{
         return this.image;
     }
 
-    public Image getCharacterImage() {
+    public ImageIcon getCharacterImage() {
         return characterImage;
     }
 
-    public void setCharacterImage(Image characterImage) {
+    public void setCharacterImage(ImageIcon characterImage) {
         this.characterImage = characterImage;
     }
     
     public Weapon getWeaponByName(String weaponName){
         Weapon choosenWeapon = null;
+        System.out.println("Looking for weapon: " + weaponName);
         if (weapons.containsKey(weaponName)){
             choosenWeapon = weapons.get(weaponName);
         }
         return choosenWeapon;
     }
+
+    public int getDamageReceived() {
+        return damageReceived;
+    }
+
+    public void setDamageReceived(int damageReceived) {
+        this.damageReceived = damageReceived;
+        notify(damageReceived);
+    }
+    
     
     // </editor-fold>
 
@@ -136,4 +156,24 @@ public class Warrior extends Character implements Serializable , IObservable{
             observer.update(object);
         }
     }
+    
+    public boolean isOutOfWeapons(){
+        for (Weapon currentWeapon : weapons.values()){
+            WarriorWeapon weapon = (WarriorWeapon) currentWeapon;
+            // If the warrior was a weapon that has not been used
+            if (!weapon.wasUsed()){
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public void reloadWeapons(){
+        for (Weapon currentWeapon : weapons.values()) {
+            WarriorWeapon weapon = (WarriorWeapon) currentWeapon;
+            weapon.setWasUsed(false);
+        }
+    }
+    
+    
 }

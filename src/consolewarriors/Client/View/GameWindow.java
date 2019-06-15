@@ -12,8 +12,13 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import Characters.Character;
+import Weapons.Weapon;
+import consolewarriors.Common.CharacterType;
+import consolewarriors.Common.Shared.WarriorWeapon;
 import java.awt.event.KeyListener;
 import java.util.EventListener;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -27,11 +32,15 @@ public class GameWindow extends javax.swing.JFrame {
     ArrayList<JLabel> warriorsImagesLabels;
     ArrayList<JLabel> warriorsNameLabels;
     ArrayList<JLabel> warriorsHealthLabels;
+    ArrayList<JLabel> warriorsDamageReceivedLabels;
+    
+    private int tieResponse;
     
     public GameWindow() {
         this.warriorsImagesLabels = new ArrayList<>();
         this.warriorsNameLabels = new ArrayList<>();
         this.warriorsHealthLabels = new ArrayList<>();
+        this.warriorsDamageReceivedLabels = new ArrayList<>();
 
         initComponents();
         setUpUiSettings();
@@ -57,14 +66,18 @@ public class GameWindow extends javax.swing.JFrame {
         warriorsHealthLabels.add(lblWarrior2HP);
         warriorsHealthLabels.add(lblWarrior3HP);
         warriorsHealthLabels.add(lblWarrior4HP);
+        
+        warriorsDamageReceivedLabels.add(lblDamageToW1);
+        warriorsDamageReceivedLabels.add(lblDamageToW2);
+        warriorsDamageReceivedLabels.add(lblDamageToW3);
+        warriorsDamageReceivedLabels.add(lblDamageToW4);
     }
     
     public void setUpWarriorImage(Character warrior , int warriorIndex){
         Warrior currentWarrior = (Warrior)warrior;
-        Image warriorImage = currentWarrior.getCharacterImage();
+        ImageIcon imageIcon = currentWarrior.getCharacterImage();
         JLabel imageFrame = warriorsImagesLabels.get(warriorIndex);
         
-        ImageIcon imageIcon = new ImageIcon(warriorImage);
         imageFrame.setIcon(imageIcon);
     }
     
@@ -80,6 +93,7 @@ public class GameWindow extends javax.swing.JFrame {
             Warrior currentWarrior = (Warrior) warriors.get(i);
             warriorsNameLabels.get(i).setText(currentWarrior.getName());
             warriorsHealthLabels.get(i).setText("" + currentWarrior.getLife());
+            warriorsDamageReceivedLabels.get(i).setText("" + currentWarrior.getDamageReceived());
         }
     }
     
@@ -110,6 +124,102 @@ public class GameWindow extends javax.swing.JFrame {
         return getTextLastLine(txaConsole.getText());
     }
 
+    public void setTurnLabelText(String text){
+        lblPlayerTurn.setText(text);
+    }
+    
+    public void setDamageDealtLabelText(String text){
+        lblDamageDealt.setText(text);
+    }
+    
+    public void setSelectedWarriorLabelText(String text){
+        lblSelectedWarriorName.setText(text);
+    }
+    
+    public void setAttackerWarriorLabelText(String text){
+        lblAttackedWithWarrior.setText(text);
+    }
+    
+    public void fromWeaponToTableModel(Weapon weapon) {
+        WarriorWeapon currentWeapon = (WarriorWeapon) weapon;
+
+        //DefaultTableModel tableModel = (DefaultTableModel) tblWeapons.getModel();
+        Object[] weaponData = new Object[11];
+
+        weaponData[0] = currentWeapon.getName();
+        CharacterType[] types = CharacterType.values();
+        for (int i = 0; i < currentWeapon.getAttackValueMatrix().size(); i++) {
+            weaponData[i + 1] = currentWeapon.getAttackValueMatrix().get(types[i]);
+        }
+
+        addWeaponModelToTable(weaponData);
+    }
+    
+    public void addWeaponModelToTable(Object[] weapon_data) {
+        DefaultTableModel tableModel = (DefaultTableModel) tblWeapons.getModel();
+        tableModel.addRow(weapon_data);
+    }
+    
+    public void displayWarriorsWeapons(Warrior warrior){
+        System.out.println("Gonna display warrior weapons");
+        for (Weapon weapon : warrior.getWeapons().values()){
+            fromWeaponToTableModel(weapon);
+        }
+    }
+    
+    public int showTieProposalDialog(){
+        tieResponse = JOptionPane.showConfirmDialog(null, "Enemy is proposing a Tie. Do you accept?");
+        if (tieResponse == JOptionPane.YES_OPTION){
+            System.out.println("I accept the tie");
+            return tieResponse;
+        }
+        else{
+            System.out.println("Nope, lets keep playing");
+            return tieResponse;
+        }
+    }
+    
+    public void showMessageDialog(String message){
+        JOptionPane.showMessageDialog(null, message);
+    }
+    
+    public void disableConsole(){
+        txaConsole.setEditable(false);
+    }
+    
+    public ImageIcon resizeImage(ImageIcon image , JLabel label) {
+        Image newImage = image.getImage().getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon resizedImage = new ImageIcon(newImage);
+        return resizedImage;
+    }
+    
+    public void setImageOnLabel(ImageIcon image , JLabel label) {
+        ImageIcon resizedImage = resizeImage(image,label);
+        label.setIcon(resizedImage);
+    }
+    
+    public void setAttackedWithInformation(Warrior warrior, Weapon weapon) {
+        String warriorName = warrior.getName();
+        String warriorType = warrior.getType().toString();
+        ImageIcon warriorImage = warrior.getCharacterImage();
+        
+        String weaponName = weapon.getName();
+        lblAttackedWithWarrior.setText(warriorName + " [" + warriorType + "]");
+        lblAttackerWeapon.setText(weaponName);
+        setImageOnLabel(warriorImage, lblAttackerBG);
+        
+    }
+    
+    public void setAttackedByInformation(Warrior warrior , Weapon weapon){
+        String warriorName = warrior.getName();
+        String warriorType = warrior.getType().toString();
+        ImageIcon warriorImage = warrior.getCharacterImage();
+
+        String weaponName = weapon.getName();
+        lblAttackedBy.setText(warriorName + " [" + warriorType + "]");
+        lblAttackedWith.setText(weaponName);
+        setImageOnLabel(warriorImage, lblAttackedByBG);
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -127,7 +237,7 @@ public class GameWindow extends javax.swing.JFrame {
         tblWeapons = new javax.swing.JTable();
         lblSelectedWarriorName = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        lblTurn = new javax.swing.JLabel();
+        lblPlayerTurn = new javax.swing.JLabel();
         panelWarriorOne = new javax.swing.JPanel();
         lblWarrior1HP = new javax.swing.JLabel();
         lblWarrior1Name = new javax.swing.JLabel();
@@ -163,12 +273,12 @@ public class GameWindow extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         lblAttackedByBG = new javax.swing.JLabel();
         panelUsedToAttack = new javax.swing.JPanel();
-        lblAttackedWithWarrior1 = new javax.swing.JLabel();
+        lblDamageDealt = new javax.swing.JLabel();
+        lblAttackedWithWarrior = new javax.swing.JLabel();
         lblAttackerWeapon = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         lblAttackerBG = new javax.swing.JLabel();
-        lblDamageDealt = new javax.swing.JLabel();
         consolePanel = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         txaConsole = new javax.swing.JTextPane();
@@ -199,8 +309,9 @@ public class GameWindow extends javax.swing.JFrame {
 
         jLabel4.setText("Selected warrior:");
 
-        lblTurn.setFont(new java.awt.Font("Segoe UI Light", 1, 18)); // NOI18N
-        lblTurn.setText("Turn");
+        lblPlayerTurn.setFont(new java.awt.Font("Segoe UI Light", 1, 18)); // NOI18N
+        lblPlayerTurn.setForeground(new java.awt.Color(255, 204, 51));
+        lblPlayerTurn.setText("Turn");
 
         panelWarriorOne.setBackground(new java.awt.Color(102, 102, 102));
         panelWarriorOne.setLayout(null);
@@ -286,33 +397,35 @@ public class GameWindow extends javax.swing.JFrame {
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblSelectedWarriorName, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(warriorsPanelLayout.createSequentialGroup()
                         .addGroup(warriorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addGroup(warriorsPanelLayout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, warriorsPanelLayout.createSequentialGroup()
                                 .addComponent(panelWarriorOne, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(panelWarrior2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(panelWarrior3, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(warriorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(panelWarrior3, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
                             .addGroup(warriorsPanelLayout.createSequentialGroup()
-                                .addGap(0, 31, Short.MAX_VALUE)
-                                .addComponent(lblTurn, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(warriorsPanelLayout.createSequentialGroup()
-                                .addComponent(panelWarrior4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))))))
+                                .addComponent(jLabel3)
+                                .addGap(368, 368, 368)))
+                        .addGroup(warriorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(lblPlayerTurn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panelWarrior4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 23, Short.MAX_VALUE))))
         );
         warriorsPanelLayout.setVerticalGroup(
             warriorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(warriorsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(warriorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTurn)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(21, 21, 21)
+                    .addGroup(warriorsPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(21, 21, 21))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, warriorsPanelLayout.createSequentialGroup()
+                        .addComponent(lblPlayerTurn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                 .addGroup(warriorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panelWarrior4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelWarrior3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -398,10 +511,15 @@ public class GameWindow extends javax.swing.JFrame {
         panelUsedToAttack.setBackground(new java.awt.Color(102, 102, 102));
         panelUsedToAttack.setLayout(null);
 
-        lblAttackedWithWarrior1.setForeground(new java.awt.Color(255, 255, 255));
-        lblAttackedWithWarrior1.setText("Attacker [Type]");
-        panelUsedToAttack.add(lblAttackedWithWarrior1);
-        lblAttackedWithWarrior1.setBounds(140, 20, 87, 16);
+        lblDamageDealt.setForeground(new java.awt.Color(204, 0, 51));
+        lblDamageDealt.setText("DAMAGE");
+        panelUsedToAttack.add(lblDamageDealt);
+        lblDamageDealt.setBounds(30, 100, 90, 30);
+
+        lblAttackedWithWarrior.setForeground(new java.awt.Color(255, 255, 255));
+        lblAttackedWithWarrior.setText("Attacker [Type]");
+        panelUsedToAttack.add(lblAttackedWithWarrior);
+        lblAttackedWithWarrior.setBounds(140, 20, 87, 16);
 
         lblAttackerWeapon.setForeground(new java.awt.Color(255, 255, 255));
         lblAttackerWeapon.setText("Weapon used");
@@ -418,12 +536,7 @@ public class GameWindow extends javax.swing.JFrame {
         panelUsedToAttack.add(jLabel10);
         jLabel10.setBounds(20, 20, 104, 16);
         panelUsedToAttack.add(lblAttackerBG);
-        lblAttackerBG.setBounds(0, 0, 450, 220);
-
-        lblDamageDealt.setForeground(new java.awt.Color(204, 0, 51));
-        lblDamageDealt.setText("DAMAGE");
-        panelUsedToAttack.add(lblDamageDealt);
-        lblDamageDealt.setBounds(30, 100, 90, 30);
+        lblAttackerBG.setBounds(0, 0, 430, 220);
 
         javax.swing.GroupLayout statsPanelLayout = new javax.swing.GroupLayout(statsPanel);
         statsPanel.setLayout(statsPanelLayout);
@@ -477,12 +590,13 @@ public class GameWindow extends javax.swing.JFrame {
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(warriorsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(statsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         consolePanel.setBackground(new java.awt.Color(102, 102, 102));
 
         txaConsole.setBackground(new java.awt.Color(0, 0, 0));
+        txaConsole.setFont(new java.awt.Font("Dialog", 0, 16)); // NOI18N
         txaConsole.setForeground(new java.awt.Color(255, 255, 255));
         jScrollPane3.setViewportView(txaConsole);
 
@@ -543,7 +657,7 @@ public class GameWindow extends javax.swing.JFrame {
     private javax.swing.JLabel lblAttackedBy;
     private javax.swing.JLabel lblAttackedByBG;
     private javax.swing.JLabel lblAttackedWith;
-    private javax.swing.JLabel lblAttackedWithWarrior1;
+    private javax.swing.JLabel lblAttackedWithWarrior;
     private javax.swing.JLabel lblAttackerBG;
     private javax.swing.JLabel lblAttackerWeapon;
     private javax.swing.JLabel lblDamageDealt;
@@ -551,8 +665,8 @@ public class GameWindow extends javax.swing.JFrame {
     private javax.swing.JLabel lblDamageToW2;
     private javax.swing.JLabel lblDamageToW3;
     private javax.swing.JLabel lblDamageToW4;
+    private javax.swing.JLabel lblPlayerTurn;
     private javax.swing.JLabel lblSelectedWarriorName;
-    private javax.swing.JLabel lblTurn;
     private javax.swing.JLabel lblWarrior1HP;
     private javax.swing.JLabel lblWarrior1Name;
     private javax.swing.JLabel lblWarrior2HP;

@@ -36,19 +36,25 @@ public class ClientMessageHandler implements IClientMessageHandler{
         String event = message.getEvent();
         if (event.equals("READY")){
             int clientID = ((ClientMessage)message).getClientID();
-            System.out.println("Player with ID:" + clientID + " is ready for a match");
+            System.out.println("Player with ID: " + clientID + " is ready for a match");
             ServerThread clientThread = server.getClients().get(clientID); 
             
             Player readyPlayer = new Player(clientThread);
 
             MatchMaker matchMaker = server.getMatchMaker();
             matchMaker.addPlayerToQueue(readyPlayer);
+            System.out.println("Added player with ID:" + readyPlayer.getPlayerID() + " to queue");
         }
         else{
             MatchMaker matchMaker = server.getMatchMaker();
             ClientMessage clientMessage = (ClientMessage) message;
             
+            System.out.println("Looking the match for id:" + clientMessage.getClientID() );
+            
             Match playerMatch = matchMaker.getPlayerMatch(clientMessage.getClientID());
+            if (playerMatch == null){
+                System.out.println("I am null bro");
+            }
             playerMatch.handlePlayerMessage(message);
         }
     }

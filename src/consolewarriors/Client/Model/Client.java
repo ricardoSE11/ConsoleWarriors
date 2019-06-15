@@ -7,6 +7,7 @@ package consolewarriors.Client.Model;
 
 import consolewarriors.Common.Message;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -22,21 +23,38 @@ import java.util.logging.Logger;
  */
 public abstract class Client {
 
-    private String hostname;
-    private int portNumber;
+    protected String hostname;
+    protected int portNumber;
 
-    private String username;
-    private int id;
+    protected String username;
+    protected int id;
 
-    private Socket socket = null;
+    protected Socket socket = null;
     protected ObjectInputStream reader;
     protected ObjectOutputStream writer;
     protected IServerMessageHandler serverMessageHandler;
 
+    protected boolean newSession;
+    
     public Client(String hostname, int portNumber) {
         this.hostname = hostname;
         this.portNumber = portNumber;
     }
+    
+    public Client(String hostname , int portNumber , String username , boolean newSession){
+        this.hostname = hostname;
+        this.portNumber = portNumber;
+        this.username = username;
+        this.newSession = newSession;
+    }
+    
+    public Client(String hostname, int portNumber, int id) {
+        this.hostname = hostname;
+        this.portNumber = portNumber;
+        this.id = id;
+        this.newSession = false;
+    }
+    
 
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">   
     public String getHostname() {
@@ -115,13 +133,27 @@ public abstract class Client {
             // --- Preparing to receive messages from server ---
             InputStream inputStream = socket.getInputStream();
             this.reader = new ObjectInputStream(inputStream);
+            
+            if(newSession){
+                // --- Tell the server is the first time we play and ask for an ID ---
+                DataOutputStream sessionIndicator = new DataOutputStream(outputStream);
+                sessionIndicator.writeUTF("NEW");
+                
+                // --- We receive the ID assigned --- 
+                DataInputStream idReceiver = new DataInputStream(inputStream);
+                int assignedID = idReceiver.readInt();
+                this.id = assignedID;
+                
+                System.out.println("Received my ID: " + id);
+            }
+            else{
+                // --- Send the ID to the server for identification ---
+                DataOutputStream idSender = new DataOutputStream(outputStream);
+                idSender.writeInt(id);
+                
+                System.out.println("Confirming ID: " + id);
+            }
 
-            // --- We receive the ID assigned --- 
-            DataInputStream idReceiver = new DataInputStream(inputStream);
-            int assignedID = idReceiver.readInt();
-            this.id = assignedID;
-
-            System.out.println("Received my ID: " + id);
 
             ClientThread clientThread = new ClientThread(this, reader); // Thread to listen for server messages
             clientThread.setServerMessageHandler(serverMessageHandler);
