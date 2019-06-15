@@ -5,13 +5,11 @@
  */
 package consolewarriors.Server.Model.Game;
 
-import Weapons.Weapon;
 import consolewarriors.Common.AttackGroup;
 import consolewarriors.Common.ClientMessage;
 import consolewarriors.Common.Message;
 import consolewarriors.Common.ServerMessage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +25,7 @@ public class Match {
     private IMatchLogger matchLogger;
     private IScoreRecorder scoreRecorder;
     
+    private IWildCardHandler wildCardHandler;
     private Player winner;
     private boolean ended;
     private int turn;
@@ -36,6 +35,9 @@ public class Match {
         this.playerTwo = playerTwo;
         this.ended = false;
         this.turn = 1;
+        
+        this.wildCardHandler = new WildCardHandler();
+        wildCardHandler.startTimer();
         
         // Missing: match logger and score recorder initialization 
     }
@@ -177,6 +179,14 @@ public class Match {
             enemy.getClientThread().sendMessageToClient(chatMessage);
             return;
         }
+        
+        // Moved out of the switch because it can be called at any given time
+        else if (commandName.equals("SURRENDER")){
+            Message victoryMessage = new ServerMessage("VICTORY", null);
+            Player enemy = getEnemyOfPlayer(playerID);
+            enemy.getClientThread().sendMessageToClient(victoryMessage);
+            endMatch(enemy);
+        }
 
         if (isPlayersTurn(playerID) && !ended){
             // Area for improvemente
@@ -241,14 +251,6 @@ public class Match {
                     Player enemy = getEnemyOfPlayer(playerID);
                     enemy.getClientThread().sendMessageToClient(tieDeniedMessage);
                     nextTurn();
-                }
-                break;
-
-                case "SURRENDER": {
-                    Message victoryMessage = new ServerMessage("VICTORY", null);
-                    Player enemy = getEnemyOfPlayer(playerID);
-                    enemy.getClientThread().sendMessageToClient(victoryMessage);
-                    endMatch(enemy);
                 }
                 break;
 
