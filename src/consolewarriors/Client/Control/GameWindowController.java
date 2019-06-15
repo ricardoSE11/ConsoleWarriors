@@ -13,17 +13,18 @@ import consolewarriors.Common.Message;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.EventListener;
 import Characters.Character;
+import Weapons.Weapon;
 import consolewarriors.Client.Model.IServerMessageHandler;
 import consolewarriors.Client.Model.ServerMessageHandler;
+import consolewarriors.Common.AttackGroup;
 import consolewarriors.Common.Command.ICommand;
 import consolewarriors.Common.Command.ICommandManager;
 import consolewarriors.Common.Command.PlayerCommandManager;
 import consolewarriors.Common.Command.PlayerCommands.NotFoundCommand;
 import consolewarriors.Common.Shared.Warrior;
 import java.awt.event.KeyListener;
-import java.util.regex.PatternSyntaxException;
+import java.io.Serializable;
 import javax.swing.JOptionPane;
 
 
@@ -31,7 +32,7 @@ import javax.swing.JOptionPane;
  *
  * @author rshum
  */
-public class GameWindowController implements IObserver{
+public class GameWindowController implements IObserver {
     
     // View
     private GameWindow gameWindow;
@@ -96,18 +97,19 @@ public class GameWindowController implements IObserver{
     }
 
     class WindowListener implements KeyListener {
-
-        @Override
-        public void keyTyped(KeyEvent ke) {
-        }
-
         @Override
         public void keyPressed(KeyEvent ke) {
             if ((ke.getKeyChar() == '\n')) {
                 // --- Commands with arguments ---
                 try{
                     String[] commandInfo = gameWindow.getLastLine().split("-");
-
+                    
+                    if (commandInfo.length > 1){
+                        System.out.println("Command with arguments");
+                    }
+                    else{
+                        System.out.println("I guess I enter here and then throw the exception anyway(?)");
+                    }
                     System.out.println("Parsing: " + gameWindow.getLastLine());
                     
                     int hyphenIndex = gameWindow.getLastLine().indexOf("-");
@@ -129,6 +131,9 @@ public class GameWindowController implements IObserver{
                 }
                 
                 catch(Exception e){
+                    
+                    //e.printStackTrace();
+                    
                     // --- Commands with no arguments ---
                     String noParameterCommand = gameWindow.getLastLine().toUpperCase();
                     ICommandManager commandManager = player.getCommandManager();
@@ -144,15 +149,14 @@ public class GameWindowController implements IObserver{
                         selectedCommand.execute();
                     }
                 }
-
-
-                
             }
         }
+        
+        @Override
+        public void keyTyped(KeyEvent ke) {}
 
         @Override
-        public void keyReleased(KeyEvent ke) {
-        }
+        public void keyReleased(KeyEvent ke) {}
 
     }
    
@@ -163,12 +167,13 @@ public class GameWindowController implements IObserver{
         }
         
         else if (object instanceof Integer){
-            
+            // Updating the warrios data
+            gameWindow.setUpWarriorsData(warriors);
         }
     }
     
     public void handleStatusUpdates(String statusString){
-        if (statusString.startsWith("WRONG_TURN")) {
+        if (statusString.equals("WRONG_TURN")) {
             this.gameWindow.writeToConsole("\n" + "Error: Is not your turn" + "\n", Color.RED);
         } 
         
@@ -180,17 +185,18 @@ public class GameWindowController implements IObserver{
                 gameWindow.displayWarriorsWeapons(choosenWarrior);
                 gameWindow.setSelectedWarriorLabelText(warriorName);
             } else {
-                System.out.println("Null warrior bruh, didnt find: " + warriorName);
+                System.out.println("Null warrior, didnt find: " + warriorName);
             }
         }
         
         else if (statusString.equals("RESPONDING_TIE_REQUEST")){
-            System.out.println("WAT: " + statusString);
-            int tieRespone = 0;
-            //gameWindow.showTieProposalDialog();
-            if (tieRespone == JOptionPane.YES_OPTION){
+            System.out.println("Responding tie request");
+            int tieAnswer = gameWindow.showTieProposalDialog();
+            if (tieAnswer == JOptionPane.YES_OPTION){
+                // Send a message to indicate the end of the game.
                 Message acceptTieMessage = new ClientMessage("TIE_ACCEPTED", player.getPlayerID(), null);
                 player.sendMessage(acceptTieMessage);
+                gameWindow.writeToConsole(" --- TIE: GAME ENDED --- ", Color.BLUE);
             }
             else{
                 Message denyTieMessage = new ClientMessage("TIE_DENIED", player.getPlayerID(), null);
@@ -198,9 +204,26 @@ public class GameWindowController implements IObserver{
             }
         }
         
-        else if (statusString.startsWith("GAME_TIED")){
-            gameWindow.showMessageDialog("Game was tied");
+        else if (statusString.equals("GAME_TIED")){
+            //gameWindow.showMessageDialog("Game was tied");
+            gameWindow.writeToConsole(" --- TIE: GAME ENDED --- ", Color.BLUE);
+            player.leaveMatch();
+            gameWindow.disableConsole();
         }
+        
+        else if (statusString.equals("DEFEATED")){
+            gameWindow.writeToConsole("\n" + " --- DEFEATED: GAME ENDED --- ", Color.RED);
+            player.leaveMatch();
+            gameWindow.disableConsole();
+        }
+        
+        else if (statusString.equals("WINNER")){
+            gameWindow.writeToConsole(" --- VICTORY: GAME ENDED --- ", Color.GREEN);
+            player.leaveMatch();
+            gameWindow.disableConsole();
+        }
+        
+        
     }
     
     public void handleStringUpdates(String updateString){
@@ -210,6 +233,21 @@ public class GameWindowController implements IObserver{
             handleStatusUpdates(status);
         } 
         
+        else if (updateString.equals("ATTACKED_ENEMY")){
+            AttackGroup attackParameters = player.getAttackedWith();
+            Warrior attackingWarrior = (Warrior) attackParameters.getWarrior();
+            Weapon attackingWeapon = (Weapon) attackParameters.getWeapon();
+            gameWindow.setAttackedWithInformation(attackingWarrior, attackingWeapon);
+            
+        }
+        
+        else if (updateString.equals("RECEIVED_ATTACK")) {
+            AttackGroup attackParameters = player.getAttackedBy();
+            Warrior attackingWarrior = (Warrior) attackParameters.getWarrior();
+            Weapon attackingWeapon = (Weapon) attackParameters.getWeapon();
+            gameWindow.setAttackedByInformation(attackingWarrior, attackingWeapon);
+        }
+        
         else if (updateString.startsWith("DAMAGE_DEALT")){
             int hyphenIndex = updateString.indexOf("-");
             gameWindow.setDamageDealtLabelText(updateString.substring(hyphenIndex + 1));
@@ -218,12 +256,12 @@ public class GameWindowController implements IObserver{
         else {
             if (updateString.startsWith("ENEMY")) {
                 int hyphenIndex =  updateString.indexOf("-");
-                this.gameWindow.writeToConsole("\n" + "Chat[enemy]: " + updateString.substring(hyphenIndex + 1) + "\n", Color.GREEN);
+                this.gameWindow.writeToConsole("\n" + "Chat[enemy]: " + updateString.substring(hyphenIndex + 1) + "\n", Color.GRAY);
             } else {
-                this.gameWindow.writeToConsole("\n" + "Chat[you]: " + updateString, Color.GREEN);
+                this.gameWindow.writeToConsole("\n" + "Chat[you]: " + updateString, Color.GRAY);
             }
-
         }
+        
     }
     
     

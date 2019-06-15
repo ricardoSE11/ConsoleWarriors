@@ -14,6 +14,7 @@ import consolewarriors.Common.CharacterType;
 import java.awt.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -23,9 +24,10 @@ public class Warrior extends Character implements Serializable , IObservable{
     
     private CharacterType type;
     private HashMap<String,Weapon> weapons;
-    private Image characterImage;
-    
-    private ArrayList<IObserver> observers;
+    //private Image characterImage; //Not serializable
+    private ImageIcon characterImage;
+            
+    private transient ArrayList<IObserver> observers; // TRANSIENT word SUPER IMPORTANT.
     private int damageReceived;
     
     
@@ -92,16 +94,17 @@ public class Warrior extends Character implements Serializable , IObservable{
         return this.image;
     }
 
-    public Image getCharacterImage() {
+    public ImageIcon getCharacterImage() {
         return characterImage;
     }
 
-    public void setCharacterImage(Image characterImage) {
+    public void setCharacterImage(ImageIcon characterImage) {
         this.characterImage = characterImage;
     }
     
     public Weapon getWeaponByName(String weaponName){
         Weapon choosenWeapon = null;
+        System.out.println("Looking for weapon: " + weaponName);
         if (weapons.containsKey(weaponName)){
             choosenWeapon = weapons.get(weaponName);
         }

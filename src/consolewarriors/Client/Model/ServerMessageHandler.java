@@ -12,6 +12,7 @@ import consolewarriors.Common.Shared.Warrior;
 import consolewarriors.Common.Shared.WarriorWeapon;
 import java.util.ArrayList;
 import Characters.Character;
+import consolewarriors.Common.AttackGroup;
 import consolewarriors.Common.ClientMessage;
 
 /**
@@ -34,15 +35,25 @@ public class ServerMessageHandler implements IServerMessageHandler{
             // We are receiving an attack
             case "ATTACK":{
                 System.out.println("Receiving attack");
-                Weapon weapon = (Weapon) message.getObjectOfInterest();
+                AttackGroup attackParameters =  (AttackGroup) message.getObjectOfInterest();
                 ArrayList<Character> warriors = ((PlayerClient)client).getWarriors();
+                
+                ((PlayerClient) client).setAttackedBy(attackParameters);
+                Weapon weapon = (Weapon) attackParameters.getWeapon();
+                Warrior warrior = (Warrior) attackParameters.getWarrior();
                 
                 Integer totalDamageDealt = attackWarriors(warriors, weapon);
                 Message attackResponse = new ClientMessage("ATTACK_RESPONSE", client.getId(), totalDamageDealt);
                 client.sendMessage(attackResponse);
+                
+                if (((PlayerClient)client).lostTheMatch()){
+                    Message lostMessage = new ClientMessage("LOST", client.getId(), null);
+                    client.sendMessage(lostMessage);
+                }
             }
             break;
             
+            // Receiving the damage we dealt on the attack
             case "ATTACK_RESPONSE":{
                 System.out.println("Getting the damage dealt");
                 int damageDealt = (int) message.getObjectOfInterest();
@@ -59,19 +70,23 @@ public class ServerMessageHandler implements IServerMessageHandler{
             break;
             
             // Enemy is proposing a tie
-            case "TIE":{
+            case "TIE_PROPOSAL":{
                 System.out.println("Enemy is proposing a tie");
                 ((PlayerClient) client).changePlayerGamingStatus("RESPONDING_TIE_REQUEST");
             }
             break;
             
             // Tie was accepted
-            case "TIE_ACCEPTED": {
-                System.out.println("I accepted the tie");
+            case "TIE_PROPOSSAL_ACCEPTED": {
+                System.out.println("Enemy accepted the tie");
                 ((PlayerClient) client).changePlayerGamingStatus("GAME_TIED");
             }
             break;
             
+            case "VICTORY":{
+                System.out.println("Enemy surrendered");
+                ((PlayerClient) client).changePlayerGamingStatus("WINNER");
+            }
             
             
         }
@@ -85,8 +100,8 @@ public class ServerMessageHandler implements IServerMessageHandler{
         WarriorWeapon currentWeapon = (WarriorWeapon)weapon;
         
         int damageToType = currentWeapon.getDamageForType(type);
-        currentWarrior.setDamageReceived(damageToType);
         currentWarrior.setLife(currentWarrior.getLife() - damageToType);
+        currentWarrior.setDamageReceived(damageToType); // Attribute used to notify the controller that it should update the individual damage received label
         
         return damageToType;
     }

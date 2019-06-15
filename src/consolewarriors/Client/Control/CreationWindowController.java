@@ -119,8 +119,7 @@ public class CreationWindowController {
         String warriorName = creation_window.getWarriorName();
         CharacterType warriorType = CharacterType.getCharacterTypeValue(creation_window.getCmbxWarriorTypeSelectedItem().toString().toUpperCase());
         
-        ImageIcon warriorIcon = creation_window.getWarriorImageIcon();
-        Image warriorImage = warriorIcon.getImage();
+        ImageIcon warriorImage = creation_window.getWarriorImageIcon();
         
         Characters.Character newCharacter = new Warrior(warriorName, warriorType , lastImageUsedPath  , 100); //FIXME
         ((Warrior)newCharacter).setCharacterImage(warriorImage);

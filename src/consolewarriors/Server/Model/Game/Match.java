@@ -6,9 +6,14 @@
 package consolewarriors.Server.Model.Game;
 
 import Weapons.Weapon;
+import consolewarriors.Common.AttackGroup;
 import consolewarriors.Common.ClientMessage;
 import consolewarriors.Common.Message;
 import consolewarriors.Common.ServerMessage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -103,6 +108,18 @@ public class Match {
     public void nextTurn(){
         this.turn++;
     }
+    
+    public void endMatch(Player winner){
+        this.winner = winner;
+        this.ended = true;
+        
+        try {
+            playerTwo.getClientThread().getSocket().close();
+            playerOne.getClientThread().getSocket().close();
+        } catch (IOException ex) {
+            Logger.getLogger(Match.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
   
     public Player getPlayerByID(int playerID){
         if (playerOne.getPlayerID() == playerID){
@@ -158,90 +175,92 @@ public class Match {
             Message chatMessage = new ServerMessage("CHAT", messageText);
             Player enemy = getEnemyOfPlayer(playerID);
             enemy.getClientThread().sendMessageToClient(chatMessage);
+            return;
         }
-        
+
+        if (isPlayersTurn(playerID) && !ended){
+            // Area for improvemente
+            switch (commandName) {
+                case "ATTACK": {
+                    // Receive the weapon
+                    System.out.println("Player " + playerID + " is attacking");
+                    AttackGroup attackParameters = (AttackGroup) message.getObjectOfInterest();
+
+                    // Send the weapon to the enemy
+                    Message attackMessage = new ServerMessage("ATTACK", attackParameters);
+                    Player enemy = getEnemyOfPlayer(playerID);
+                    enemy.getClientThread().sendMessageToClient(attackMessage);
+
+                    nextTurn();
+                }
+                break;
+
+                case "ATTACK_RESPONSE": {
+                    System.out.println("Getting attack response");
+                    Integer damageDealt = (Integer) message.getObjectOfInterest();
+                    Message attackResponse = new ServerMessage("ATTACK_RESPONSE", damageDealt);
+                    Player enemy = getEnemyOfPlayer(playerID);
+                    enemy.getClientThread().sendMessageToClient(attackResponse);
+
+                }
+                break;
+                
+                // Send by a player who lost after an attack
+                case "LOST":{
+                    
+                }
+                break;
+
+                case "PASS": {
+                    Message passMessage = new ServerMessage("PASS", null);
+                    Player enemy = getEnemyOfPlayer(playerID);
+                    enemy.getClientThread().sendMessageToClient(passMessage);
+                    nextTurn();
+                }
+                break;
+
+                case "PROPOSING_TIE": {
+                    System.out.println("Player:" + playerID + " is proposing a tie");
+                    Message tieMessage = new ServerMessage("TIE_PROPOSAL", null);
+                    Player enemy = getEnemyOfPlayer(playerID);
+                    enemy.getClientThread().sendMessageToClient(tieMessage);
+                    nextTurn();
+                }
+                break;
+
+                case "TIE_ACCEPTED": {
+                    Message tieAcceptedMessage = new ServerMessage("TIE_PROPOSSAL_ACCEPTED", null);
+                    Player enemy = getEnemyOfPlayer(playerID);
+                    enemy.getClientThread().sendMessageToClient(tieAcceptedMessage);
+                    endMatch(null);
+                }
+                break;
+
+                case "TIE_DENIED": {
+                    Message tieDeniedMessage = new ServerMessage("TIE_DENIED", null);
+                    Player enemy = getEnemyOfPlayer(playerID);
+                    enemy.getClientThread().sendMessageToClient(tieDeniedMessage);
+                    nextTurn();
+                }
+                break;
+
+                case "SURRENDER": {
+                    Message victoryMessage = new ServerMessage("VICTORY", null);
+                    Player enemy = getEnemyOfPlayer(playerID);
+                    enemy.getClientThread().sendMessageToClient(victoryMessage);
+                    endMatch(enemy);
+                }
+                break;
+
+                case "RELOAD": {
+                }
+                break;
+
+            }
+        }
         else{
-            // Check for turn validation
-            if (!isPlayersTurn(playerID)) {
-                return; // Stops execution here.
-            }            
+            System.out.println("Not player " + playerID + " 's turn");
         }
-
-        
-        // Area for improvemente
-        switch(commandName){
-            case "ATTACK":{
-                // Receive the weapon
-                System.out.println("Attacking");
-                Weapon attackingWeapon = (Weapon) message.getObjectOfInterest();
-                
-                // Send the weapon to the enemy
-                Message attackMessage = new ServerMessage("ATTACK", attackingWeapon);
-                Player enemy = getEnemyOfPlayer(playerID);
-                enemy.getClientThread().sendMessageToClient(attackMessage);
-                
-                nextTurn();
-            }
-            break;
-            
-            
-            case "ATTACK_RESPONSE":{
-                System.out.println("Getting attack response");
-                Integer damageDealt = (Integer) message.getObjectOfInterest();
-                Message attackResponse = new ServerMessage("ATTACK_RESPONSE", damageDealt);
-                Player enemy = getEnemyOfPlayer(playerID);
-                enemy.getClientThread().sendMessageToClient(attackResponse);
-                
-            }
-            break;
-            
-            case "PASS":{
-                Message passMessage = new ServerMessage("PASS" , null);
-                Player enemy = getEnemyOfPlayer(playerID);
-                enemy.getClientThread().sendMessageToClient(passMessage);
-                nextTurn();
-            }
-            break;
-            
-            case "TIE": {
-                System.out.println("Player:" + playerID + " is proposing a tie") ;
-                Message tieMessage = new ServerMessage("TIE" , null);
-                Player enemy = getEnemyOfPlayer(playerID);
-                enemy.getClientThread().sendMessageToClient(tieMessage);
-                nextTurn();
-            }
-            break;
-            
-            case "TIE_ACCEPTED": {
-                Message tieAcceptedMessage = new ServerMessage("TIE_ACCEPTED", null);
-                Player enemy = getEnemyOfPlayer(playerID);
-                enemy.getClientThread().sendMessageToClient(tieAcceptedMessage);
-                nextTurn();
-            }
-            break;
-            
-            case "TIE_DENIED": {
-                // FIXME
-//                Message tieMessage = new ServerMessage("TIE", null);
-//                Player enemy = getEnemyOfPlayer(playerID);
-//                enemy.getClientThread().sendMessageToClient(tieMessage);
-//                nextTurn();
-            }
-            break;
-            
-            
-            case "SURRENDER": {
-
-            }
-            break;
-            
-            case "RELOAD": {
-            }
-            break;
-            
-            
-        }
-        
         
     }
     

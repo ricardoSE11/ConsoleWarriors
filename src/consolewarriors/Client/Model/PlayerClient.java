@@ -11,9 +11,11 @@ import java.util.ArrayList;
 import Characters.Character;
 import consolewarriors.Client.IObservable;
 import consolewarriors.Client.IObserver;
+import consolewarriors.Common.AttackGroup;
 import consolewarriors.Common.Command.ICommandManager;
 import consolewarriors.Common.Command.PlayerCommandManager;
 import consolewarriors.Common.Shared.Warrior;
+import java.io.IOException;
 
 /**
  *
@@ -29,6 +31,8 @@ public class PlayerClient extends Client implements IObservable {
     private String playerStatus = ""; // attribute for the SURRENDER , and TIE commands
     
     private int damageDealtOnAttack; // Consultar Dani.
+    private AttackGroup attackedWith;
+    private AttackGroup attackedBy;
     
     public PlayerClient(String hostname, int portNumber , String playerName , ArrayList<Character> playerWarriors ) {
         super(hostname, portNumber);
@@ -50,8 +54,6 @@ public class PlayerClient extends Client implements IObservable {
         this.observers = new ArrayList<>();
         this.chatMessages = new ArrayList<>();
     }
-    
-    
     
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
 
@@ -149,7 +151,28 @@ public class PlayerClient extends Client implements IObservable {
         this.damageDealtOnAttack = damageDealtOnAttack;
         notify("DAMAGE_DEALT-" + this.damageDealtOnAttack);
     }
+
+    public AttackGroup getAttackedWith() {
+        return attackedWith;
+    }
+
+    public void setAttackedWith(AttackGroup attackedWith) {
+        this.attackedWith = attackedWith;
+        notify("ATTACKED_ENEMY");
+        
+    }
+
+    public AttackGroup getAttackedBy() {
+        return attackedBy;
+    }
+
+    public void setAttackedBy(AttackGroup attackedBy) {
+        this.attackedBy = attackedBy;
+        notify("RECEIVED_ATTACK");
+    }
      
+    
+    
     // </editor-fold>
 
     @Override
@@ -169,9 +192,22 @@ public class PlayerClient extends Client implements IObservable {
         }
     }
 
+    public void leaveMatch(){
+        try {
+            this.socket.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 
-
-
+    public boolean lostTheMatch(){
+        for (Character currentCharacter : warriors){
+            if (currentCharacter.life > 0){
+                return false;
+            }
+        }
+        return true;
+    }
     
     
     
