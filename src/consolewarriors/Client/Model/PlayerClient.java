@@ -209,6 +209,23 @@ public class PlayerClient extends Client implements IObservable {
         return true;
     }
     
+    public boolean isOutOfWeapons(){
+        for (Character currentCharater : warriors) {
+            Warrior warrior = (Warrior) currentCharater;
+            // If the player has a warrior that still has weapons
+            if (!warrior.isOutOfWeapons()) {
+                return false;
+            }
+        }
+        return true;   
+    }
+    
+    public void reloadWarriorWeapons(){
+        for (Character currentCharater : warriors) {
+            Warrior warrior = (Warrior) currentCharater;
+            warrior.reloadWeapons();
+        }
+    }
     
     
 }

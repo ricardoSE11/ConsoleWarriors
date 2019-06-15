@@ -156,4 +156,24 @@ public class Warrior extends Character implements Serializable , IObservable{
             observer.update(object);
         }
     }
+    
+    public boolean isOutOfWeapons(){
+        for (Weapon currentWeapon : weapons.values()){
+            WarriorWeapon weapon = (WarriorWeapon) currentWeapon;
+            // If the warrior was a weapon that has not been used
+            if (!weapon.wasUsed()){
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public void reloadWeapons(){
+        for (Weapon currentWeapon : weapons.values()) {
+            WarriorWeapon weapon = (WarriorWeapon) currentWeapon;
+            weapon.setWasUsed(false);
+        }
+    }
+    
+    
 }

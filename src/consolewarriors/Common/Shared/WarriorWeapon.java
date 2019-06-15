@@ -50,7 +50,7 @@ public class WarriorWeapon extends Weapon implements Serializable{
         this.attackValueMatrix = attackValueMatrix;
     }
 
-    public boolean isWasUsed() {
+    public boolean wasUsed() {
         return wasUsed;
     }
 

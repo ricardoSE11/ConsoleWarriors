@@ -83,10 +83,17 @@ public class ServerMessageHandler implements IServerMessageHandler{
             }
             break;
             
+            case "TIE_PROPOSSAL_DENIED":{
+                System.out.println("Enemy did not accepted the tie");
+                ((PlayerClient) client).changePlayerGamingStatus("TIE_DENIED");
+            }
+            break;
+            
             case "VICTORY":{
                 System.out.println("Enemy surrendered");
                 ((PlayerClient) client).changePlayerGamingStatus("WINNER");
             }
+            break;
             
             
         }

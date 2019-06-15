@@ -237,7 +237,7 @@ public class Match {
                 break;
 
                 case "TIE_DENIED": {
-                    Message tieDeniedMessage = new ServerMessage("TIE_DENIED", null);
+                    Message tieDeniedMessage = new ServerMessage("TIE_PROPOSSAL_DENIED", null);
                     Player enemy = getEnemyOfPlayer(playerID);
                     enemy.getClientThread().sendMessageToClient(tieDeniedMessage);
                     nextTurn();

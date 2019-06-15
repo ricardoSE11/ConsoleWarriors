@@ -12,7 +12,7 @@ import consolewarriors.Common.ClientMessage;
 import consolewarriors.Common.Command.ICommand;
 import consolewarriors.Common.Message;
 import consolewarriors.Common.Shared.Warrior;
-import java.util.ArrayList;
+import consolewarriors.Common.Shared.WarriorWeapon;
 
 /**
  *
@@ -63,23 +63,25 @@ public class AttackCommand implements ICommand {
             Weapon choosenWeapon = choosenWarrior.getWeaponByName(weaponName);
             
             if (choosenWeapon == null){
-                // change player status to "NO_SUCH_WEAPON"
+                player.changePlayerGamingStatus("NOT_SUCH_WEAPON");
                 System.out.println("Null weapon");
             }
             
-            /*
-            0 - Warrior 
-            1 - Weapon
-            */ 
-            AttackGroup attackParameters = new AttackGroup(choosenWarrior, choosenWeapon);
-            
-            player.setAttackedWith(attackParameters);
-            
-            Message attackMessage = new ClientMessage("ATTACK", player.getId(), attackParameters);
-            player.sendMessage(attackMessage);
+            if (((WarriorWeapon)choosenWeapon).wasUsed()){
+                player.changePlayerGamingStatus("USED_WEAPON");
+                System.out.println("Weapon was already used");
+            }
+            else{
+                ((WarriorWeapon) choosenWeapon).setWasUsed(true);
+                AttackGroup attackParameters = new AttackGroup(choosenWarrior, choosenWeapon);
+                player.setAttackedWith(attackParameters);
+                Message attackMessage = new ClientMessage("ATTACK", player.getId(), attackParameters);
+                player.sendMessage(attackMessage);
+            }
+
         }
         else{
-            // change player status to "NO_SUCH_WARRIOR"
+            player.changePlayerGamingStatus("NO_SUCH_WARRIOR");
             System.out.println("Got a null warrior");
         }
         
