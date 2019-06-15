@@ -7,10 +7,12 @@ package consolewarriors.Common.Command.PlayerCommands;
 
 import Weapons.Weapon;
 import consolewarriors.Client.Model.PlayerClient;
+import consolewarriors.Common.AttackGroup;
 import consolewarriors.Common.ClientMessage;
 import consolewarriors.Common.Command.ICommand;
 import consolewarriors.Common.Message;
 import consolewarriors.Common.Shared.Warrior;
+import java.util.ArrayList;
 
 /**
  *
@@ -61,13 +63,23 @@ public class AttackCommand implements ICommand {
             Weapon choosenWeapon = choosenWarrior.getWeaponByName(weaponName);
             
             if (choosenWeapon == null){
+                // change player status to "NO_SUCH_WEAPON"
                 System.out.println("Null weapon");
             }
             
-            Message attackMessage = new ClientMessage("ATTACK", player.getId(), choosenWeapon);
+            /*
+            0 - Warrior 
+            1 - Weapon
+            */ 
+            AttackGroup attackParameters = new AttackGroup(choosenWarrior, choosenWeapon);
+            
+            player.setAttackedWith(attackParameters);
+            
+            Message attackMessage = new ClientMessage("ATTACK", player.getId(), attackParameters);
             player.sendMessage(attackMessage);
         }
         else{
+            // change player status to "NO_SUCH_WARRIOR"
             System.out.println("Got a null warrior");
         }
         

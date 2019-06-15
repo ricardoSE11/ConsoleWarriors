@@ -9,52 +9,41 @@ import consolewarriors.Client.Model.PlayerClient;
 import consolewarriors.Common.ClientMessage;
 import consolewarriors.Common.Command.ICommand;
 import consolewarriors.Common.Message;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author rshum
  */
-public class ChatCommand implements ICommand {
+public class SurrenderCommand implements ICommand{
 
-    public static final String NAME = "CHAT";
+    public static final String NAME = "SURRENDER";
     private PlayerClient player;
 
-    public ChatCommand(PlayerClient player) {
-        this.player = player;
-    }
-
-    // Empty constructor necessary for the CommandManager
-    public ChatCommand() {
-    }
-
-    public PlayerClient getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(PlayerClient player) {
-        this.player = player;
+    public SurrenderCommand() {
     }
     
     @Override
     public String getCommandName() {
-        return this.NAME;
+        return NAME;
     }
 
     @Override
     public void execute() {
+        System.out.println("Executing the SURRENDER command");
+        Message surrenderMessage = new ClientMessage("SURRENDER", player.getPlayerID() , null);
+        player.sendMessage(surrenderMessage);
+        
+        player.changePlayerGamingStatus("DEFEATED");
     }
 
     @Override
     public void execute(String arguments) {
-        Message chatMessage = new ClientMessage("CHAT", player.getId(), arguments);
-        player.sendMessage(chatMessage);
-        this.player.addChatMessage(arguments);        
+        
     }
-    
+
     @Override
     public void setUpResource(Object object) {
         this.player = (PlayerClient) object;
     }
+    
 }

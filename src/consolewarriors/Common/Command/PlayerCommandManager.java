@@ -12,6 +12,7 @@ import consolewarriors.Common.Command.PlayerCommands.NotFoundCommand;
 import consolewarriors.Common.Command.PlayerCommands.PassCommand;
 import consolewarriors.Common.Command.PlayerCommands.ProposeTieCommand;
 import consolewarriors.Common.Command.PlayerCommands.SelectWarriorCommand;
+import consolewarriors.Common.Command.PlayerCommands.SurrenderCommand;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,7 +64,8 @@ public class PlayerCommandManager implements ICommandManager{
         registerCommand(ChatCommand.NAME , ChatCommand.class);
         registerCommand(PassCommand.NAME , PassCommand.class);
         registerCommand(SelectWarriorCommand.NAME, SelectWarriorCommand.class);
-        //registerCommand(ProposeTieCommand.NAME, ProposeTieCommand.class);
+        registerCommand(ProposeTieCommand.NAME, ProposeTieCommand.class);
+        registerCommand(SurrenderCommand.NAME , SurrenderCommand.class);
     }
     
 }

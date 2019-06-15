@@ -32,6 +32,7 @@ public class GameWindow extends javax.swing.JFrame {
     ArrayList<JLabel> warriorsImagesLabels;
     ArrayList<JLabel> warriorsNameLabels;
     ArrayList<JLabel> warriorsHealthLabels;
+    ArrayList<JLabel> warriorsDamageReceivedLabels;
     
     private int tieResponse;
     
@@ -39,6 +40,7 @@ public class GameWindow extends javax.swing.JFrame {
         this.warriorsImagesLabels = new ArrayList<>();
         this.warriorsNameLabels = new ArrayList<>();
         this.warriorsHealthLabels = new ArrayList<>();
+        this.warriorsDamageReceivedLabels = new ArrayList<>();
 
         initComponents();
         setUpUiSettings();
@@ -64,14 +66,18 @@ public class GameWindow extends javax.swing.JFrame {
         warriorsHealthLabels.add(lblWarrior2HP);
         warriorsHealthLabels.add(lblWarrior3HP);
         warriorsHealthLabels.add(lblWarrior4HP);
+        
+        warriorsDamageReceivedLabels.add(lblDamageToW1);
+        warriorsDamageReceivedLabels.add(lblDamageToW2);
+        warriorsDamageReceivedLabels.add(lblDamageToW3);
+        warriorsDamageReceivedLabels.add(lblDamageToW4);
     }
     
     public void setUpWarriorImage(Character warrior , int warriorIndex){
         Warrior currentWarrior = (Warrior)warrior;
-        Image warriorImage = currentWarrior.getCharacterImage();
+        ImageIcon imageIcon = currentWarrior.getCharacterImage();
         JLabel imageFrame = warriorsImagesLabels.get(warriorIndex);
         
-        ImageIcon imageIcon = new ImageIcon(warriorImage);
         imageFrame.setIcon(imageIcon);
     }
     
@@ -87,6 +93,7 @@ public class GameWindow extends javax.swing.JFrame {
             Warrior currentWarrior = (Warrior) warriors.get(i);
             warriorsNameLabels.get(i).setText(currentWarrior.getName());
             warriorsHealthLabels.get(i).setText("" + currentWarrior.getLife());
+            warriorsDamageReceivedLabels.get(i).setText("" + currentWarrior.getDamageReceived());
         }
     }
     
@@ -129,6 +136,10 @@ public class GameWindow extends javax.swing.JFrame {
         lblSelectedWarriorName.setText(text);
     }
     
+    public void setAttackerWarriorLabelText(String text){
+        lblAttackedWithWarrior.setText(text);
+    }
+    
     public void fromWeaponToTableModel(Weapon weapon) {
         WarriorWeapon currentWeapon = (WarriorWeapon) weapon;
 
@@ -157,8 +168,7 @@ public class GameWindow extends javax.swing.JFrame {
     }
     
     public int showTieProposalDialog(){
-        int answer = JOptionPane.showConfirmDialog(null, "Enemy is proposing a Tie. Do you accept?");
-        tieResponse = answer;
+        tieResponse = JOptionPane.showConfirmDialog(null, "Enemy is proposing a Tie. Do you accept?");
         if (tieResponse == JOptionPane.YES_OPTION){
             System.out.println("I accept the tie");
             return tieResponse;
@@ -171,6 +181,44 @@ public class GameWindow extends javax.swing.JFrame {
     
     public void showMessageDialog(String message){
         JOptionPane.showMessageDialog(null, message);
+    }
+    
+    public void disableConsole(){
+        txaConsole.setEditable(false);
+    }
+    
+    public ImageIcon resizeImage(ImageIcon image , JLabel label) {
+        Image newImage = image.getImage().getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon resizedImage = new ImageIcon(newImage);
+        return resizedImage;
+    }
+    
+    public void setImageOnLabel(ImageIcon image , JLabel label) {
+        ImageIcon resizedImage = resizeImage(image,label);
+        label.setIcon(resizedImage);
+    }
+    
+    public void setAttackedWithInformation(Warrior warrior, Weapon weapon) {
+        String warriorName = warrior.getName();
+        String warriorType = warrior.getType().toString();
+        ImageIcon warriorImage = warrior.getCharacterImage();
+        
+        String weaponName = weapon.getName();
+        lblAttackedWithWarrior.setText(warriorName + " [" + warriorType + "]");
+        lblAttackerWeapon.setText(weaponName);
+        setImageOnLabel(warriorImage, lblAttackerBG);
+        
+    }
+    
+    public void setAttackedByInformation(Warrior warrior , Weapon weapon){
+        String warriorName = warrior.getName();
+        String warriorType = warrior.getType().toString();
+        ImageIcon warriorImage = warrior.getCharacterImage();
+
+        String weaponName = weapon.getName();
+        lblAttackedBy.setText(warriorName + " [" + warriorType + "]");
+        lblAttackedWith.setText(weaponName);
+        setImageOnLabel(warriorImage, lblAttackedByBG);
     }
     
     /**
@@ -226,7 +274,7 @@ public class GameWindow extends javax.swing.JFrame {
         lblAttackedByBG = new javax.swing.JLabel();
         panelUsedToAttack = new javax.swing.JPanel();
         lblDamageDealt = new javax.swing.JLabel();
-        lblAttackedWithWarrior1 = new javax.swing.JLabel();
+        lblAttackedWithWarrior = new javax.swing.JLabel();
         lblAttackerWeapon = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -468,10 +516,10 @@ public class GameWindow extends javax.swing.JFrame {
         panelUsedToAttack.add(lblDamageDealt);
         lblDamageDealt.setBounds(30, 100, 90, 30);
 
-        lblAttackedWithWarrior1.setForeground(new java.awt.Color(255, 255, 255));
-        lblAttackedWithWarrior1.setText("Attacker [Type]");
-        panelUsedToAttack.add(lblAttackedWithWarrior1);
-        lblAttackedWithWarrior1.setBounds(140, 20, 87, 16);
+        lblAttackedWithWarrior.setForeground(new java.awt.Color(255, 255, 255));
+        lblAttackedWithWarrior.setText("Attacker [Type]");
+        panelUsedToAttack.add(lblAttackedWithWarrior);
+        lblAttackedWithWarrior.setBounds(140, 20, 87, 16);
 
         lblAttackerWeapon.setForeground(new java.awt.Color(255, 255, 255));
         lblAttackerWeapon.setText("Weapon used");
@@ -488,7 +536,7 @@ public class GameWindow extends javax.swing.JFrame {
         panelUsedToAttack.add(jLabel10);
         jLabel10.setBounds(20, 20, 104, 16);
         panelUsedToAttack.add(lblAttackerBG);
-        lblAttackerBG.setBounds(0, 0, 450, 220);
+        lblAttackerBG.setBounds(0, 0, 430, 220);
 
         javax.swing.GroupLayout statsPanelLayout = new javax.swing.GroupLayout(statsPanel);
         statsPanel.setLayout(statsPanelLayout);
@@ -542,7 +590,7 @@ public class GameWindow extends javax.swing.JFrame {
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(warriorsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(statsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         consolePanel.setBackground(new java.awt.Color(102, 102, 102));
@@ -608,7 +656,7 @@ public class GameWindow extends javax.swing.JFrame {
     private javax.swing.JLabel lblAttackedBy;
     private javax.swing.JLabel lblAttackedByBG;
     private javax.swing.JLabel lblAttackedWith;
-    private javax.swing.JLabel lblAttackedWithWarrior1;
+    private javax.swing.JLabel lblAttackedWithWarrior;
     private javax.swing.JLabel lblAttackerBG;
     private javax.swing.JLabel lblAttackerWeapon;
     private javax.swing.JLabel lblDamageDealt;
