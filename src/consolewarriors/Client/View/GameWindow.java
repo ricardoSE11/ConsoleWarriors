@@ -34,8 +34,6 @@ public class GameWindow extends javax.swing.JFrame {
     ArrayList<JLabel> warriorsHealthLabels;
     ArrayList<JLabel> warriorsDamageReceivedLabels;
     
-    private int tieResponse;
-    
     public GameWindow() {
         this.warriorsImagesLabels = new ArrayList<>();
         this.warriorsNameLabels = new ArrayList<>();
@@ -164,18 +162,6 @@ public class GameWindow extends javax.swing.JFrame {
         System.out.println("Gonna display warrior weapons");
         for (Weapon weapon : warrior.getWeapons().values()){
             fromWeaponToTableModel(weapon);
-        }
-    }
-    
-    public int showTieProposalDialog(){
-        tieResponse = JOptionPane.showConfirmDialog(null, "Enemy is proposing a Tie. Do you accept?");
-        if (tieResponse == JOptionPane.YES_OPTION){
-            System.out.println("I accept the tie");
-            return tieResponse;
-        }
-        else{
-            System.out.println("Nope, lets keep playing");
-            return tieResponse;
         }
     }
     
