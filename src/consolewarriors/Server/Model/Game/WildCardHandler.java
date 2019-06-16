@@ -5,6 +5,7 @@
  */
 package consolewarriors.Server.Model.Game;
 
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,11 +36,12 @@ public class WildCardHandler implements IWildCardHandler{
     @Override
     public void startTimer() {
         Timer timer = new Timer();
-        int minutes = 2;
+        int minutes = 1;
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                // Your database code here
+                // After minutes...
+                isWildCardReady = true;
                 System.out.println("After " + minutes + " minutes, I generated the Wildcard");
             }
         }, minutes * 60 * 1000, minutes * 60 * 1000);
@@ -47,12 +49,16 @@ public class WildCardHandler implements IWildCardHandler{
     
     @Override
     public boolean grantedWildCard() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int maxValue = 5;
+        int minValue = -5;
+        Random random = new Random();
+        int randomNumber = random.nextInt((maxValue - minValue) + 1) + minValue;
+        return (randomNumber > 0);
     }
 
     @Override
     public boolean isWildCardReady() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.isWildCardReady;
     }
     
 }

@@ -29,6 +29,8 @@ public class Match {
     private Player winner;
     private boolean ended;
     private int turn;
+    
+    private boolean currentWildCardAccepted;
 
     public Match(Player playerOne, Player playerTwo) {
         this.playerOne = playerOne;
@@ -254,7 +256,39 @@ public class Match {
                 }
                 break;
 
-                case "RELOAD": {
+                case "WILDCARD_ATTACK": {
+                    if(wildCardHandler.isWildCardReady()){
+                        if (wildCardHandler.grantedWildCard()){
+                            this.currentWildCardAccepted = true;
+                            AttackGroup attackParameters = (AttackGroup) message.getObjectOfInterest();
+                            Message wildCardAttack = new ServerMessage("WILDCARD_ATTACK", attackParameters);
+                            Player enemy = getEnemyOfPlayer(playerID);
+                            enemy.getClientThread().sendMessageToClient(wildCardAttack);
+                        }
+                        
+                        else{
+                            Message rejectedWildCardMessage = new ServerMessage("REJECTED_WILDCARD", null);
+                            Player player = getPlayerByID(playerID);
+                            player.getClientThread().sendMessageToClient(rejectedWildCardMessage);
+                        }
+                    }
+                    
+                    else{
+                        Message rejectedWildCardMessage = new ServerMessage("UNAVAILABLE_WILDCARD", null);
+                        Player player = getPlayerByID(playerID);
+                        player.getClientThread().sendMessageToClient(rejectedWildCardMessage);
+                    }
+                }
+                break;
+                
+                case "SECOND_WILDCARD_ATTACK":{
+                    if (currentWildCardAccepted){
+                        AttackGroup attackParameters = (AttackGroup) message.getObjectOfInterest();
+                        Message wildCardAttack = new ServerMessage("SECOND_WILDCARD_ATTACK", attackParameters);
+                        Player enemy = getEnemyOfPlayer(playerID);
+                        enemy.getClientThread().sendMessageToClient(wildCardAttack);
+                        nextTurn();
+                    }
                 }
                 break;
 

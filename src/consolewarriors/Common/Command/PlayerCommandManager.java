@@ -14,6 +14,7 @@ import consolewarriors.Common.Command.PlayerCommands.ProposeTieCommand;
 import consolewarriors.Common.Command.PlayerCommands.ReloadWeaponsCommand;
 import consolewarriors.Common.Command.PlayerCommands.SelectWarriorCommand;
 import consolewarriors.Common.Command.PlayerCommands.SurrenderCommand;
+import consolewarriors.Common.Command.PlayerCommands.WildCardCommand;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,6 +69,7 @@ public class PlayerCommandManager implements ICommandManager{
         registerCommand(ProposeTieCommand.NAME, ProposeTieCommand.class);
         registerCommand(SurrenderCommand.NAME , SurrenderCommand.class);
         registerCommand(ReloadWeaponsCommand.NAME, ReloadWeaponsCommand.class);
+        registerCommand(WildCardCommand.NAME, WildCardCommand.class);
     }
     
 }
