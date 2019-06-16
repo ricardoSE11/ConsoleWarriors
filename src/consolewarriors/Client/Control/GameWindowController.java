@@ -173,6 +173,14 @@ public class GameWindowController implements IObserver {
             this.gameWindow.writeToConsole("\n" + "Error: Is not your turn" + "\n", Color.RED);
         } 
         
+        if (statusString.equals("ENEMY_TURN")) {
+            this.gameWindow.setTurnLabelText("Enemy's turn");
+        }
+        
+        if (statusString.equals("MY_TURN")) {
+            this.gameWindow.setTurnLabelText("Your turn");
+        }
+        
         else if (statusString.equals("NO_SUCH_WARRIOR")){
             this.gameWindow.writeToConsole("\n" + "Error: Warrior does not exist" + "\n", Color.RED);
         }

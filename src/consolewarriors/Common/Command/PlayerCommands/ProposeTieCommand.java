@@ -30,9 +30,11 @@ public class ProposeTieCommand implements ICommand {
     @Override
     public void execute() {
         System.out.println("Executing TIE command");
+        // Possible fix
         this.player.changePlayerGamingStatus("PROPOSING_TIE");
         Message proposeTieMessage = new ClientMessage("PROPOSING_TIE", player.getId(), null);
         player.sendMessage(proposeTieMessage);
+        this.player.changePlayerGamingStatus("ENEMY_TURN");
     }
 
     @Override
