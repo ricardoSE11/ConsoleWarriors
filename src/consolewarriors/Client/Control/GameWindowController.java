@@ -121,7 +121,7 @@ public class GameWindowController implements IObserver {
                     } else {
                         //muy cochino, pero toca.
                         String command_name = selectedCommand.getCommandName();
-                        if(command_name.equals(ke))
+                        //if(command_name.equals(ke))
                         selectedCommand.execute(commandArguments);
                     }
                 }
