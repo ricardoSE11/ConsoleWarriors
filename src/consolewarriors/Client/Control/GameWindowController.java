@@ -24,7 +24,6 @@ import consolewarriors.Common.Command.PlayerCommandManager;
 import consolewarriors.Common.Command.PlayerCommands.NotFoundCommand;
 import consolewarriors.Common.Shared.Warrior;
 import java.awt.event.KeyListener;
-import java.io.Serializable;
 import javax.swing.JOptionPane;
 
 
@@ -43,21 +42,17 @@ public class GameWindowController implements IObserver {
 
     public GameWindowController(GameWindow gameWindow, PlayerClient player) {
         this.gameWindow = gameWindow;
-        
-        IServerMessageHandler messageHandler = new ServerMessageHandler();
         this.player = player;
-        player.setServerMessageHandler(messageHandler);
+        this.warriors = player.getWarriors();
+        
         ICommandManager commandManager = new PlayerCommandManager();
         ((PlayerCommandManager)commandManager).setPlayer(player);
         player.setCommandManager(commandManager);
         
-        this.warriors = player.getWarriors();
-        
         gameWindow.addEventListener(new WindowListener());
         gameWindow.setUpWarriorsData(warriors);
         gameWindow.setUpWarriorsImages(warriors);
-        
-        this.player.run(); // Order here is important 
+                
         gameWindow.setTitle(player.getPlayerName() + "'s session");
        if(this.player.getId() % 2 != 0){
             gameWindow.setTurnLabelText("You go first");
@@ -212,7 +207,7 @@ public class GameWindowController implements IObserver {
         
         else if (statusString.equals("RESPONDING_TIE_REQUEST")){
             System.out.println("Responding tie request");
-            int tieAnswer = gameWindow.showTieProposalDialog();
+            int tieAnswer = JOptionPane.showConfirmDialog(gameWindow, "Enemy is proposing a Tie. Do you accept?");
             if (tieAnswer == JOptionPane.YES_OPTION){
                 // Send a message to indicate the end of the game.
                 Message acceptTieMessage = new ClientMessage("TIE_ACCEPTED", player.getPlayerID(), null);
@@ -230,7 +225,6 @@ public class GameWindowController implements IObserver {
         }
         
         else if (statusString.equals("GAME_TIED")){
-            //gameWindow.showMessageDialog("Game was tied");
             gameWindow.writeToConsole(" --- TIE: GAME ENDED --- ", Color.BLUE);
             player.leaveMatch();
             gameWindow.disableConsole();
@@ -281,7 +275,8 @@ public class GameWindowController implements IObserver {
         else {
             if (updateString.startsWith("ENEMY")) {
                 int hyphenIndex =  updateString.indexOf("-");
-                this.gameWindow.writeToConsole("\n" + "Chat [enemy]: " + updateString.substring(hyphenIndex + 1) + "\n", Color.GRAY);
+                //"\n" +
+                this.gameWindow.writeToConsole( "Chat [enemy]: " + updateString.substring(hyphenIndex + 1) + "\n", Color.GRAY);
             } else {
                 this.gameWindow.writeToConsole("\n" + "Chat [you]: " + updateString, Color.GRAY);
             }

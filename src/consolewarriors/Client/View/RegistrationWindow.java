@@ -159,6 +159,7 @@ public class RegistrationWindow extends javax.swing.JFrame {
         if(registrationState.equals("REGISTRATION")){
             String username = txfUsername.getText();
             PlayerClient player = new PlayerClient("localhost", 1234, username, true);
+            player.run();
             CreationWindowController cwc = new CreationWindowController(player);
         }
         else{
