@@ -42,7 +42,7 @@ public class RegistrationWindow extends javax.swing.JFrame {
         lblPlayerID = new javax.swing.JLabel();
         lblUsername = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(51, 51, 51));
 
@@ -125,6 +125,7 @@ public class RegistrationWindow extends javax.swing.JFrame {
         PlayerClient player = new PlayerClient("localhost", 1234, username);
         player.run();
         CreationWindowController cwc = new CreationWindowController(player);
+        this.setVisible(false);
     }//GEN-LAST:event_btnPlayActionPerformed
 
 
