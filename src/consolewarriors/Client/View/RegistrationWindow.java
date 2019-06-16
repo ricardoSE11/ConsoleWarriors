@@ -38,7 +38,6 @@ public class RegistrationWindow extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         txfUsername = new javax.swing.JTextField();
         btnPlay = new javax.swing.JButton();
-        cmbRegistrationOptions = new javax.swing.JComboBox<>();
         txfPlayerID = new javax.swing.JTextField();
         lblPlayerID = new javax.swing.JLabel();
         lblUsername = new javax.swing.JLabel();
@@ -54,13 +53,6 @@ public class RegistrationWindow extends javax.swing.JFrame {
             }
         });
 
-        cmbRegistrationOptions.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Register", "Log in", " " }));
-        cmbRegistrationOptions.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbRegistrationOptionsActionPerformed(evt);
-            }
-        });
-
         txfPlayerID.setToolTipText("");
 
         lblPlayerID.setForeground(new java.awt.Color(255, 255, 255));
@@ -73,10 +65,6 @@ public class RegistrationWindow extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(167, 167, 167)
-                .addComponent(cmbRegistrationOptions, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -106,9 +94,7 @@ public class RegistrationWindow extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txfPlayerID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblPlayerID, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
-                .addComponent(cmbRegistrationOptions, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
                 .addComponent(btnPlay)
                 .addGap(38, 38, 38))
         );
@@ -133,48 +119,18 @@ public class RegistrationWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cmbRegistrationOptionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbRegistrationOptionsActionPerformed
-        // TODO add your handling code here:
-        if (!cmbRegistrationOptions.getSelectedItem().toString().toUpperCase().equals("REGISTER")){
-            this.registrationState = "LOG IN";
-            
-            lblPlayerID.setVisible(true);
-            txfPlayerID.setVisible(true);
-            
-            lblUsername.setVisible(false);
-            txfUsername.setVisible(false);
-        }
-        else{
-            this.registrationState = "REGISTRATION";
-            lblUsername.setVisible(true);
-            txfUsername.setVisible(true);
-            
-            lblPlayerID.setVisible(false);
-            txfPlayerID.setVisible(false);
-        }
-    }//GEN-LAST:event_cmbRegistrationOptionsActionPerformed
-
     private void btnPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlayActionPerformed
         // TODO add your handling code here:
-        if(registrationState.equals("REGISTRATION")){
-            String username = txfUsername.getText();
-            PlayerClient player = new PlayerClient("localhost", 1234, username, true);
-            player.run();
-            CreationWindowController cwc = new CreationWindowController(player);
-        }
-        else{
-            
-        }
-        
-        
-        
+        String username = txfUsername.getText();
+        PlayerClient player = new PlayerClient("localhost", 1234, username);
+        player.run();
+        CreationWindowController cwc = new CreationWindowController(player);
     }//GEN-LAST:event_btnPlayActionPerformed
 
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnPlay;
-    private javax.swing.JComboBox<String> cmbRegistrationOptions;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblPlayerID;
     private javax.swing.JLabel lblUsername;

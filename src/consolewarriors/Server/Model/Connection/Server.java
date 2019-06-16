@@ -16,6 +16,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -118,6 +119,18 @@ public class Server {
         this.ranking.setRanking(players_stats);
     }
     
+    public void putStatsToFile(){
+        ArrayList<PlayerStats> players_stats = this.ranking.getRanking();
+        List<Player> players = new ArrayList<>();
+        for(PlayerStats p: players_stats){
+            Player current = new Player(p.getPlayerName(), p.getWins(), p.getLosses(),
+                p.getSurrenders(), p.getKills(), p.getSuccesfulAttacks(), p.getFailedAttacks());
+            players.add(current);
+        }
+        Stats stats = new Stats(players);
+        this.stats_parser.saveStatsToFile(stats);
+    }
+    
     public Stats loadStats(){
         return this.stats_parser.getStatsFromFile();
     }
@@ -129,6 +142,14 @@ public class Server {
     public int getIDForNewClient(){
         return clients.size() + 1;
     }
+    
+    public boolean existsPlayer(String username){
+        return this.ranking.existsPlayer(username);
+    }
+    
+    public void createNewPlayerStats(String username){
+        ranking.createNewPlayerStats(username);
+    }
             
     public void loadPlayerRanking(){
         /*
@@ -139,5 +160,9 @@ public class Server {
         */
         matchMaker.setRanking(ranking);
         
+    }
+
+    String getPlayerStats(String username) {
+        return ranking.getPlayerStats(username);
     }
 }

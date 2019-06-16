@@ -50,7 +50,7 @@ public class StatsParser extends JsonParser{
 }
     }
 
-    public void saveConfigToFile(Stats stats){
+    public void saveStatsToFile(Stats stats){
         writeObjectToFile(stats, path_to_stats_file);
     }
 

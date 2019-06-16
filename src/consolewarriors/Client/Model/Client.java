@@ -41,11 +41,10 @@ public abstract class Client {
         this.portNumber = portNumber;
     }
     
-    public Client(String hostname , int portNumber , String username , boolean newSession){
+    public Client(String hostname , int portNumber , String username){
         this.hostname = hostname;
         this.portNumber = portNumber;
         this.username = username;
-        this.newSession = newSession;
     }
     
     public Client(String hostname, int portNumber, int id) {
@@ -134,25 +133,24 @@ public abstract class Client {
             InputStream inputStream = socket.getInputStream();
             this.reader = new ObjectInputStream(inputStream);
             
-            if(newSession){
-                // --- Tell the server is the first time we play and ask for an ID ---
-                DataOutputStream sessionIndicator = new DataOutputStream(outputStream);
-                sessionIndicator.writeUTF("NEW");
-                
-                // --- We receive the ID assigned --- 
-                DataInputStream idReceiver = new DataInputStream(inputStream);
-                int assignedID = idReceiver.readInt();
-                this.id = assignedID;
-                
-                System.out.println("Received my ID: " + id);
-            }
-            else{
-                // --- Send the ID to the server for identification ---
-                DataOutputStream idSender = new DataOutputStream(outputStream);
-                idSender.writeInt(id);
-                
-                System.out.println("Confirming ID: " + id);
-            }
+            /*
+            // --- Tell the server is the first time we play and ask for an ID ---
+            DataOutputStream sessionIndicator = new DataOutputStream(outputStream);
+            sessionIndicator.writeUTF("NEW");*/
+
+            // --- We receive the ID assigned --- 
+            DataInputStream idReceiver = new DataInputStream(inputStream);
+            int assignedID = idReceiver.readInt();
+            this.id = assignedID;
+
+            DataOutputStream username_indicator = new DataOutputStream(outputStream);
+            username_indicator.writeUTF(this.username);
+
+            DataInputStream username_receiver = new DataInputStream(inputStream);
+            String username_response = username_receiver.readUTF();
+
+            System.out.println("Received my ID: " + id);
+            System.out.println("The username response was: " + username_response);
 
 
             ClientThread clientThread = new ClientThread(this, reader); // Thread to listen for server messages

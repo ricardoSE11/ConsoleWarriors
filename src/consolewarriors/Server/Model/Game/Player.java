@@ -5,8 +5,6 @@
  */
 package consolewarriors.Server.Model.Game;
 
-import java.util.HashMap;
-import Characters.Character;
 import consolewarriors.Server.Model.Connection.ServerThread;
 
 /**
@@ -27,6 +25,10 @@ public class Player {
     // Handmade with love.
     public int getPlayerID(){
         return clientThread.getID();
+    }
+    
+    public String getUsername(){
+        return clientThread.getUsername();
     }
     
     public ServerThread getClientThread() {

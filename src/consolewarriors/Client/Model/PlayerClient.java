@@ -41,8 +41,8 @@ public class PlayerClient extends Client implements IObservable {
         this.chatMessages = new ArrayList<>();
     }
 
-    public PlayerClient(String hostname, int portNumber, String username, boolean newSession) {
-        super(hostname, portNumber, username, newSession);
+    public PlayerClient(String hostname, int portNumber, String username) {
+        super(hostname, portNumber, username);
         this.playerStatus = "WAITING_FOR_MATCH";
         this.observers = new ArrayList<>();
         this.chatMessages = new ArrayList<>();

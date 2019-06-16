@@ -8,8 +8,15 @@ package consolewarriors.Server.Model.Game;
 import consolewarriors.Common.AttackGroup;
 import consolewarriors.Common.ClientMessage;
 import consolewarriors.Common.Message;
+import consolewarriors.Common.PlayerRanking;
+import consolewarriors.Common.PlayerStats;
 import consolewarriors.Common.ServerMessage;
+import consolewarriors.Server.Utils.TextFileManager;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +29,7 @@ public class Match {
     private Player playerOne;
     private Player playerTwo;
     
-    private IMatchLogger matchLogger;
+    //private IMatchLogger matchLogger;
     private IScoreRecorder scoreRecorder;
     
     private IWildCardHandler wildCardHandler;
@@ -30,18 +37,24 @@ public class Match {
     private boolean ended;
     private int turn;
     private String match_log;
-    
+    private PlayerRanking ranking;
     private boolean currentWildCardAccepted;
+    private final Date start_date;
+    private final SimpleDateFormat formatter;
+    private TextFileManager text_manager;
 
-    public Match(Player playerOne, Player playerTwo) {
+    public Match(Player playerOne, Player playerTwo, PlayerRanking ranking) {
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
         this.ended = false;
         this.turn = 1;
         this.match_log = "";
+        this.ranking = ranking;
         this.wildCardHandler = new WildCardHandler();
         wildCardHandler.startTimer();
-        
+        start_date = new Date();
+        formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        text_manager = new TextFileManager();
         // Missing: match logger and score recorder initialization 
     }
     
@@ -62,13 +75,30 @@ public class Match {
         this.playerTwo = playerTwo;
     }
 
-    public IMatchLogger getMatchLogger() {
+    public String getMatch_log() {
+        return match_log;
+    }
+
+    public void setMatch_log(String match_log) {
+        this.match_log = match_log;
+    }
+
+    public PlayerRanking getRanking() {
+        return ranking;
+    }
+
+    public void setRanking(PlayerRanking ranking) {
+        this.ranking = ranking;
+    }
+
+    
+    /*public IMatchLogger getMatchLogger() {
         return matchLogger;
     }
 
     public void setMatchLogger(IMatchLogger matchLogger) {
         this.matchLogger = matchLogger;
-    }
+    }*/
 
     public IScoreRecorder getScoreRecorder() {
         return scoreRecorder;
@@ -163,12 +193,20 @@ public class Match {
         }
     }
     
+    public void saveLogToFile(){
+        String initial_date = formatter.format(start_date);
+        String file_name = playerOne.getUsername() + "vs" +playerTwo.getUsername() + initial_date;
+        this.text_manager.writeToFile(match_log, file_name);
+    }
+    
     public void handlePlayerMessage(Message message){
         ClientMessage clientMessage = (ClientMessage) message;
         int playerID = clientMessage.getClientID();
         
         System.out.println("Got a message from client: " + playerID);
-        
+        Date date = Calendar.getInstance().getTime();  
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");  
+        String strDate = dateFormat.format(date);  
         String[] commandInfo = clientMessage.getEvent().split("-");
         String commandName = commandInfo[0];
         
@@ -176,7 +214,10 @@ public class Match {
         if (commandName.equals("CHAT")){
             String messageText = (String) message.getObjectOfInterest();
             Message chatMessage = new ServerMessage("CHAT", messageText);
+            Player current = getPlayerByID(playerID);
             Player enemy = getEnemyOfPlayer(playerID);
+            match_log += "Player "+current.getUsername()+" sent chat message '" +
+                    messageText +"' to " + enemy.getUsername() + "at "+strDate+ "\n";
             enemy.getClientThread().sendMessageToClient(chatMessage);
             return;
         }
@@ -184,7 +225,17 @@ public class Match {
         // Moved out of the switch because it can be called at any given time
         else if (commandName.equals("SURRENDER")){
             Message victoryMessage = new ServerMessage("VICTORY", null);
+            Player current = getPlayerByID(playerID);
+            match_log += "Player "+current.getUsername()+" just surrended at " +
+                strDate + "\n";
             Player enemy = getEnemyOfPlayer(playerID);
+            
+            PlayerStats enemy_stats = ranking.getPlayer(enemy.getUsername());
+            enemy_stats.setWins(enemy_stats.getWins() + 1);
+            
+            PlayerStats current_stats = ranking.getPlayer(current.getUsername());
+            current_stats.setSurrenders(current_stats.getSurrenders() + 1);
+            
             enemy.getClientThread().sendMessageToClient(victoryMessage);
             endMatch(enemy);
         }
@@ -200,8 +251,11 @@ public class Match {
                     // Send the weapon to the enemy
                     Message attackMessage = new ServerMessage("ATTACK", attackParameters);
                     Player enemy = getEnemyOfPlayer(playerID);
+                    Player current = getPlayerByID(playerID);
+                    match_log += "Player "+current.getUsername()+" attacked to" +
+                        enemy.getUsername() + " with the warrior "+ attackParameters.getWarrior().getName() +
+                        " and weapon " +  attackParameters.getWeapon().getName()+ " at " + strDate +"\n";
                     enemy.getClientThread().sendMessageToClient(attackMessage);
-
                     nextTurn();
                 }
                 break;
@@ -211,6 +265,15 @@ public class Match {
                     Integer damageDealt = (Integer) message.getObjectOfInterest();
                     Message attackResponse = new ServerMessage("ATTACK_RESPONSE", damageDealt);
                     Player enemy = getEnemyOfPlayer(playerID);
+                    match_log += "Player "+ enemy.getUsername()+" dealt a total of damage of " +
+                        Integer.toString(damageDealt) + " at " +strDate +"\n";
+                    //enemy was who attacked
+                    PlayerStats enemy_stats = ranking.getPlayer(enemy.getUsername());
+                    if(damageDealt > 100){
+                        enemy_stats.setSuccesfulAttacks(enemy_stats.getSuccesfulAttacks() + 1);
+                    }else{
+                        enemy_stats.setFailedAttacks(enemy_stats.getFailedAttacks() + 1);
+                    }
                     enemy.getClientThread().sendMessageToClient(attackResponse);
 
                 }
@@ -224,6 +287,9 @@ public class Match {
 
                 case "PASS": {
                     Message passMessage = new ServerMessage("PASS", null);
+                    Player current = getPlayerByID(playerID);
+                    match_log += "Player "+current.getUsername()+" just passed the turn at " +
+                        strDate +"\n";
                     Player enemy = getEnemyOfPlayer(playerID);
                     enemy.getClientThread().sendMessageToClient(passMessage);
                     nextTurn();
@@ -234,6 +300,9 @@ public class Match {
                     System.out.println("Player:" + playerID + " is proposing a tie");
                     Message tieMessage = new ServerMessage("TIE_PROPOSAL", null);
                     Player enemy = getEnemyOfPlayer(playerID);
+                    Player current = getPlayerByID(playerID);
+                    match_log += "Player "+current.getUsername()+" proposed a tie to" +
+                    enemy.getUsername() + " at " + strDate +"\n";
                     enemy.getClientThread().sendMessageToClient(tieMessage);
                     nextTurn();
                 }
@@ -242,6 +311,9 @@ public class Match {
                 case "TIE_ACCEPTED": {
                     Message tieAcceptedMessage = new ServerMessage("TIE_PROPOSSAL_ACCEPTED", null);
                     Player enemy = getEnemyOfPlayer(playerID);
+                    Player current = getPlayerByID(playerID);
+                    match_log += "Player "+current.getUsername()+" accepted the tie to" +
+                        enemy.getUsername() + " at " + strDate +"\n";
                     enemy.getClientThread().sendMessageToClient(tieAcceptedMessage);
                     endMatch(null);
                 }
@@ -250,6 +322,9 @@ public class Match {
                 case "TIE_DENIED": {
                     Message tieDeniedMessage = new ServerMessage("TIE_PROPOSSAL_DENIED", null);
                     Player enemy = getEnemyOfPlayer(playerID);
+                    Player current = getPlayerByID(playerID);
+                    match_log += "Player "+current.getUsername()+" denied the tie to" +
+                        enemy.getUsername() + " at " + strDate +"\n";
                     enemy.getClientThread().sendMessageToClient(tieDeniedMessage);
                     nextTurn();
                 }
