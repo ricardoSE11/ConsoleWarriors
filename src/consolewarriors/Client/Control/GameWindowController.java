@@ -169,6 +169,10 @@ public class GameWindowController implements IObserver {
     }
     
     public void handleStatusUpdates(String statusString){
+        if (statusString.equals("PLAYING")) {
+            JOptionPane.showMessageDialog(gameWindow, "Game started");
+        }
+        
         if (statusString.equals("YOUR_STATS")) {
             gameWindow.setUpPlayerStats(player.getPlayer_stats(), false);
         }        
@@ -178,7 +182,7 @@ public class GameWindowController implements IObserver {
         }
         
         if (statusString.equals("WRONG_TURN")) {
-            this.gameWindow.writeToConsole("\n" + "Error: Is not your turn" + "\n", Color.RED);
+            this.gameWindow.writeToConsole("Error: Is not your turn" + "\n", Color.RED);
         } 
         
         if (statusString.equals("ENEMY_TURN")) {

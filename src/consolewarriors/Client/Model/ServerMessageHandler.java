@@ -27,6 +27,12 @@ public class ServerMessageHandler implements IServerMessageHandler{
         String event = message.getEvent();
         
         switch(event){
+            case "MATCH_STARTED":{
+                System.out.println("Match started");
+                ((PlayerClient) client).changePlayerGamingStatus("PLAYING");
+            }
+            break;
+            
             case "YOUR_STATS":{
                 String stats = (String) message.getObjectOfInterest();
                 ((PlayerClient) client).setPlayer_stats(stats);

@@ -216,11 +216,12 @@ public class PlayerClient extends Client implements IObservable {
     }
 
     public void leaveMatch(){
-        try {
-            this.socket.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        System.out.println("Player: " + this.getId() + " left the match");
+//        try {
+//            this.socket.close();
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
     }
 
     public boolean lostTheMatch(){
@@ -230,6 +231,7 @@ public class PlayerClient extends Client implements IObservable {
                 return false;
             }
         }
+        changePlayerGamingStatus("DEFEATED");
         return true;
     }
     

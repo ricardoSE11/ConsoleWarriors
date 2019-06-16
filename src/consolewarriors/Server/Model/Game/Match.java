@@ -67,6 +67,7 @@ public class Match {
         this.playerOne.setMy_enemy_stats(stats_player_two);
         this.playerTwo.setMy_enemy_stats(stats_player_one);
         
+        notifyMatchStart();
         sendPlayerStats();
         
         this.server = this.playerOne.getClientThread().getServer();
@@ -149,6 +150,14 @@ public class Match {
     
     // </editor-fold>
     
+    public void notifyMatchStart(){
+        Message messageForPlayerOne = new ServerMessage("MATCH_STARTED", null);
+        playerOne.getClientThread().sendMessageToClient(messageForPlayerOne);
+        
+        Message messageForPlayerTwo = new ServerMessage("MATCH_STARTED", null);
+        playerTwo.getClientThread().sendMessageToClient(messageForPlayerTwo);
+    }
+    
     public void sendPlayerStats(){
         Message playerOneStats = new ServerMessage("YOUR_STATS", playerOne.getMy_stats());
         playerOne.getClientThread().sendMessageToClient(playerOneStats);
@@ -174,14 +183,15 @@ public class Match {
     }
     
     public void endMatch(Player winner){
+        System.out.println("Player " + winner.getUsername() + " won");
         this.winner = winner;
         this.ended = true;
         try {
             this.saveLogToFile();
             this.server.putStatsToFile();
-            playerTwo.getClientThread().getSocket().close();
-            playerOne.getClientThread().getSocket().close();
-        } catch (IOException ex) {
+//            playerTwo.getClientThread().getSocket().close();
+//            playerOne.getClientThread().getSocket().close();
+        } catch (Exception ex) {
             Logger.getLogger(Match.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

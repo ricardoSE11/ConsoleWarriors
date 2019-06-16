@@ -240,7 +240,7 @@ public class GameWindow extends javax.swing.JFrame {
             String surrenders = getStatsValueFromString(statsInfo[4]);
             String successfullAttacks = getStatsValueFromString(statsInfo[5]);
             String failedAttacks = getStatsValueFromString(statsInfo[6]);
-            lstEnemyInfo.add(" - Your stats -");
+            lstPlayerInfo.add(" - Your stats -");
             lstPlayerInfo.add("Wins: " + wins);
             lstPlayerInfo.add("Loss: " + losses);
             lstPlayerInfo.add("Kills: " + kills);
@@ -336,8 +336,10 @@ public class GameWindow extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblWeapons);
 
+        lblSelectedWarriorName.setForeground(new java.awt.Color(255, 255, 255));
         lblSelectedWarriorName.setText("Warrior name");
 
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Selected warrior:");
 
         lblPlayerTurn.setFont(new java.awt.Font("Segoe UI Light", 1, 18)); // NOI18N
@@ -627,7 +629,7 @@ public class GameWindow extends javax.swing.JFrame {
         consolePanel.setBackground(new java.awt.Color(102, 102, 102));
 
         txaConsole.setBackground(new java.awt.Color(0, 0, 0));
-        txaConsole.setFont(new java.awt.Font("Dialog", 0, 16)); // NOI18N
+        txaConsole.setFont(new java.awt.Font("Monospaced", 0, 14)); // NOI18N
         txaConsole.setForeground(new java.awt.Color(255, 255, 255));
         jScrollPane3.setViewportView(txaConsole);
 
