@@ -29,6 +29,7 @@ public class Match {
     private Player winner;
     private boolean ended;
     private int turn;
+    private String match_log;
     
     private boolean currentWildCardAccepted;
 
@@ -37,7 +38,7 @@ public class Match {
         this.playerTwo = playerTwo;
         this.ended = false;
         this.turn = 1;
-        
+        this.match_log = "";
         this.wildCardHandler = new WildCardHandler();
         wildCardHandler.startTimer();
         
@@ -116,7 +117,6 @@ public class Match {
     public void endMatch(Player winner){
         this.winner = winner;
         this.ended = true;
-        
         try {
             playerTwo.getClientThread().getSocket().close();
             playerOne.getClientThread().getSocket().close();
@@ -129,7 +129,6 @@ public class Match {
         if (playerOne.getPlayerID() == playerID){
             return playerOne;
         }
-        
         return playerTwo;
     }
     

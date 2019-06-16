@@ -27,10 +27,10 @@ public class ServerThread extends Thread  {
     private Server server = null;
     private Socket socket = null;
     private int id;
+    private String username;
     private ObjectInputStream reader;
     private ObjectOutputStream writer;
     private IClientMessageHandler clientMessageHandler;
-    
     private int matchID;
 
     public ServerThread(Socket socket, int clientID, Server server) {

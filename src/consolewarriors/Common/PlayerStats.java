@@ -11,7 +11,7 @@ package consolewarriors.Common;
  */
 public class PlayerStats {
     
-    private int playerID;
+    //private int playerID;
     private String playerName;
     private int attacksTotal;
     private int succesfulAttacks;
@@ -23,17 +23,52 @@ public class PlayerStats {
 
     public PlayerStats() {
     }
+
+    public PlayerStats(String playerName, int attacksTotal, int succesfulAttacks, int failedAttacks, int kills, int wins, int losses, int surrenders) {
+        this.playerName = playerName;
+        this.attacksTotal = attacksTotal;
+        this.succesfulAttacks = succesfulAttacks;
+        this.failedAttacks = failedAttacks;
+        this.kills = kills;
+        this.wins = wins;
+        this.losses = losses;
+        this.surrenders = surrenders;
+    }
+
+    public PlayerStats(String playerName, int succesfulAttacks, int failedAttacks, int kills, int wins, int losses, int surrenders) {
+        this.playerName = playerName;
+        this.succesfulAttacks = succesfulAttacks;
+        this.failedAttacks = failedAttacks;
+        this.kills = kills;
+        this.wins = wins;
+        this.losses = losses;
+        this.surrenders = surrenders;
+    }
+    
+    
+    
+    
     
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
     
-    public int getPlayerID() {
+    /*public int getPlayerID() {
         return playerID;
     }
 
     public void setPlayerID(int playerID) {
         this.playerID = playerID;
+    }*/
+
+    public String getPlayerName() {
+        return playerName;
     }
 
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
+    
+    
     public int getAttacksTotal() {
         return attacksTotal;
     }

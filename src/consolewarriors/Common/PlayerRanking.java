@@ -18,6 +18,15 @@ public class PlayerRanking {
     public PlayerRanking() {
         this.ranking = new ArrayList<>();
     }
+
+    public ArrayList<PlayerStats> getRanking() {
+        return ranking;
+    }
+
+    public void setRanking(ArrayList<PlayerStats> ranking) {
+        this.ranking = ranking;
+    }
+    
     
     
     

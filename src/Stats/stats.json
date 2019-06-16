@@ -1,0 +1,22 @@
+{
+  "players":[
+  {
+    "username":"Dan7spirit",
+    "wins":4,
+    "loses":3,
+    "surrenders":0,
+    "kills":17,
+    "successful attacks":10,
+    "failed attacks":6
+  },
+  {
+    "username":"Ricardo",
+    "wins":6,
+    "loses":1,
+    "surrenders":2,
+    "kills":20,
+    "successful attacks":13,
+    "failed attacks":7
+  }
+   ]
+}

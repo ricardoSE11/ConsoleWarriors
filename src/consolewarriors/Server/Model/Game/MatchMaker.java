@@ -5,11 +5,7 @@
  */
 package consolewarriors.Server.Model.Game;
 
-import consolewarriors.Common.ClientMessage;
-import consolewarriors.Common.Message;
 import consolewarriors.Common.PlayerRanking;
-import consolewarriors.Common.PlayerStats;
-import consolewarriors.Common.ServerMessage;
 import java.util.ArrayList;
 
 /**
