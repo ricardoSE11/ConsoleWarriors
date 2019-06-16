@@ -170,7 +170,7 @@ public class Warrior extends Character implements Serializable , IObservable{
         for (Weapon currentWeapon : weapons.values()){
             WarriorWeapon weapon = (WarriorWeapon) currentWeapon;
             // If the warrior was a weapon that has not been used
-            if (!weapon.wasUsed()){
+            if (!weapon.wasUsedBy(this.name)){
                 return false;
             }
         }
@@ -180,7 +180,7 @@ public class Warrior extends Character implements Serializable , IObservable{
     public void reloadWeapons(){
         for (Weapon currentWeapon : weapons.values()) {
             WarriorWeapon weapon = (WarriorWeapon) currentWeapon;
-            weapon.setWasUsed(false);
+            weapon.reload();
         }
     }
     
