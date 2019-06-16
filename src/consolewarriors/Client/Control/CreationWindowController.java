@@ -11,7 +11,9 @@ import consolewarriors.Client.View.CreationWindow;
 import consolewarriors.Client.View.GameWindow;
 import consolewarriors.Common.CharacterType;
 import consolewarriors.Common.Shared.Warrior;
+import consolewarriors.Common.Shared.WarriorFactory;
 import consolewarriors.Common.Shared.WarriorWeapon;
+import consolewarriors.Common.Shared.WarriorWeaponFactory;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,8 +32,10 @@ public class CreationWindowController {
     //instead of switching between upper and lower
     //My english is not good. :P
     private CreationWindow creation_window;
-    
+    private WarriorFactory warriorF;
+    private WarriorWeaponFactory weaponF;
     private PlayerClient player;
+    //private 
     private ArrayList<Weapon> createdWeapons;
     private ArrayList<Characters.Character> createdWarriors;
     String lastImageUsedPath = "";
@@ -39,6 +43,8 @@ public class CreationWindowController {
     public CreationWindowController(PlayerClient player){
         this.player = player;
         this.creation_window = new CreationWindow();
+        this.warriorF = new WarriorFactory();
+        this.weaponF = new WarriorWeaponFactory();
         this.createdWeapons = new ArrayList<>();
         this.createdWarriors = new ArrayList<>();
         this.creation_window.setVisible(true);
@@ -57,10 +63,8 @@ public class CreationWindowController {
     
     public void addWeapon(Weapon weapon){
         // Add the weapon to the arraylist of the created weapons
-        createdWeapons.add(weapon);
+        //createdWeapons.add(weapon);
         WarriorWeapon currentWeapon = (WarriorWeapon) weapon;
-        
-        
         //DefaultTableModel tableModel = (DefaultTableModel) tblWeapons.getModel();
         Object[] weaponData = new Object[11];
         
@@ -75,7 +79,7 @@ public class CreationWindowController {
     
     public void addWarrior(Characters.Character warrior) {
         // Add the warrior to the created warriors
-        createdWarriors.add(warrior);
+        //createdWarriors.add(warrior);
         Warrior currentWarrior = (Warrior) warrior;
         Object[] warriorData = new Object[7];
         warriorData[0] = currentWarrior.getName();
@@ -83,10 +87,16 @@ public class CreationWindowController {
 
         creation_window.addWarrior(warriorData);
     }
+   
     
-    private void clearWeapons() {                                                
+    private void clearWeapons() {
+        ArrayList<String> weapons = this.weaponF.getAllWeaponsName();
+        for(String weapon_name : weapons){
+            this.warriorF.deleteWeaponOnWarriors(weapon_name);
+            this.weaponF.deleteWeapon(weapon_name);
+        }
         creation_window.clearWeapons();
-        createdWeapons.clear();
+        creation_window.clearWeaponsOnWarriors();
                 
     }
     
@@ -117,40 +127,75 @@ public class CreationWindowController {
 
     public void createWarrior(){
         String warriorName = creation_window.getWarriorName();
-        CharacterType warriorType = CharacterType.getCharacterTypeValue(creation_window.getCmbxWarriorTypeSelectedItem().toString().toUpperCase());
+        boolean result_insert = this.warriorF.existsCharacter(warriorName);
+        if(!result_insert){
+            CharacterType warriorType = CharacterType.getCharacterTypeValue(creation_window.getCmbxWarriorTypeSelectedItem().toString().toUpperCase());
+            ImageIcon warriorImage = creation_window.getWarriorImageIcon();
+            Characters.Character newCharacter = this.warriorF.createWarrior(warriorName, warriorType, lastImageUsedPath, 100);
+            ((Warrior)newCharacter).setCharacterImage(warriorImage);
+            this.warriorF.insert(newCharacter);
+            addWarrior(newCharacter);
+            creation_window.setTxfWarriorName("");
+        }
         
-        ImageIcon warriorImage = creation_window.getWarriorImageIcon();
-        
-        Characters.Character newCharacter = new Warrior(warriorName, warriorType , lastImageUsedPath  , 100); //FIXME
-        ((Warrior)newCharacter).setCharacterImage(warriorImage);
-        addWarrior(newCharacter);
-        
-        creation_window.setTxfWarriorName("");
     }
     
     public void createWeapon(){
         String weaponName = creation_window.getWeaponName();
-        Weapon newWeapon = new WarriorWeapon(weaponName , "DUMMY_STRING"); // FIXME
-        this.addWeapon(newWeapon);
-        creation_window.setTxfWeaponName("");
+        boolean result_exists = this.weaponF.existsWeapon(weaponName);
+        if(!result_exists){
+            Weapon newWeapon = this.weaponF.createWarriorWeapon(weaponName, "DUMMY_STRING");//FIXME
+            this.weaponF.insertWeapon(newWeapon);
+            this.addWeapon(newWeapon);
+            creation_window.setTxfWeaponName("");
+        }
+        
     }
     
     public void assignWeapon(){
-        int weaponIndex = creation_window.getWeaponIndex();
-        int warriorIndex = creation_window.getWarriorIndex();        
-        if (warriorIndex == -1){
-            creation_window.notifyMessageError("No weapon selected");
+        int weaponRowIndex = creation_window.getWeaponRowIndex();
+        int warriorRowIndex = creation_window.getWarriorRowIndex();
+        
+        if (warriorRowIndex == -1){
+            creation_window.notifyMessageError("No warrior selected");
         }
         else{
-            if (weaponIndex == -1){
+            if (weaponRowIndex == -1){
                 creation_window.notifyMessageError("Please select a weapon");
             }
             else{
-                Weapon selectedWeapon = createdWeapons.get(weaponIndex);
-                Warrior selectedWarrior = (Warrior) createdWarriors.get(warriorIndex);
-                this.addWeaponToWarrior(selectedWarrior, warriorIndex, selectedWeapon);
+                String weapon_name = creation_window.getSelectedWeaponName(weaponRowIndex, 0);
+                String warrior_name = creation_window.getSelectedWarriorName(warriorRowIndex, 0);
+                if(this.warriorF.existsCharacter(warrior_name) && this.weaponF.existsWeapon(weapon_name)){
+                    Weapon selectedWeapon = this.weaponF.getIWeapon(weapon_name);
+                    Warrior selectedWarrior = (Warrior) this.warriorF.getCharacter(warrior_name);
+                    if(!selectedWarrior.hasWeapon(weapon_name)){
+                        this.addWeaponToWarrior(selectedWarrior, warriorRowIndex, selectedWeapon);
+                    }
+                    
+                }
             }
         }
+    }
+    
+    public boolean setWarriorsOfTheGame(ArrayList<String> warriors_names){
+        //I know this can be set on the same cycle, but
+        //what will happen if one warrior don't supply our demands?
+        //we have to clear memory (Yes, Garbage Collector does, but it take
+        //some time.
+        for(String i : warriors_names){
+            int current_size = this.warriorF.getWeaponsSizeOf(i);
+            if(current_size != 5){
+                return false;
+            }
+        }
+        ArrayList<Characters.Character> new_created_warriors = new ArrayList<>();
+        for(String i : warriors_names){
+            Characters.Character selected_warrior = this.warriorF.getCharacter(i);
+            new_created_warriors.add(selected_warrior);
+        }
+        createdWarriors = new_created_warriors;
+        return true;
     }
     
     public void playerIsReady(){

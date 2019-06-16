@@ -107,7 +107,7 @@ public class ServerMessageHandler implements IServerMessageHandler{
         WarriorWeapon currentWeapon = (WarriorWeapon)weapon;
         
         int damageToType = currentWeapon.getDamageForType(type);
-        currentWarrior.setLife(currentWarrior.getLife() - damageToType);
+        currentWarrior.setLife((int)currentWarrior.getLife() - damageToType);
         currentWarrior.setDamageReceived(damageToType); // Attribute used to notify the controller that it should update the individual damage received label
         
         return damageToType;

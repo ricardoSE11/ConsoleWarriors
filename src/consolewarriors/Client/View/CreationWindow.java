@@ -56,6 +56,16 @@ public class CreationWindow extends javax.swing.JFrame {
         tblWarriors.setValueAt(weapon_name, warrior_position, weapon_number);
     }
     
+    public void clearWeaponsOnWarriors(){
+        int total_warriors = tblWarriors.getRowCount();
+        for(int i = 0; i < total_warriors; i++){
+            //not clear the last weapon, with 7 it fall down
+            for(int j = 2; j < 6; j++){
+                addWeaponToWarrior("",i, j);
+            }
+        }
+    }
+    
     public void addListeners(ActionListener load_image, ActionListener create_warrior,
             ActionListener create_weapon, ActionListener ready, ActionListener clear_weapons,
             ActionListener weapon_to_warrior){
@@ -285,6 +295,14 @@ public class CreationWindow extends javax.swing.JFrame {
         return (ImageIcon) lblWarriorImage.getIcon();
     }
     
+    public String getSelectedWeaponName(int row, int column){
+        return (String) this.tblWeapons.getModel().getValueAt(row, column);
+    }
+    
+    public String getSelectedWarriorName(int row, int column){
+        return (String) this.tblWarriors.getModel().getValueAt(row, column);
+    }
+    
     public void setTxfWarriorName(String new_name){
         txfWarriorName.setText(new_name);
     }
@@ -297,12 +315,20 @@ public class CreationWindow extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
     
-    public int getWeaponIndex(){
+    public int getWeaponRowIndex(){
         return tblWeapons.getSelectedRow();
     }
     
-    public int getWarriorIndex(){
+    public int getWarriorRowIndex(){
         return tblWarriors.getSelectedRow();
+    }
+    
+    public int getWarriorColumnIndex(){
+        return tblWarriors.getSelectedColumn();
+    }
+    
+    public int getWeaponColumnIndex(){
+        return tblWeapons.getSelectedColumn();
     }
     
     public void clearWeapons(){

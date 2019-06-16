@@ -11,7 +11,6 @@ import Weapons.Weapon;
 import consolewarriors.Client.IObservable;
 import consolewarriors.Client.IObserver;
 import consolewarriors.Common.CharacterType;
-import java.awt.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
@@ -42,7 +41,9 @@ public class Warrior extends Character implements Serializable , IObservable{
     public Warrior() {
     }
     
-    
+    public int getWeaponsSize(){
+        return weapons.size();
+    }
     
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
 
@@ -70,7 +71,7 @@ public class Warrior extends Character implements Serializable , IObservable{
         this.image = image;
     }
 
-    public int getLife() {
+    public double getLife() {
         return life;
     }
 
@@ -133,6 +134,14 @@ public class Warrior extends Character implements Serializable , IObservable{
         else{
             System.out.println("Trying to add more than 5 weapons");
         }
+    }
+    
+    public void deleteWeapon(String weapon_name){
+        this.weapons.remove(weapon_name);
+    }
+    
+    public boolean hasWeapon(String weapon_name){
+        return this.weapons.containsKey(weapon_name);
     }
 
     @Override
