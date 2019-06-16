@@ -15,6 +15,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  *
@@ -76,6 +77,15 @@ public class CreationWindow extends javax.swing.JFrame {
         this.btnClearWeapons.addActionListener(clear_weapons);
         this.btnAssignWeapon.addActionListener(weapon_to_warrior);
         
+    }
+    
+    public ArrayList<String> getNamesOfWarriors() {
+        ArrayList<String> warriors_names = new ArrayList<>();
+        for (int i = 0; i < tblWarriors.getRowCount(); i++) {
+            String current_name = getSelectedWarriorName(i, 0);
+            warriors_names.add(current_name);
+        }
+        return warriors_names;
     }
     /**
      * This method is called from within the constructor to initialize the form.

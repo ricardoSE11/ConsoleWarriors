@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -9,6 +10,7 @@ package consolewarriors.Common.Shared;
 import Weapons.Weapon;
 import consolewarriors.Common.CharacterType;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -19,12 +21,12 @@ import java.util.Random;
 public class WarriorWeapon extends Weapon implements Serializable{
     
     private HashMap<CharacterType,Integer> attackValueMatrix;
-    private boolean wasUsed;
+    private ArrayList<String> usedBy;
 
     public WarriorWeapon(String name, String imagePath) {
         super(name, imagePath);
         this.attackValueMatrix = new HashMap<>();
-        this.wasUsed = false;
+        this.usedBy = new ArrayList<>();
         setAttackMatrixValues();
     }
 
@@ -50,16 +52,25 @@ public class WarriorWeapon extends Weapon implements Serializable{
         this.attackValueMatrix = attackValueMatrix;
     }
 
-    public boolean wasUsed() {
-        return wasUsed;
+    public boolean wasUsedBy(String name) {
+        for (String currentString : usedBy){
+            if(currentString.equals(name)){
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void setWasUsed(boolean wasUsed) {
-        this.wasUsed = wasUsed;
+    public void addUser(String user) {
+        this.usedBy.add(user);
     }
     
     public int getDamageForType(CharacterType characterType){
         return attackValueMatrix.get(characterType);
+    }
+    
+    public void reload(){
+        this.usedBy.clear();
     }
     
     
