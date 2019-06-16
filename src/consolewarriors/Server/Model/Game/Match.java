@@ -297,7 +297,10 @@ public class Match {
                 
                 // Send by a player who lost after an attack
                 case "LOST":{
-                    
+                    Message victoryMessage = new ServerMessage("VICTORY", null);
+                    Player enemy = getEnemyOfPlayer(playerID);
+                    enemy.getClientThread().sendMessageToClient(victoryMessage);
+                    endMatch(enemy);
                 }
                 break;
 

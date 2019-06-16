@@ -99,7 +99,7 @@ public class ServerMessageHandler implements IServerMessageHandler{
             break;
             
             case "VICTORY":{
-                System.out.println("Enemy surrendered");
+                System.out.println("Enemy lost the game");
                 ((PlayerClient) client).changePlayerGamingStatus("WINNER");
             }
             break;

@@ -210,7 +210,8 @@ public class PlayerClient extends Client implements IObservable {
 
     public boolean lostTheMatch(){
         for (Character currentCharacter : warriors){
-            if (currentCharacter.life > 0){
+            Warrior warrior = (Warrior) currentCharacter;
+            if (warrior.getLife() > 0){
                 return false;
             }
         }
