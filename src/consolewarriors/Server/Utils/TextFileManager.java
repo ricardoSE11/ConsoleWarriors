@@ -24,7 +24,7 @@ public class TextFileManager {
     
     public void writeToFile(String text, String file_name){
         try {
-            File logFile = new File(path_to_logs + file_name);
+            File logFile = new File(path_to_logs + file_name + ".txt");
             writer = new BufferedWriter(new FileWriter(logFile));
             writer.write(text);
         } catch (Exception e) {

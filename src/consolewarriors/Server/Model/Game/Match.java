@@ -215,30 +215,31 @@ public class Match {
     }
     
     public void handlePlayerMessage(Message message){
+        Date date = Calendar.getInstance().getTime(); 
+        String strDate = formatter.format(date);
         ClientMessage clientMessage = (ClientMessage) message;
         int playerID = clientMessage.getClientID();
         
-        System.out.println("Got a message from client: " + playerID);
-        Date date = Calendar.getInstance().getTime();  
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");  
-        String strDate = dateFormat.format(date);  
+        System.out.println("Got a message from client: " + playerID);  
         String[] commandInfo = clientMessage.getEvent().split("-");
         String commandName = commandInfo[0];
         
         // CHAT is out because it does not depend on the turn
         if (commandName.equals("CHAT")){
+            System.out.println("Entra");
             String messageText = (String) message.getObjectOfInterest();
             Message chatMessage = new ServerMessage("CHAT", messageText);
-            Player current = getPlayerByID(playerID);
+            //Player current = getPlayerByID(playerID);
             Player enemy = getEnemyOfPlayer(playerID);
-            match_log += "Player "+current.getUsername()+" sent chat message '" +
-                    messageText +"' to " + enemy.getUsername() + "at "+strDate+ "\n";
+            /*match_log += "Player "+current.getUsername()+" sent chat message '" +
+                    messageText +"' to " + enemy.getUsername() + "at "+strDate+ "\n";*/
             enemy.getClientThread().sendMessageToClient(chatMessage);
             return;
         }
         
         // Moved out of the switch because it can be called at any given time
         else if (commandName.equals("SURRENDER")){
+            System.out.println("Entra21");
             Message victoryMessage = new ServerMessage("VICTORY", null);
             Player current = getPlayerByID(playerID);
             match_log += "Player "+current.getUsername()+" just surrended at " +
@@ -266,10 +267,10 @@ public class Match {
                     // Send the weapon to the enemy
                     Message attackMessage = new ServerMessage("ATTACK", attackParameters);
                     Player enemy = getEnemyOfPlayer(playerID);
-                    Player current = getPlayerByID(playerID);
+                    /*Player current = getPlayerByID(playerID);
                     match_log += "Player "+current.getUsername()+" attacked to" +
                         enemy.getUsername() + " with the warrior "+ attackParameters.getWarrior().getName() +
-                        " and weapon " +  attackParameters.getWeapon().getName()+ " at " + strDate +"\n";
+                        " and weapon " +  attackParameters.getWeapon().getName()+ " at " + strDate +"\n";*/
                     enemy.getClientThread().sendMessageToClient(attackMessage);
                     nextTurn();
                 }

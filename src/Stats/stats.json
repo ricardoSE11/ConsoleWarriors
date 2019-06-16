@@ -2,9 +2,9 @@
   "players": [
     {
       "username": "Dan7spirit",
-      "wins": 4,
+      "wins": 5,
       "loses": 3,
-      "surrenders": 0,
+      "surrenders": 1,
       "kills": 17,
       "successful attacks": 10,
       "failed attacks": 6
@@ -20,9 +20,9 @@
     },
     {
       "username": "Juan",
-      "wins": 0,
+      "wins": 1,
       "loses": 0,
-      "surrenders": 1,
+      "surrenders": 2,
       "kills": 0,
       "successful attacks": 0,
       "failed attacks": 0
