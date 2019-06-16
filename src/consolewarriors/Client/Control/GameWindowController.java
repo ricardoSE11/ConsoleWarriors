@@ -15,8 +15,6 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import Characters.Character;
 import Weapons.Weapon;
-import consolewarriors.Client.Model.IServerMessageHandler;
-import consolewarriors.Client.Model.ServerMessageHandler;
 import consolewarriors.Common.AttackGroup;
 import consolewarriors.Common.Command.ICommand;
 import consolewarriors.Common.Command.ICommandManager;
@@ -121,6 +119,9 @@ public class GameWindowController implements IObserver {
                     } else if (selectedCommand == null) {
                         System.out.println("Got a null command");
                     } else {
+                        //muy cochino, pero toca.
+                        String command_name = selectedCommand.getCommandName();
+                        //if(command_name.equals(ke))
                         selectedCommand.execute(commandArguments);
                     }
                 }
@@ -171,6 +172,14 @@ public class GameWindowController implements IObserver {
         if (statusString.equals("WRONG_TURN")) {
             this.gameWindow.writeToConsole("\n" + "Error: Is not your turn" + "\n", Color.RED);
         } 
+        
+        if (statusString.equals("ENEMY_TURN")) {
+            this.gameWindow.setTurnLabelText("Enemy's turn");
+        }
+        
+        if (statusString.equals("MY_TURN")) {
+            this.gameWindow.setTurnLabelText("Your turn");
+        }
         
         else if (statusString.equals("NO_SUCH_WARRIOR")){
             this.gameWindow.writeToConsole("\n" + "Error: Warrior does not exist" + "\n", Color.RED);

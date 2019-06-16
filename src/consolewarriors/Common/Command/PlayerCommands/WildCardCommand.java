@@ -82,7 +82,8 @@ public class WildCardCommand implements ICommand{
                 }
                 else{
                     Message attackMessage = new ClientMessage("SECOND_WILDCARD_ATTACK", player.getId(), attackParameters);
-                    player.sendMessage(attackMessage);                    
+                    player.sendMessage(attackMessage);     
+                    this.player.changePlayerGamingStatus("ENEMY_TURN");
                 }
                 
                 

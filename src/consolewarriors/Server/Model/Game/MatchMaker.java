@@ -5,11 +5,7 @@
  */
 package consolewarriors.Server.Model.Game;
 
-import consolewarriors.Common.ClientMessage;
-import consolewarriors.Common.Message;
 import consolewarriors.Common.PlayerRanking;
-import consolewarriors.Common.PlayerStats;
-import consolewarriors.Common.ServerMessage;
 import java.util.ArrayList;
 
 /**
@@ -84,7 +80,7 @@ public class MatchMaker {
         System.out.println("Creating a new match for players: " + playerOne.getPlayerID() + " and " + playerTwo.getPlayerID());
         Match newMatch = null;
         
-        newMatch = new Match(playerOne, playerTwo);
+        newMatch = new Match(playerOne, playerTwo, ranking);
         
         // <editor-fold defaultstate="collapsed" desc="Fix me">
         

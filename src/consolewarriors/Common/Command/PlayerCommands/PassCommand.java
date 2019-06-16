@@ -32,6 +32,7 @@ public class PassCommand implements ICommand{
         System.out.println("Executing PASS command");
         Message passTurnMessage = new ClientMessage("PASS", player.getId(), null);
         player.sendMessage(passTurnMessage);
+        player.changePlayerGamingStatus("ENEMY_TURN");
     }
 
     @Override

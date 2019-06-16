@@ -14,7 +14,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,10 +26,10 @@ public class ServerThread extends Thread  {
     private Server server = null;
     private Socket socket = null;
     private int id;
+    private String username;
     private ObjectInputStream reader;
     private ObjectOutputStream writer;
     private IClientMessageHandler clientMessageHandler;
-    
     private int matchID;
 
     public ServerThread(Socket socket, int clientID, Server server) {
@@ -119,23 +118,33 @@ public class ServerThread extends Thread  {
             this.reader = new ObjectInputStream(inputStream);
 
             // --- We ask the client if its new to the server --- 
-            DataInputStream sessionVerifier = new DataInputStream(inputStream);
+            /*DataInputStream sessionVerifier = new DataInputStream(inputStream);
             String session = sessionVerifier.readUTF();
             
             if (session.equals("NEW")){
-                int newClientID = server.getIDForNewClient();
-                server.addClient(newClientID, this);
-                this.id = newClientID;
                 
-                // --- We assign an ID to the client --- 
-                DataOutputStream idAssigner = new DataOutputStream(outputStream);
-                idAssigner.writeInt(newClientID);
-            }
-            else{
-                // --- Receive their ID otherwise --- 
-                DataInputStream idReceiver = new DataInputStream(inputStream);
-                int oldClientID = idReceiver.readInt();
-                System.out.println("Welcome back client " + oldClientID);
+            }*/
+
+            int newClientID = server.getIDForNewClient();
+            server.addClient(newClientID, this);
+            this.id = newClientID;
+
+            // --- We assign an ID to the client --- 
+            DataOutputStream idAssigner = new DataOutputStream(outputStream);
+            idAssigner.writeInt(newClientID);
+            
+            DataInputStream username_loader = new DataInputStream(inputStream);
+            String username_received = username_loader.readUTF();
+            
+            DataOutputStream username_status = new DataOutputStream(outputStream);
+            
+            if(server.existsPlayer(username_received)){
+                this.username = username_received;
+                username_status.writeUTF("You exists, bro.");
+            }else{
+                server.createNewPlayerStats(username_received);
+                this.username = username_received;
+                username_status.writeUTF("Welcome, " + username_received + ".");
             }
             
             while (connected) {
@@ -148,8 +157,14 @@ public class ServerThread extends Thread  {
             //System.out.println("Something went wrong with client with ID:" + this.id);
             Logger.getLogger(ServerThread.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
+    }
+    
+    public String getUsername(){
+        return this.username;
+    }
+    
+    public String getPlayerStats(String username){
+        return server.getPlayerStats(username);
     }
 
     public void sendMessageToClient(Message message){

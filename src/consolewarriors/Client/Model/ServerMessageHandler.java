@@ -46,6 +46,8 @@ public class ServerMessageHandler implements IServerMessageHandler{
                 Message attackResponse = new ClientMessage("ATTACK_RESPONSE", client.getId(), totalDamageDealt);
                 client.sendMessage(attackResponse);
                 
+                ((PlayerClient) client).changePlayerGamingStatus("MY_TURN");
+                
                 if (((PlayerClient)client).lostTheMatch()){
                     Message lostMessage = new ClientMessage("LOST", client.getId(), null);
                     client.sendMessage(lostMessage);
@@ -58,6 +60,13 @@ public class ServerMessageHandler implements IServerMessageHandler{
                 System.out.println("Getting the damage dealt");
                 int damageDealt = (int) message.getObjectOfInterest();
                 ((PlayerClient) client).setDamageDealtOnAttack(damageDealt);
+                ((PlayerClient) client).changePlayerGamingStatus("ENEMY_TURN");
+            }
+            break;
+            
+            case "PASS":{
+                System.out.println("Enemy player passed the turn");
+                ((PlayerClient) client).changePlayerGamingStatus("MY_TURN");
             }
             break;
             
@@ -127,7 +136,9 @@ public class ServerMessageHandler implements IServerMessageHandler{
                 Integer totalDamageDealt = attackWarriors(warriors, weapon);
                 Message attackResponse = new ClientMessage("ATTACK_RESPONSE", client.getId(), totalDamageDealt);
                 client.sendMessage(attackResponse);
-
+                
+                ((PlayerClient) client).changePlayerGamingStatus("MY_TURN");
+                
                 if (((PlayerClient) client).lostTheMatch()) {
                     Message lostMessage = new ClientMessage("LOST", client.getId(), null);
                     client.sendMessage(lostMessage);
