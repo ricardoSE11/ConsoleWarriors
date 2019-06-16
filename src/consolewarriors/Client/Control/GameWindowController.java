@@ -176,7 +176,7 @@ public class GameWindowController implements IObserver {
             this.gameWindow.writeToConsole("\n" + "Error: Warrior does not exist" + "\n", Color.RED);
         }
         
-        else if (statusString.equals("NOT_SUCH_WEAPON")) {
+        else if (statusString.equals("NO_SUCH_WEAPON")) {
             this.gameWindow.writeToConsole("\n" + "Error: That weapon does not exist" + "\n", Color.RED);
         }
         
@@ -190,6 +190,14 @@ public class GameWindowController implements IObserver {
         
         else if (statusString.equals("UNVALID_RELOAD")) {
             this.gameWindow.writeToConsole("\n" + "Error: You still have usable weapons" + "\n", Color.RED);
+        }
+        
+        else if (statusString.equals("REJECTED_WILDCARD")) {
+            this.gameWindow.writeToConsole("\n" + "Message: You can not use the wildcard" + "\n", Color.RED);
+        }
+        
+        else if (statusString.equals("UNAVAILABLE_WILDCARD")) {
+            this.gameWindow.writeToConsole("\n" + "Message: You can not use the wildcard" + "\n", Color.RED);
         }
         
         
