@@ -95,7 +95,58 @@ public class ServerMessageHandler implements IServerMessageHandler{
             }
             break;
             
+            case "WILDCARD_ATTACK":{
+                System.out.println("Receiving wildcard attack");
+                AttackGroup attackParameters = (AttackGroup) message.getObjectOfInterest();
+                ArrayList<Character> warriors = ((PlayerClient) client).getWarriors();
+
+                ((PlayerClient) client).setAttackedBy(attackParameters);
+                Weapon weapon = (Weapon) attackParameters.getWeapon();
+                Warrior warrior = (Warrior) attackParameters.getWarrior();
+
+                Integer totalDamageDealt = attackWarriors(warriors, weapon);
+                Message attackResponse = new ClientMessage("ATTACK_RESPONSE", client.getId(), totalDamageDealt);
+                client.sendMessage(attackResponse);
+
+                if (((PlayerClient) client).lostTheMatch()) {
+                    Message lostMessage = new ClientMessage("LOST", client.getId(), null);
+                    client.sendMessage(lostMessage);
+                }
+            }
+            break;
             
+            case "SECOND_WILDCARD_ATTACK": {
+                System.out.println("Receiving attack");
+                AttackGroup attackParameters = (AttackGroup) message.getObjectOfInterest();
+                ArrayList<Character> warriors = ((PlayerClient) client).getWarriors();
+
+                ((PlayerClient) client).setAttackedBy(attackParameters);
+                Weapon weapon = (Weapon) attackParameters.getWeapon();
+                Warrior warrior = (Warrior) attackParameters.getWarrior();
+
+                Integer totalDamageDealt = attackWarriors(warriors, weapon);
+                Message attackResponse = new ClientMessage("ATTACK_RESPONSE", client.getId(), totalDamageDealt);
+                client.sendMessage(attackResponse);
+
+                if (((PlayerClient) client).lostTheMatch()) {
+                    Message lostMessage = new ClientMessage("LOST", client.getId(), null);
+                    client.sendMessage(lostMessage);
+                }
+            }
+            break;
+            
+            case "REJECTED_WILDCARD": {
+                System.out.println("Wildcard rejected");
+                ((PlayerClient) client).changePlayerGamingStatus("REJECTED_WILDCARD");
+            }
+            break;
+            
+            case "UNAVAILABLE_WILDCARD": {
+                System.out.println("Wildcard rejected");
+                ((PlayerClient) client).changePlayerGamingStatus("UNAVAILABLE_WILDCARD");
+            }
+            break;
+
         }
         
         
