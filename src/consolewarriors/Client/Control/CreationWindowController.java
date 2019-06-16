@@ -198,19 +198,22 @@ public class CreationWindowController {
         return true;
     }
     
-    public void playerIsReady(){
+    public void playerIsReady() {
         //port should not be static, but is not too important right now
         //PlayerClient player = new PlayerClient("localhost", 1234, username , createdWarriors);
 
-        this.player.setWarriors(createdWarriors);
-        //this.player.run();
-        
-        GameWindow gameWindow = new GameWindow();
-        gameWindow.setVisible(true);
-        
-        GameWindowController gmc = new GameWindowController(gameWindow, player);
-        
-        this.creation_window.setVisible(false);
+        ArrayList<String> warriors_names = creation_window.getNamesOfWarriors();
+        if (setWarriorsOfTheGame(warriors_names)) {
+            this.player.setWarriors(createdWarriors);
+            //this.player.run();
+
+            GameWindow gameWindow = new GameWindow();
+            gameWindow.setVisible(true);
+
+            GameWindowController gmc = new GameWindowController(gameWindow, player);
+
+            this.creation_window.setVisible(false);
+        }
     }
     
     public final void setListeners(){

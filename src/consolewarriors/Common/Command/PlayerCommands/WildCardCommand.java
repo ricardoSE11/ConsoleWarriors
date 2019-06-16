@@ -68,11 +68,11 @@ public class WildCardCommand implements ICommand{
                 System.out.println("Null weapon");
             }
 
-            if (((WarriorWeapon) choosenWeapon).wasUsed()) {
+            if (((WarriorWeapon) choosenWeapon).wasUsedBy(warriorName)) {
                 player.changePlayerGamingStatus("USED_WEAPON");
                 System.out.println("Weapon was already used");
             } else {
-                ((WarriorWeapon) choosenWeapon).setWasUsed(true);
+                ((WarriorWeapon) choosenWeapon).addUser(warriorName);
                 AttackGroup attackParameters = new AttackGroup(choosenWarrior, choosenWeapon);
                 player.setAttackedWith(attackParameters);
                 
