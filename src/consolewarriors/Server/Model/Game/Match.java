@@ -210,6 +210,7 @@ public class Match {
     
     public void saveLogToFile(){
         String initial_date = formatter.format(start_date);
+        initial_date = initial_date.replace(" ", "-");
         String file_name = playerOne.getUsername() + "vs" +playerTwo.getUsername() + initial_date;
         this.text_manager.writeToFile(match_log, file_name);
     }
@@ -239,7 +240,6 @@ public class Match {
         
         // Moved out of the switch because it can be called at any given time
         else if (commandName.equals("SURRENDER")){
-            System.out.println("Entra21");
             Message victoryMessage = new ServerMessage("VICTORY", null);
             Player current = getPlayerByID(playerID);
             match_log += "Player "+current.getUsername()+" just surrended at " +
