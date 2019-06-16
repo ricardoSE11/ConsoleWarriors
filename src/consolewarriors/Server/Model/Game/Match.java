@@ -11,6 +11,7 @@ import consolewarriors.Common.Message;
 import consolewarriors.Common.PlayerRanking;
 import consolewarriors.Common.PlayerStats;
 import consolewarriors.Common.ServerMessage;
+import consolewarriors.Server.Model.Connection.Server;
 import consolewarriors.Server.Utils.TextFileManager;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -41,7 +42,9 @@ public class Match {
     private boolean currentWildCardAccepted;
     private final Date start_date;
     private final SimpleDateFormat formatter;
-    private TextFileManager text_manager;
+    private final TextFileManager text_manager;
+    
+    private Server server;
 
     public Match(Player playerOne, Player playerTwo, PlayerRanking ranking) {
         this.playerOne = playerOne;
@@ -55,6 +58,16 @@ public class Match {
         start_date = new Date();
         formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         text_manager = new TextFileManager();
+        
+        String stats_player_one = ranking.getPlayerStats(playerOne.getUsername());
+        String stats_player_two = ranking.getPlayerStats(playerTwo.getUsername());
+        
+        this.playerOne.setMy_stats(stats_player_one);
+        this.playerTwo.setMy_stats(stats_player_two);
+        this.playerOne.setMy_enemy_stats(stats_player_two);
+        this.playerTwo.setMy_enemy_stats(stats_player_one);
+        
+        this.server = this.playerOne.getClientThread().getServer();
         // Missing: match logger and score recorder initialization 
     }
     
@@ -148,6 +161,8 @@ public class Match {
         this.winner = winner;
         this.ended = true;
         try {
+            this.saveLogToFile();
+            this.server.putStatsToFile();
             playerTwo.getClientThread().getSocket().close();
             playerOne.getClientThread().getSocket().close();
         } catch (IOException ex) {
@@ -301,7 +316,7 @@ public class Match {
                     Message tieMessage = new ServerMessage("TIE_PROPOSAL", null);
                     Player enemy = getEnemyOfPlayer(playerID);
                     Player current = getPlayerByID(playerID);
-                    match_log += "Player "+current.getUsername()+" proposed a tie to" +
+                    match_log += "Player "+current.getUsername()+" proposed a tie to " +
                     enemy.getUsername() + " at " + strDate +"\n";
                     enemy.getClientThread().sendMessageToClient(tieMessage);
                     nextTurn();
@@ -312,7 +327,7 @@ public class Match {
                     Message tieAcceptedMessage = new ServerMessage("TIE_PROPOSSAL_ACCEPTED", null);
                     Player enemy = getEnemyOfPlayer(playerID);
                     Player current = getPlayerByID(playerID);
-                    match_log += "Player "+current.getUsername()+" accepted the tie to" +
+                    match_log += "Player "+current.getUsername()+" accepted the tie to " +
                         enemy.getUsername() + " at " + strDate +"\n";
                     enemy.getClientThread().sendMessageToClient(tieAcceptedMessage);
                     endMatch(null);
@@ -323,7 +338,7 @@ public class Match {
                     Message tieDeniedMessage = new ServerMessage("TIE_PROPOSSAL_DENIED", null);
                     Player enemy = getEnemyOfPlayer(playerID);
                     Player current = getPlayerByID(playerID);
-                    match_log += "Player "+current.getUsername()+" denied the tie to" +
+                    match_log += "Player "+current.getUsername()+" denied the tie to " +
                         enemy.getUsername() + " at " + strDate +"\n";
                     enemy.getClientThread().sendMessageToClient(tieDeniedMessage);
                     nextTurn();

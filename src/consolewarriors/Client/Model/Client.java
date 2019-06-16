@@ -152,7 +152,8 @@ public abstract class Client {
             System.out.println("Received my ID: " + id);
             System.out.println("The username response was: " + username_response);
 
-
+            
+            
             ClientThread clientThread = new ClientThread(this, reader); // Thread to listen for server messages
             clientThread.setServerMessageHandler(serverMessageHandler);
             clientThread.start();

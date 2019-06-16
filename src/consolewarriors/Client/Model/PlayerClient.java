@@ -29,6 +29,7 @@ public class PlayerClient extends Client implements IObservable {
     private ArrayList<IObserver> observers;
     private ArrayList<String> chatMessages;
     private String playerStatus = ""; // attribute for the SURRENDER , and TIE commands
+    private String player_stats = "";
     
     private int damageDealtOnAttack; // Consultar Dani.
     private AttackGroup attackedWith;
@@ -46,6 +47,7 @@ public class PlayerClient extends Client implements IObservable {
         this.playerStatus = "WAITING_FOR_MATCH";
         this.observers = new ArrayList<>();
         this.chatMessages = new ArrayList<>();
+        this.player_stats = "";
         
         IServerMessageHandler messageHandler = new ServerMessageHandler();
         this.setServerMessageHandler(messageHandler);
