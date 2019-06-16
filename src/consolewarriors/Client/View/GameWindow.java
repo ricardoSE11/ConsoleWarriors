@@ -206,6 +206,50 @@ public class GameWindow extends javax.swing.JFrame {
         lblAttackedWith.setText(weaponName);
         setImageOnLabel(warriorImage, lblAttackedByBG);
     }
+    
+    public String getStatsValueFromString(String statsKeyValue){
+        int spaceIndex = statsKeyValue.indexOf(" ");
+        String requiredValue = statsKeyValue.substring(spaceIndex + 1);
+        requiredValue = requiredValue.replace('.', ' ');
+        return requiredValue;
+    }
+    
+    public void setUpPlayerStats(String stats , boolean enemyStats){
+        if (enemyStats){
+            String[] statsInfo = stats.split("\n");
+            String wins = getStatsValueFromString(statsInfo[1]);
+            String losses = getStatsValueFromString(statsInfo[2]);
+            String kills = getStatsValueFromString(statsInfo[3]);
+            String surrenders = getStatsValueFromString(statsInfo[4]);
+            String successfullAttacks = getStatsValueFromString(statsInfo[5]);
+            String failedAttacks = getStatsValueFromString(statsInfo[6]);
+            lstEnemyInfo.add(" - Playing against -");
+            lstEnemyInfo.add("Wins: " + wins);
+            lstEnemyInfo.add("Loss: " + losses);
+            lstEnemyInfo.add("Kills: " + kills);
+            lstEnemyInfo.add("Gaveup: " + surrenders);
+            lstEnemyInfo.add("Succes: " + successfullAttacks);
+            lstEnemyInfo.add("Failed: " + failedAttacks);
+            lstEnemyInfo.repaint();
+        }
+        else{
+            String[] statsInfo = stats.split("\n");
+            String wins = getStatsValueFromString(statsInfo[1]);
+            String losses = getStatsValueFromString(statsInfo[2]);
+            String kills = getStatsValueFromString(statsInfo[3]);
+            String surrenders = getStatsValueFromString(statsInfo[4]);
+            String successfullAttacks = getStatsValueFromString(statsInfo[5]);
+            String failedAttacks = getStatsValueFromString(statsInfo[6]);
+            lstPlayerInfo.add(" - Your stats -");
+            lstPlayerInfo.add("Wins: " + wins);
+            lstPlayerInfo.add("Loss: " + losses);
+            lstPlayerInfo.add("Kills: " + kills);
+            lstPlayerInfo.add("Gaveup: " + surrenders);
+            lstPlayerInfo.add("Succes: " + successfullAttacks);
+            lstPlayerInfo.add("Failed: " + failedAttacks);
+            lstPlayerInfo.repaint();
+        }
+    }
 
     
     /**
@@ -292,8 +336,10 @@ public class GameWindow extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblWeapons);
 
+        lblSelectedWarriorName.setForeground(new java.awt.Color(255, 255, 255));
         lblSelectedWarriorName.setText("Warrior name");
 
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Selected warrior:");
 
         lblPlayerTurn.setFont(new java.awt.Font("Segoe UI Light", 1, 18)); // NOI18N
@@ -306,12 +352,12 @@ public class GameWindow extends javax.swing.JFrame {
         lblWarrior1HP.setForeground(new java.awt.Color(255, 255, 255));
         lblWarrior1HP.setText("H1 health");
         panelWarriorOne.add(lblWarrior1HP);
-        lblWarrior1HP.setBounds(20, 210, 90, 16);
+        lblWarrior1HP.setBounds(40, 210, 60, 20);
 
         lblWarrior1Name.setForeground(new java.awt.Color(255, 255, 255));
         lblWarrior1Name.setText("W1 name");
         panelWarriorOne.add(lblWarrior1Name);
-        lblWarrior1Name.setBounds(20, 240, 110, 16);
+        lblWarrior1Name.setBounds(20, 240, 100, 20);
 
         lblWarriorOne.setBorder(new javax.swing.border.MatteBorder(null));
         panelWarriorOne.add(lblWarriorOne);
@@ -323,12 +369,12 @@ public class GameWindow extends javax.swing.JFrame {
         lblWarrior2HP.setForeground(new java.awt.Color(255, 255, 255));
         lblWarrior2HP.setText("H2 health");
         panelWarrior2.add(lblWarrior2HP);
-        lblWarrior2HP.setBounds(20, 210, 80, 16);
+        lblWarrior2HP.setBounds(40, 210, 60, 16);
 
         lblWarrior2Name.setForeground(new java.awt.Color(255, 255, 255));
         lblWarrior2Name.setText("W2 name");
         panelWarrior2.add(lblWarrior2Name);
-        lblWarrior2Name.setBounds(20, 240, 70, 16);
+        lblWarrior2Name.setBounds(30, 240, 80, 16);
 
         lblWarriorTwo.setBorder(new javax.swing.border.MatteBorder(null));
         panelWarrior2.add(lblWarriorTwo);
@@ -345,7 +391,7 @@ public class GameWindow extends javax.swing.JFrame {
         lblWarrior3HP.setForeground(new java.awt.Color(255, 255, 255));
         lblWarrior3HP.setText("W3 health");
         panelWarrior3.add(lblWarrior3HP);
-        lblWarrior3HP.setBounds(20, 210, 80, 16);
+        lblWarrior3HP.setBounds(30, 210, 70, 16);
 
         lblWarriorThree.setBorder(new javax.swing.border.MatteBorder(null));
         panelWarrior3.add(lblWarriorThree);
@@ -359,12 +405,12 @@ public class GameWindow extends javax.swing.JFrame {
         lblWarrior4Name.setForeground(new java.awt.Color(255, 255, 255));
         lblWarrior4Name.setText("W4 name");
         panelWarrior4.add(lblWarrior4Name);
-        lblWarrior4Name.setBounds(20, 240, 80, 16);
+        lblWarrior4Name.setBounds(20, 240, 90, 16);
 
         lblWarrior4HP.setForeground(new java.awt.Color(255, 255, 255));
         lblWarrior4HP.setText("W4 health");
         panelWarrior4.add(lblWarrior4HP);
-        lblWarrior4HP.setBounds(20, 210, 70, 16);
+        lblWarrior4HP.setBounds(40, 210, 70, 16);
 
         lblWarriorFour.setBorder(new javax.swing.border.MatteBorder(null));
         panelWarrior4.add(lblWarriorFour);
@@ -405,14 +451,11 @@ public class GameWindow extends javax.swing.JFrame {
         warriorsPanelLayout.setVerticalGroup(
             warriorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(warriorsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(warriorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(warriorsPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(21, 21, 21))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, warriorsPanelLayout.createSequentialGroup()
-                        .addComponent(lblPlayerTurn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addGap(15, 15, 15)
+                .addGroup(warriorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPlayerTurn)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(warriorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panelWarrior4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelWarrior3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -498,6 +541,7 @@ public class GameWindow extends javax.swing.JFrame {
         panelUsedToAttack.setBackground(new java.awt.Color(102, 102, 102));
         panelUsedToAttack.setLayout(null);
 
+        lblDamageDealt.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         lblDamageDealt.setForeground(new java.awt.Color(204, 0, 51));
         lblDamageDealt.setText("DAMAGE");
         panelUsedToAttack.add(lblDamageDealt);
@@ -533,7 +577,7 @@ public class GameWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(statsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(lstPlayerInfo, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
-                    .addComponent(lstEnemyInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lstEnemyInfo, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
                     .addComponent(lstRanking, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(statsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -549,7 +593,7 @@ public class GameWindow extends javax.swing.JFrame {
                     .addGroup(statsPanelLayout.createSequentialGroup()
                         .addComponent(lstRanking, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lstEnemyInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lstEnemyInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lstPlayerInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(statsPanelLayout.createSequentialGroup()
@@ -583,7 +627,7 @@ public class GameWindow extends javax.swing.JFrame {
         consolePanel.setBackground(new java.awt.Color(102, 102, 102));
 
         txaConsole.setBackground(new java.awt.Color(0, 0, 0));
-        txaConsole.setFont(new java.awt.Font("Dialog", 0, 16)); // NOI18N
+        txaConsole.setFont(new java.awt.Font("Monospaced", 0, 14)); // NOI18N
         txaConsole.setForeground(new java.awt.Color(255, 255, 255));
         jScrollPane3.setViewportView(txaConsole);
 

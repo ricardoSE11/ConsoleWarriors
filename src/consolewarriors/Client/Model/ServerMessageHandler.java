@@ -27,6 +27,26 @@ public class ServerMessageHandler implements IServerMessageHandler{
         String event = message.getEvent();
         
         switch(event){
+            case "MATCH_STARTED":{
+                System.out.println("Match started");
+                ((PlayerClient) client).changePlayerGamingStatus("PLAYING");
+            }
+            break;
+            
+            case "YOUR_STATS":{
+                String stats = (String) message.getObjectOfInterest();
+                ((PlayerClient) client).setPlayer_stats(stats);
+                ((PlayerClient) client).changePlayerGamingStatus("YOUR_STATS");
+            }
+            break;
+            
+            case "ENEMY_STATS":{
+                String enemyStats = (String) message.getObjectOfInterest();
+                ((PlayerClient) client).setEnemy_stats(enemyStats);
+                ((PlayerClient) client).changePlayerGamingStatus("ENEMY_STATS");
+            }
+            break;
+            
             case "WRONG_TURN":{
                 ((PlayerClient) client).changePlayerGamingStatus("WRONG_TURN");
             }
@@ -99,7 +119,7 @@ public class ServerMessageHandler implements IServerMessageHandler{
             break;
             
             case "VICTORY":{
-                System.out.println("Enemy surrendered");
+                System.out.println("Enemy lost the game");
                 ((PlayerClient) client).changePlayerGamingStatus("WINNER");
             }
             break;

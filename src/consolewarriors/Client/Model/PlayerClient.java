@@ -30,6 +30,7 @@ public class PlayerClient extends Client implements IObservable {
     private ArrayList<String> chatMessages;
     private String playerStatus = ""; // attribute for the SURRENDER , and TIE commands
     private String player_stats = "";
+    private String enemy_stats = "";
     
     private int damageDealtOnAttack; // Consultar Dani.
     private AttackGroup attackedWith;
@@ -178,8 +179,22 @@ public class PlayerClient extends Client implements IObservable {
         this.attackedBy = attackedBy;
         notify("RECEIVED_ATTACK");
     }
-     
-    
+
+    public String getPlayer_stats() {
+        return player_stats;
+    }
+
+    public void setPlayer_stats(String player_stats) {
+        this.player_stats = player_stats;
+    }
+
+    public String getEnemy_stats() {
+        return enemy_stats;
+    }
+
+    public void setEnemy_stats(String enemy_stats) {
+        this.enemy_stats = enemy_stats;
+    }
     
     // </editor-fold>
 
@@ -201,19 +216,22 @@ public class PlayerClient extends Client implements IObservable {
     }
 
     public void leaveMatch(){
-        try {
-            this.socket.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        System.out.println("Player: " + this.getId() + " left the match");
+//        try {
+//            this.socket.close();
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
     }
 
     public boolean lostTheMatch(){
         for (Character currentCharacter : warriors){
-            if (currentCharacter.life > 0){
+            Warrior warrior = (Warrior) currentCharacter;
+            if (warrior.getLife() > 0){
                 return false;
             }
         }
+        changePlayerGamingStatus("DEFEATED");
         return true;
     }
     

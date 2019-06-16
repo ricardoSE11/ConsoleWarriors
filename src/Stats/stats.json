@@ -16,7 +16,7 @@
       "surrenders": 2,
       "kills": 20,
       "successful attacks": 13,
-      "failed attacks": 7
+      "failed attacks": 13
     },
     {
       "username": "Juan",
@@ -34,7 +34,34 @@
       "surrenders": 0,
       "kills": 0,
       "successful attacks": 0,
-      "failed attacks": 0
+      "failed attacks": 1
+    },
+    {
+      "username": "saddsaasdadsdsadsa",
+      "wins": 0,
+      "loses": 0,
+      "surrenders": 0,
+      "kills": 0,
+      "successful attacks": 0,
+      "failed attacks": 1
+    },
+    {
+      "username": "Ash Fire",
+      "wins": 0,
+      "loses": 0,
+      "surrenders": 0,
+      "kills": 0,
+      "successful attacks": 0,
+      "failed attacks": 2
+    },
+    {
+      "username": "Soligo",
+      "wins": 0,
+      "loses": 0,
+      "surrenders": 0,
+      "kills": 0,
+      "successful attacks": 0,
+      "failed attacks": 1
     }
   ]
 }

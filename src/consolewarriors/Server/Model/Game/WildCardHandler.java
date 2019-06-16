@@ -53,6 +53,7 @@ public class WildCardHandler implements IWildCardHandler{
         int minValue = -5;
         Random random = new Random();
         int randomNumber = random.nextInt((maxValue - minValue) + 1) + minValue;
+        System.out.println("Random number was: " + randomNumber);
         return (randomNumber > 0);
     }
 
