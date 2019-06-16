@@ -206,6 +206,50 @@ public class GameWindow extends javax.swing.JFrame {
         lblAttackedWith.setText(weaponName);
         setImageOnLabel(warriorImage, lblAttackedByBG);
     }
+    
+    public String getStatsValueFromString(String statsKeyValue){
+        int spaceIndex = statsKeyValue.indexOf(" ");
+        String requiredValue = statsKeyValue.substring(spaceIndex + 1);
+        requiredValue = requiredValue.replace('.', ' ');
+        return requiredValue;
+    }
+    
+    public void setUpPlayerStats(String stats , boolean enemyStats){
+        if (enemyStats){
+            String[] statsInfo = stats.split("\n");
+            String wins = getStatsValueFromString(statsInfo[1]);
+            String losses = getStatsValueFromString(statsInfo[2]);
+            String kills = getStatsValueFromString(statsInfo[3]);
+            String surrenders = getStatsValueFromString(statsInfo[4]);
+            String successfullAttacks = getStatsValueFromString(statsInfo[5]);
+            String failedAttacks = getStatsValueFromString(statsInfo[6]);
+            lstEnemyInfo.add(" - Playing against -");
+            lstEnemyInfo.add("Wins: " + wins);
+            lstEnemyInfo.add("Loss: " + losses);
+            lstEnemyInfo.add("Kills: " + kills);
+            lstEnemyInfo.add("Gaveup: " + surrenders);
+            lstEnemyInfo.add("Succes: " + successfullAttacks);
+            lstEnemyInfo.add("Failed: " + failedAttacks);
+            lstEnemyInfo.repaint();
+        }
+        else{
+            String[] statsInfo = stats.split("\n");
+            String wins = getStatsValueFromString(statsInfo[1]);
+            String losses = getStatsValueFromString(statsInfo[2]);
+            String kills = getStatsValueFromString(statsInfo[3]);
+            String surrenders = getStatsValueFromString(statsInfo[4]);
+            String successfullAttacks = getStatsValueFromString(statsInfo[5]);
+            String failedAttacks = getStatsValueFromString(statsInfo[6]);
+            lstEnemyInfo.add(" - Your stats -");
+            lstPlayerInfo.add("Wins: " + wins);
+            lstPlayerInfo.add("Loss: " + losses);
+            lstPlayerInfo.add("Kills: " + kills);
+            lstPlayerInfo.add("Gaveup: " + surrenders);
+            lstPlayerInfo.add("Succes: " + successfullAttacks);
+            lstPlayerInfo.add("Failed: " + failedAttacks);
+            lstPlayerInfo.repaint();
+        }
+    }
 
     
     /**
@@ -533,7 +577,7 @@ public class GameWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(statsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(lstPlayerInfo, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
-                    .addComponent(lstEnemyInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lstEnemyInfo, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
                     .addComponent(lstRanking, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(statsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -549,7 +593,7 @@ public class GameWindow extends javax.swing.JFrame {
                     .addGroup(statsPanelLayout.createSequentialGroup()
                         .addComponent(lstRanking, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lstEnemyInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lstEnemyInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lstPlayerInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(statsPanelLayout.createSequentialGroup()

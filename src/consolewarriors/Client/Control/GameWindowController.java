@@ -169,6 +169,14 @@ public class GameWindowController implements IObserver {
     }
     
     public void handleStatusUpdates(String statusString){
+        if (statusString.equals("YOUR_STATS")) {
+            gameWindow.setUpPlayerStats(player.getPlayer_stats(), false);
+        }        
+        
+        if (statusString.equals("ENEMY_STATS")) {
+            gameWindow.setUpPlayerStats(player.getEnemy_stats(), true);
+        }
+        
         if (statusString.equals("WRONG_TURN")) {
             this.gameWindow.writeToConsole("\n" + "Error: Is not your turn" + "\n", Color.RED);
         } 

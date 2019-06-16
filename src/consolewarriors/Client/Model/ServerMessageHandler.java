@@ -27,6 +27,20 @@ public class ServerMessageHandler implements IServerMessageHandler{
         String event = message.getEvent();
         
         switch(event){
+            case "YOUR_STATS":{
+                String stats = (String) message.getObjectOfInterest();
+                ((PlayerClient) client).setPlayer_stats(stats);
+                ((PlayerClient) client).changePlayerGamingStatus("YOUR_STATS");
+            }
+            break;
+            
+            case "ENEMY_STATS":{
+                String enemyStats = (String) message.getObjectOfInterest();
+                ((PlayerClient) client).setEnemy_stats(enemyStats);
+                ((PlayerClient) client).changePlayerGamingStatus("ENEMY_STATS");
+            }
+            break;
+            
             case "WRONG_TURN":{
                 ((PlayerClient) client).changePlayerGamingStatus("WRONG_TURN");
             }

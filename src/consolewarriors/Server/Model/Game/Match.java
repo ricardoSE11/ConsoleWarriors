@@ -67,8 +67,9 @@ public class Match {
         this.playerOne.setMy_enemy_stats(stats_player_two);
         this.playerTwo.setMy_enemy_stats(stats_player_one);
         
+        sendPlayerStats();
+        
         this.server = this.playerOne.getClientThread().getServer();
-        // Missing: match logger and score recorder initialization 
     }
     
     // <editor-fold defaultstate="collapsed" desc="Getters and setters">
@@ -147,6 +148,21 @@ public class Match {
     
     
     // </editor-fold>
+    
+    public void sendPlayerStats(){
+        Message playerOneStats = new ServerMessage("YOUR_STATS", playerOne.getMy_stats());
+        playerOne.getClientThread().sendMessageToClient(playerOneStats);
+        
+
+        Message playerOneEnemyStats = new ServerMessage("ENEMY_STATS", playerOne.getMy_enemy_stats());
+        playerOne.getClientThread().sendMessageToClient(playerOneEnemyStats);      
+        
+        Message playerTwoStats = new ServerMessage("YOUR_STATS", playerTwo.getMy_stats());
+        playerTwo.getClientThread().sendMessageToClient(playerTwoStats);
+
+        Message playerTwoEnemyStats = new ServerMessage("ENEMY_STATS", playerTwo.getMy_enemy_stats());
+        playerTwo.getClientThread().sendMessageToClient(playerTwoEnemyStats);
+    }
     
     // Method to send the ranking and the stats of each player to both players
     public void sendPlayersRankingData(){

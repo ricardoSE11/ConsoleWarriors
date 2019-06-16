@@ -459,7 +459,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="lstPlayerInfo" pref="167" max="32767" attributes="0"/>
-                          <Component id="lstEnemyInfo" max="32767" attributes="0"/>
+                          <Component id="lstEnemyInfo" pref="167" max="32767" attributes="0"/>
                           <Component id="lstRanking" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -479,7 +479,7 @@
                           <Group type="102" attributes="0">
                               <Component id="lstRanking" min="-2" pref="148" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="lstEnemyInfo" max="32767" attributes="0"/>
+                              <Component id="lstEnemyInfo" min="-2" pref="159" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="lstPlayerInfo" min="-2" pref="159" max="-2" attributes="0"/>
                           </Group>
