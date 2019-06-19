@@ -227,7 +227,7 @@ public class GameWindowController implements IObserver {
         else if (statusString.startsWith("RECEIVING_LOG")){
             int hyphIndex = statusString.indexOf("-");
             String matchLog = statusString.substring(hyphIndex + 1);
-            gameWindow.writeToConsole("\n " + " GAME LOG " + "\n", Color.LIGHT_GRAY);
+            gameWindow.writeToConsole("\n " + "-GAME LOG-" + "\n", Color.LIGHT_GRAY);
             gameWindow.writeToConsole("\n " + matchLog + "\n", Color.LIGHT_GRAY);
         }
         

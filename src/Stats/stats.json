@@ -20,12 +20,12 @@
     },
     {
       "username": "Juan",
-      "wins": 1,
+      "wins": 2,
       "loses": 0,
       "surrenders": 2,
       "kills": 0,
       "successful attacks": 0,
-      "failed attacks": 0
+      "failed attacks": 1
     },
     {
       "username": "sa",
@@ -62,6 +62,15 @@
       "kills": 0,
       "successful attacks": 0,
       "failed attacks": 1
+    },
+    {
+      "username": "Dani",
+      "wins": 0,
+      "loses": 0,
+      "surrenders": 1,
+      "kills": 0,
+      "successful attacks": 0,
+      "failed attacks": 0
     }
   ]
 }
