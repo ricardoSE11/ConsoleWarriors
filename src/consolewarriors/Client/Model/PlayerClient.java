@@ -12,10 +12,9 @@ import Characters.Character;
 import consolewarriors.Client.IObservable;
 import consolewarriors.Client.IObserver;
 import consolewarriors.Common.AttackGroup;
-import consolewarriors.Common.Command.ICommandManager;
-import consolewarriors.Common.Command.PlayerCommandManager;
+import consolewarriors.Client.Model.Command.ICommandManager;
+import consolewarriors.Client.Model.Command.PlayerCommandManager;
 import consolewarriors.Common.Shared.Warrior;
-import java.io.IOException;
 
 /**
  *
@@ -32,7 +31,7 @@ public class PlayerClient extends Client implements IObservable {
     private String player_stats = "";
     private String enemy_stats = "";
     
-    private int damageDealtOnAttack; // Consultar Dani.
+    private int damageDealtOnAttack; 
     private AttackGroup attackedWith;
     private AttackGroup attackedBy;
     

@@ -13,8 +13,6 @@ import consolewarriors.Common.PlayerStats;
 import consolewarriors.Common.ServerMessage;
 import consolewarriors.Server.Model.Connection.Server;
 import consolewarriors.Server.Utils.TextFileManager;
-import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;

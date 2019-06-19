@@ -3,18 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package consolewarriors.Common.Command;
+package consolewarriors.Client.Model.Command;
 
 import consolewarriors.Client.Model.PlayerClient;
-import consolewarriors.Common.Command.PlayerCommands.AttackCommand;
-import consolewarriors.Common.Command.PlayerCommands.ChatCommand;
-import consolewarriors.Common.Command.PlayerCommands.NotFoundCommand;
-import consolewarriors.Common.Command.PlayerCommands.PassCommand;
-import consolewarriors.Common.Command.PlayerCommands.ProposeTieCommand;
-import consolewarriors.Common.Command.PlayerCommands.ReloadWeaponsCommand;
-import consolewarriors.Common.Command.PlayerCommands.SelectWarriorCommand;
-import consolewarriors.Common.Command.PlayerCommands.SurrenderCommand;
-import consolewarriors.Common.Command.PlayerCommands.WildCardCommand;
+import consolewarriors.Client.Model.Command.PlayerCommands.AttackCommand;
+import consolewarriors.Client.Model.Command.PlayerCommands.ChatCommand;
+import consolewarriors.Client.Model.Command.PlayerCommands.NotFoundCommand;
+import consolewarriors.Client.Model.Command.PlayerCommands.PassCommand;
+import consolewarriors.Client.Model.Command.PlayerCommands.ProposeTieCommand;
+import consolewarriors.Client.Model.Command.PlayerCommands.ReloadWeaponsCommand;
+import consolewarriors.Client.Model.Command.PlayerCommands.SelectWarriorCommand;
+import consolewarriors.Client.Model.Command.PlayerCommands.SurrenderCommand;
+import consolewarriors.Client.Model.Command.PlayerCommands.WildCardCommand;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;

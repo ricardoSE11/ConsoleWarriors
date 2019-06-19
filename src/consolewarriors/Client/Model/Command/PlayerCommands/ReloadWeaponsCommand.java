@@ -3,24 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package consolewarriors.Common.Command.PlayerCommands;
+package consolewarriors.Client.Model.Command.PlayerCommands;
 
 import consolewarriors.Client.Model.PlayerClient;
-import consolewarriors.Common.ClientMessage;
-import consolewarriors.Common.Command.ICommand;
-import consolewarriors.Common.Message;
+import consolewarriors.Client.Model.Command.ICommand;
 
 /**
  *
  * @author rshum
  */
-public class SurrenderCommand implements ICommand{
+public class ReloadWeaponsCommand implements ICommand{
 
-    public static final String NAME = "SURRENDER";
+    public static final String NAME = "RELOAD";
     private PlayerClient player;
-
-    public SurrenderCommand() {
-    }
     
     @Override
     public String getCommandName() {
@@ -29,11 +24,16 @@ public class SurrenderCommand implements ICommand{
 
     @Override
     public void execute() {
-        System.out.println("Executing the SURRENDER command");
-        Message surrenderMessage = new ClientMessage("SURRENDER", player.getPlayerID() , null);
-        player.sendMessage(surrenderMessage);
-        
-        player.changePlayerGamingStatus("DEFEATED");
+        System.out.println("Executing the RELOAD command");
+        if (player.isOutOfWeapons()){
+            System.out.println("Reloading weapons");
+            player.changePlayerGamingStatus("RELOADING");
+            player.reloadWarriorWeapons();
+        }
+        else{
+            player.changePlayerGamingStatus("UNVALID_RELOAD");
+        }
+
     }
 
     @Override
