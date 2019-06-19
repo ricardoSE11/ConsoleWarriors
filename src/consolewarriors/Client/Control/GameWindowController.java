@@ -96,13 +96,6 @@ public class GameWindowController implements IObserver {
                 // --- Commands with arguments ---
                 try{
                     String[] commandInfo = gameWindow.getLastLine().split("-");
-                    
-                    if (commandInfo.length > 1){
-                        System.out.println("Command with arguments");
-                    }
-                    else{
-                        System.out.println("I guess I enter here and then throw the exception anyway(?)");
-                    }
                     System.out.println("Parsing: " + gameWindow.getLastLine());
                     
                     int hyphenIndex = gameWindow.getLastLine().indexOf("-");
@@ -119,9 +112,6 @@ public class GameWindowController implements IObserver {
                     } else if (selectedCommand == null) {
                         System.out.println("Got a null command");
                     } else {
-                        //muy cochino, pero toca.
-                        String command_name = selectedCommand.getCommandName();
-                        //if(command_name.equals(ke))
                         selectedCommand.execute(commandArguments);
                     }
                 }
@@ -232,6 +222,13 @@ public class GameWindowController implements IObserver {
             } else {
                 System.out.println("Null warrior, didnt find: " + warriorName);
             }
+        }
+        
+        else if (statusString.startsWith("RECEIVING_LOG")){
+            int hyphIndex = statusString.indexOf("-");
+            String matchLog = statusString.substring(hyphIndex + 1);
+            gameWindow.writeToConsole("\n " + " GAME LOG " + "\n", Color.LIGHT_GRAY);
+            gameWindow.writeToConsole("\n " + matchLog + "\n", Color.LIGHT_GRAY);
         }
         
         else if (statusString.equals("RESPONDING_TIE_REQUEST")){

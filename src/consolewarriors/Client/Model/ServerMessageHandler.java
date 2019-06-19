@@ -177,6 +177,13 @@ public class ServerMessageHandler implements IServerMessageHandler{
                 ((PlayerClient) client).changePlayerGamingStatus("UNAVAILABLE_WILDCARD");
             }
             break;
+            
+            case "GAME_LOG":{
+                String matchLog = (String) message.getObjectOfInterest();
+                System.out.println("Match log: " + matchLog);
+                ((PlayerClient) client).changePlayerGamingStatus("RECEIVING_LOG"+matchLog);
+            }
+            break;
 
         }
         

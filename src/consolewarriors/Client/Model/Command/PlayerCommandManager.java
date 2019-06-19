@@ -12,6 +12,7 @@ import consolewarriors.Client.Model.Command.PlayerCommands.NotFoundCommand;
 import consolewarriors.Client.Model.Command.PlayerCommands.PassCommand;
 import consolewarriors.Client.Model.Command.PlayerCommands.ProposeTieCommand;
 import consolewarriors.Client.Model.Command.PlayerCommands.ReloadWeaponsCommand;
+import consolewarriors.Client.Model.Command.PlayerCommands.RequestLogCommand;
 import consolewarriors.Client.Model.Command.PlayerCommands.SelectWarriorCommand;
 import consolewarriors.Client.Model.Command.PlayerCommands.SurrenderCommand;
 import consolewarriors.Client.Model.Command.PlayerCommands.WildCardCommand;
@@ -70,6 +71,7 @@ public class PlayerCommandManager implements ICommandManager{
         registerCommand(SurrenderCommand.NAME , SurrenderCommand.class);
         registerCommand(ReloadWeaponsCommand.NAME, ReloadWeaponsCommand.class);
         registerCommand(WildCardCommand.NAME, WildCardCommand.class);
+        registerCommand(RequestLogCommand.NAME, RequestLogCommand.class);
     }
     
 }

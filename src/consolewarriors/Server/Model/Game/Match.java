@@ -279,6 +279,13 @@ public class Match {
             enemy.getClientThread().sendMessageToClient(victoryMessage);
             endMatch(enemy);
         }
+        
+        else if (commandName.equals("LOG_REQUEST")){
+            Message matchLogMessage = new ServerMessage("GAME_LOG", this.match_log);
+            Player currentPlayer = getPlayerByID(playerID);
+            currentPlayer.getClientThread().sendMessageToClient(matchLogMessage);
+            return;
+        }
 
         if (isPlayersTurn(playerID) && !ended){
             // Area for improvemente
@@ -291,10 +298,10 @@ public class Match {
                     // Send the weapon to the enemy
                     Message attackMessage = new ServerMessage("ATTACK", attackParameters);
                     Player enemy = getEnemyOfPlayer(playerID);
-                    /*Player current = getPlayerByID(playerID);
+                    Player current = getPlayerByID(playerID);
                     match_log += "Player "+current.getUsername()+" attacked to" +
                         enemy.getUsername() + " with the warrior "+ attackParameters.getWarrior().getName() +
-                        " and weapon " +  attackParameters.getWeapon().getName()+ " at " + strDate +"\n";*/
+                        " and weapon " +  attackParameters.getWeapon().getName()+ " at " + strDate +"\n";
                     enemy.getClientThread().sendMessageToClient(attackMessage);
                     nextTurn();
                 }
