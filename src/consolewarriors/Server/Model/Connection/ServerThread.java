@@ -117,14 +117,6 @@ public class ServerThread extends Thread  {
             InputStream inputStream = socket.getInputStream();
             this.reader = new ObjectInputStream(inputStream);
 
-            // --- We ask the client if its new to the server --- 
-            /*DataInputStream sessionVerifier = new DataInputStream(inputStream);
-            String session = sessionVerifier.readUTF();
-            
-            if (session.equals("NEW")){
-                
-            }*/
-
             int newClientID = server.getIDForNewClient();
             server.addClient(newClientID, this);
             this.id = newClientID;
@@ -154,8 +146,8 @@ public class ServerThread extends Thread  {
         }
         
         catch (IOException | ClassNotFoundException ex) {
-            //System.out.println("Something went wrong with client with ID:" + this.id);
-            Logger.getLogger(ServerThread.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("The player with ID:" + this.id + " and username " + username + " disconnected from server");
+            //Logger.getLogger(ServerThread.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

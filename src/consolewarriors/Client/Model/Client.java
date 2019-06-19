@@ -132,11 +132,6 @@ public abstract class Client {
             // --- Preparing to receive messages from server ---
             InputStream inputStream = socket.getInputStream();
             this.reader = new ObjectInputStream(inputStream);
-            
-            /*
-            // --- Tell the server is the first time we play and ask for an ID ---
-            DataOutputStream sessionIndicator = new DataOutputStream(outputStream);
-            sessionIndicator.writeUTF("NEW");*/
 
             // --- We receive the ID assigned --- 
             DataInputStream idReceiver = new DataInputStream(inputStream);
