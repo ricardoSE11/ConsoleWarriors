@@ -8,13 +8,8 @@ package consolewarriors.Server.Model.Connection;
 import consolewarriors.Server.Model.Game.MatchMaker;
 import consolewarriors.Server.Model.Game.Player;
 import consolewarriors.Common.Message;
-import Characters.Character;
 import consolewarriors.Common.ClientMessage;
 import consolewarriors.Server.Model.Game.Match;
-import consolewarriors.Server.View.ServerMainWindow;
-import java.util.ArrayList;
-import java.util.HashMap;
-import javax.swing.JFrame;
 
 /**
  *

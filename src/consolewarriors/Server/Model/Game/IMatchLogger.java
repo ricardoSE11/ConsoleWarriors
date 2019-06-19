@@ -5,7 +5,7 @@
  */
 package consolewarriors.Server.Model.Game;
 
-import consolewarriors.Common.Command.ICommand;
+import consolewarriors.Client.Model.Command.ICommand;
 
 /**
  *

@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package consolewarriors.Common.Command.PlayerCommands;
+package consolewarriors.Client.Model.Command.PlayerCommands;
 
 import consolewarriors.Client.Model.PlayerClient;
-import consolewarriors.Common.Command.ICommand;
+import consolewarriors.Client.Model.Command.ICommand;
 
 /**
  *
